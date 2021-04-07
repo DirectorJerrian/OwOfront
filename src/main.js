@@ -1,15 +1,30 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
+import App from './App.vue'
 import router from './router'
+import Antd from 'ant-design-vue'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import 'ant-design-vue/dist/antd.css'
+import moment from 'moment'
+import store from './store'
+import '@/permission'
 
-Vue.config.productionTip = false
-
-/* eslint-disable no-new */
+Vue.config.productionTip = false;
+Vue.prototype.$moment = moment;
+const options = {
+  namespace: 'pro__',
+  name: 'ls',
+  storage: 'local'
+};
+Vue.use(Antd);
+Vue.use(ElementUI);
+Vue.directive('title', {
+  inserted: function (el, binding) {
+    document.title = el.dataset.title
+  }
+});
 new Vue({
-  el: '#app',
   router,
-  components: { App },
-  template: '<App/>'
-})
+  store,
+  render: h => h(App)
+}).$mount('#app');
