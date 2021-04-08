@@ -23,7 +23,7 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="createNodeClick()">增加实体</el-menu-item>
-            <el-menu-item index="1-2" disabled>实体信息搜索</el-menu-item>
+            <el-menu-item index="1-2" @click="">实体信息搜索</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="2">
@@ -33,7 +33,7 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
-            <el-menu-item index="2-2" disabled>关系信息搜索</el-menu-item>
+            <el-menu-item index="2-2" @click="">关系信息搜索</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3" >
@@ -42,20 +42,34 @@
             <span slot="title">图谱</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="3-1" @click="saveChartClick()">保存到我的图谱</el-menu-item>
-            <el-menu-item index="3-2" @click="chartXMLDownloadClick()">图谱XML导出</el-menu-item>
-            <el-menu-item index="3-3" @click="chartImgDownloadClick()">图谱图片导出</el-menu-item>
-            <el-menu-item index="3-3" @click="fixChartClick()">图谱固定</el-menu-item>
+            <el-menu-item index="3-1" @click="">信息统计</el-menu-item>
+            <el-menu-item index="3-2" @click="">排版模式</el-menu-item>
+            <el-menu-item index="3-3" @click="">力导图模式</el-menu-item>
+            <el-menu-item index="3-4" @click="fixChartClick()">图谱固定</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="4" disabled>
+        <el-submenu index="4" >
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span slot="title">保存</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="4-1" @click="saveChartClick()">保存到我的图谱</el-menu-item>
+            <el-menu-item index="4-2" @click="chartXMLDownloadClick()">图谱XML导出</el-menu-item>
+            <el-menu-item index="4-3" @click="chartImgDownloadClick()">图谱图片导出</el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-menu-item index="5" disabled>
           <i class="el-icon-setting"></i>
-          <span slot="title">扩展功能</span>
+          <span slot="title">拓展功能</span>
         </el-menu-item>
       </el-menu>
     </div>
     <div id="chart"></div>
+<!--    图谱编辑-->
     <div id="chartInfoEdit" style="width: 0;background-color: #82fff5"></div>
+<!--    图谱信息搜索-->
+    <div id="chartSearch"></div>
   </div>
 
 </template>
@@ -203,6 +217,8 @@
           }]
         },
           chart:{},
+          isChartSearchVisible:false,
+          isChartInfoEditVisible:false,
           isNodeEdit:false,
           isLinkEdit:false,
           isNodeCreate:false,
@@ -241,11 +257,18 @@
             $("#chart").animate({"width":"1000px"});
             $("#chartInfoEdit").animate({"width":"300px"});
           }else{
-
+            $("#chart").animate({"width":"1300px"});
+            $("#chartInfoEdit").animate({"width":"0"});
           }
         },
         createNodeClick(){
+          if(this.isChartInfoEditVisible) {
+            this.isChartInfoEditVisible=false;
+            this.tableAnimation(false);
+            return;
+          }
           this.isNodeCreate=true;
+          this.isChartInfoEditVisible=true;
           this.tableAnimation(true)
 
         },
@@ -296,6 +319,7 @@
   }
   #sideMenu{
     width: 200px;
+    height:650px;
     float:left;
     display:flex;
   }
