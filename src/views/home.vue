@@ -337,7 +337,6 @@ export default {
 <style lang="less" scoped>
 .section1 {
   /* background-image: url(https://finclaw.oss-cn-shenzhen.aliyuncs.com/img/section02.png); */
-  /* background-image: url(../assets/UI-4.png); */
   /* background-repeat: no-repeat;*/
   /* background-position: center center; */
   /*background-size: 100% auto;*/
