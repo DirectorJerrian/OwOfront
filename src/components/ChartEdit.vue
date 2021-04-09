@@ -5,7 +5,7 @@
         :default-active="headActiveIndex"
         class="el-menu-demo"
         mode="horizontal"
-        @select="handleSelect"
+        @select=""
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b">
@@ -23,7 +23,8 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="createNodeClick()">增加实体</el-menu-item>
-            <el-menu-item index="1-2" disabled>实体信息搜索</el-menu-item>
+            <el-menu-item index="1-2" @click="searchNodeClick()">实体信息搜索</el-menu-item>
+            <el-menu-item index="1-2" @click="">取消实体高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="2">
@@ -33,7 +34,8 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
-            <el-menu-item index="2-2" disabled>关系信息搜索</el-menu-item>
+            <el-menu-item index="2-2" @click="searchLinkClick()">关系信息搜索</el-menu-item>
+            <el-menu-item index="1-2" @click="">取消关系高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3" >
@@ -42,20 +44,205 @@
             <span slot="title">图谱</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="3-1" @click="saveChartClick()">保存到我的图谱</el-menu-item>
-            <el-menu-item index="3-2" @click="chartXMLDownloadClick()">图谱XML导出</el-menu-item>
-            <el-menu-item index="3-3" @click="chartImgDownloadClick()">图谱图片导出</el-menu-item>
-            <el-menu-item index="3-3" @click="fixChartClick()">图谱固定</el-menu-item>
+            <el-menu-item index="3-1" @click="">信息统计</el-menu-item>
+            <el-menu-item index="3-2" @click="">排版模式</el-menu-item>
+            <el-menu-item index="3-3" @click="">力导图模式</el-menu-item>
+            <el-menu-item index="3-4" @click="fixChartClick()">图谱固定</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="4" disabled>
+        <el-submenu index="4" >
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span slot="title">保存</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="4-1" @click="saveChartClick()">保存到我的图谱</el-menu-item>
+            <el-menu-item index="4-2" @click="chartXMLDownloadClick()">图谱XML导出</el-menu-item>
+            <el-menu-item index="4-3" @click="chartImgDownloadClick()">图谱图片导出</el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-menu-item index="5" disabled>
           <i class="el-icon-setting"></i>
-          <span slot="title">扩展功能</span>
+          <span slot="title">拓展功能</span>
         </el-menu-item>
       </el-menu>
     </div>
     <div id="chart"></div>
+<!--    图谱编辑-->
     <div id="chartInfoEdit" style="width: 0;background-color: #82fff5"></div>
+<!--    图谱信息搜索-->
+    <div id="chartSearch">
+      <el-dialog
+        title="实体搜索"
+        :visible.sync="isSearchNodeVisible"
+        width="50%"
+      >
+        <el-form ref="form" :model="searchNodeForm" label-width="80px">
+          <el-form-item label="实体名称" >
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="searchNodeForm.name"
+              :fetch-suggestions="getSearchNodeNameHistory"
+              placeholder="请输入实体名称"
+              @select="selectSearchNodeName"
+              style="width: 80%">
+              <template slot-scope="{item}">
+                <div class="name">{{item.name}}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+          <el-form-item label="实体描述" >
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="searchNodeForm.des"
+              :fetch-suggestions="getSearchNodeDesHistory"
+              placeholder="请输入实体描述"
+              @select="selectSearchNodeDes"
+              style="width: 80%">
+              <template slot-scope="{item}">
+                <div class="name">{{item.des}}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+          <el-form-item label="实体种类" >
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="searchNodeForm.category"
+              :fetch-suggestions="getSearchNodeCategoryHistory"
+              placeholder="请输入实体种类"
+              @select="selectSearchNodeCategory"
+              style="width: 80%">
+              <template slot-scope="{item}">
+                <div class="name">{{item.category}}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+        </el-form>
+        <el-button @click="isSearchNodeVisible= false" style="float:right;margin-left:20px ">取消</el-button>
+        <el-button type="primary" style="float:right" @click="searchNode()">搜索</el-button>
+        <el-table
+          :data="searchNodeResult"
+          style="width: 100%">
+          <el-table-column
+            prop="name"
+            label="名称"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop="des"
+            label="描述"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop="category"
+            label="类型"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="操作"
+            width="100">
+          </el-table-column>
+        </el-table>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="isSearchNodeVisible= false">取消</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="关系搜索"
+        :visible.sync="isSearchLinkVisible"
+        width="50%"
+      >
+        <el-form ref="form" :model="searchLinkForm" label-width="80px">
+          <el-form-item label="关系名称" >
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="searchLinkForm.name"
+              :fetch-suggestions="getSearchLinkNameHistory"
+              placeholder="请输入关系名称"
+              @select="selectSearchLinkName"
+              style="width: 80%">
+              <template slot-scope="{item}">
+                <div class="name">{{item.name}}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+          <el-form-item label="关系描述" >
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="searchLinkForm.des"
+              :fetch-suggestions="getSearchLinkDesHistory"
+              placeholder="请输入关系描述"
+              @select="selectSearchLinkDes"
+              style="width: 80%">
+              <template slot-scope="{item}">
+                <div class="name">{{item.des}}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+          <el-form-item label="关系起点" >
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="searchLinkForm.source"
+              :fetch-suggestions="getSearchLinkSourceHistory"
+              placeholder="请输入关系起点"
+              @select="selectSearchLinkSource"
+              style="width: 80%">
+              <template slot-scope="{item}">
+                <div class="name">{{item.source}}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+          <el-form-item label="关系终点" >
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="searchLinkForm.target"
+              :fetch-suggestions="getSearchLinkTargetHistory"
+              placeholder="请输入关系终点"
+              @select="selectSearchLinkTarget"
+              style="width: 80%">
+              <template slot-scope="{item}">
+                <div class="name">{{item.target}}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+        </el-form>
+        <el-button @click="isSearchLinkVisible= false" style="float:right;margin-left:20px ">取消</el-button>
+        <el-button type="primary" style="float:right" @click="searchLink()">搜索</el-button>
+        <el-table
+          :data="searchLinkResult"
+          style="width: 100%">
+          <el-table-column
+            prop="name"
+            label="名称"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop="des"
+            label="描述"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop="source"
+            label="起点实体"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop="target"
+            label="终点实体"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop=""
+            label="操作"
+            width="100">
+          </el-table-column>
+        </el-table>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="isSearchLinkVisible= false">取消</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 
 </template>
@@ -203,10 +390,38 @@
           }]
         },
           chart:{},
+          searchNodeForm:{
+            name:'',
+            des:'',
+            category:'',
+          },
+          searchNodeHistory:{
+            name:[],
+            des:[],
+            category:[],
+          },
+          searchNodeResult:[],
+          searchLinkForm:{
+            name:'',
+            source:'',
+            target:'',
+            des:'',
+          },
+          searchLinkHistory:{
+            name:[],
+            source:[],
+            target:[],
+            des:[],
+          },
+          searchLinkResult:[],
+          isChartSearchVisible:false,
+          isChartInfoEditVisible:false,
           isNodeEdit:false,
           isLinkEdit:false,
           isNodeCreate:false,
           isLinkCreate:false,
+          isSearchNodeVisible:false,
+          isSearchLinkVisible:false,
         }
       },
       computed:{
@@ -241,30 +456,219 @@
             $("#chart").animate({"width":"1000px"});
             $("#chartInfoEdit").animate({"width":"300px"});
           }else{
-
+            $("#chart").animate({"width":"1300px"});
+            $("#chartInfoEdit").animate({"width":"0"});
           }
         },
         createNodeClick(){
+          if(this.isChartInfoEditVisible) {
+            this.isChartInfoEditVisible=false;
+            this.tableAnimation(false);
+            return;
+          }
           this.isNodeCreate=true;
+          this.isChartInfoEditVisible=true;
           this.tableAnimation(true)
 
         },
         createLinkClick(){
 
         },
+        ///////////////////////////////////////////////////////////
+        //搜索//////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        searchNodeClick(){
+          this.isSearchNodeVisible=true;
+        },
+        searchNode(){
+          //存访搜索历史
+          if(this.searchNodeForm.name==='' && this.searchNodeForm.category==='' && this.searchNodeForm.des===''){
+            this.warningNotice("搜索内容为空，请至少输入一个选项！");
+            return;
+          }
+          if($.inArray(this.searchNodeForm.name,this.searchNodeHistory.name)===-1){
+            this.searchNodeHistory.name.push(this.searchNodeForm.name);
+          }
+          if($.inArray(this.searchNodeForm.des,this.searchNodeHistory.des)===-1){
+            this.searchNodeHistory.des.push(this.searchNodeForm.des);
+          }
+          if($.inArray(this.searchNodeForm.category,this.searchNodeHistory.category)===-1){
+            this.searchNodeHistory.category.push(this.searchNodeForm.category);
+          }
+          //搜索节点,存放到数组中
+          var res1={
+            name:'123',
+            des:'12314',
+            category:'sdfag',
+          };
+          this.searchNodeResult.push(res1);
+        },
+        selectSearchNodeName(obj){
+          this.searchNodeForm.name=obj.name;
+        },
+        selectSearchNodeDes(obj){
+          this.searchNodeForm.des=obj.des;
+        },
+        selectSearchNodeCategory(obj){
+          this.searchNodeForm.category=obj.category;
+        },
+        getSearchNodeNameHistory(str,cb){
+          var res=[];
+          for(var i=0;i<this.searchNodeHistory.name.length;i++){
+            res.push({name:this.searchNodeHistory.name[i]});
+          }
+          cb(res);
+        },
+        getSearchNodeDesHistory(str,cb){
+          var res=[];
+          for(var i=0;i<this.searchNodeHistory.des.length;i++){
+            res.push({des:this.searchNodeHistory.des[i]});
+          }
+          cb(res);
+        },
+        getSearchNodeCategoryHistory(str,cb){
+          var res=[];
+          for(var i=0;i<this.searchNodeHistory.category.length;i++){
+            res.push({category:this.searchNodeHistory.category[i]});
+          }
+          cb(res);
+        },
+        searchLinkClick(){
+          this.isSearchLinkVisible=true;
+        },
+        searchLink(){
+          if(this.searchLinkForm.name=='' && this.searchLinkForm.des==''
+            && this.searchLinkForm.source=='' && this.searchLinkForm.target==''){
+            this.warningNotice("搜索内容为空，请至少输入一个选项！");
+            return;
+          }
+          if($.inArray(this.searchLinkForm.name,this.searchLinkHistory.name)===-1){
+            this.searchLinkHistory.name.push(this.searchLinkForm.name);
+          }
+          if($.inArray(this.searchLinkForm.des,this.searchLinkHistory.des)===-1){
+            this.searchLinkHistory.des.push(this.searchLinkForm.des);
+          }
+          if($.inArray(this.searchLinkForm.source,this.searchLinkHistory.source)===-1){
+            this.searchLinkHistory.source.push(this.searchLinkForm.source);
+          }
+          if($.inArray(this.searchLinkForm.target,this.searchLinkHistory.target)===-1){
+            this.searchLinkHistory.target.push(this.searchLinkForm.target);
+          }
+          var res1={
+            name:'123',
+            des:'12314',
+            source:'node01',
+            target:'node02'
+          };
+          this.searchLinkResult.push(res1);
+        },
+        selectSearchLinkName(obj){
+          this.searchLinkForm.name=obj.name;
+        },
+        selectSearchLinkDes(obj){
+          this.searchLinkForm.des=obj.des;
+        },
+        selectSearchLinkSource(obj){
+          this.searchLinkForm.source=obj.source;
+        },
+        selectSearchLinkTarget(obj){
+          this.searchLinkForm.target=obj.target;
+        },
+        getSearchLinkNameHistory(str,cb){
+          var res=[];
+          for(var i=0;i<this.searchLinkHistory.name.length;i++){
+            res.push({name:this.searchLinkHistory.name[i]});
+          }
+          cb(res);
+        },
+        getSearchLinkDesHistory(str,cb){
+          var res=[];
+          for(var i=0;i<this.searchLinkHistory.des.length;i++){
+            res.push({des:this.searchLinkHistory.des[i]});
+          }
+          cb(res);
+        },
+        getSearchLinkSourceHistory(str,cb){
+          var res=[];
+          for(var i=0;i<this.searchLinkHistory.source.length;i++){
+            res.push({source:this.searchLinkHistory.source[i]});
+          }
+          cb(res);
+        },
+        getSearchLinkTargetHistory(str,cb){
+          var res=[];
+          for(var i=0;i<this.searchLinkHistory.target.length;i++){
+            res.push({target:this.searchLinkHistory.target[i]});
+          }
+          cb(res);
+        },
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        //TODO
+        //数据库保存
         saveChartClick(){
 
         },
+        //TODO
+        //由于node节点内容修改，需要重写
         chartXMLDownloadClick(){
-
+          const XMLText=charToText();
+          const ele = document.createElement('a');// 创建下载链接
+          ele.download ="MyChart.xml"
+          ele.style.display = 'none';// 隐藏的可下载链接
+          const blob = new Blob([XMLText]);
+          ele.href = URL.createObjectURL(blob);
+          document.body.appendChild(ele);
+          ele.click();
+          document.body.removeChild(ele);
+        },
+        charToText(){
+          var res='<?xml version="1.0" encoding="utf-8" standalone="no"?>';
+          res+="<chart>";
+          ////////////////////
+          //添加实体
+          res+="<data>";
+          for(var i=0;i<data.length;i++){
+            res+="<node>";
+            res+="<name>"+data[i].name+"</name>";
+            res+="<des>"+data[i].des+"</des>";
+            res+="<symbolSize>"+data[i].symbolSize+"</symbolSize>";
+            res+="<category>"+data[i].category+"</category>";
+            res+="</node>";
+          }
+          res+="</data>";
+          ///////////////////
+          res+="<links>";
+          for(var i=0;i<links.length;i++){
+            res+="<link>";
+            res+="<source>"+links[i].source+"</source>";
+            res+="<target>"+links[i].target+"</target>";
+            res+="<name>"+links[i].name+"</name>>";
+            res+="<des>"+links[i].des+"</des>";
+            res+="</link>";
+          }
+          res+="</links>";
+          //添加关系
+          //////////////////
+          res+="</chart>";
+          return res;
         },
         chartImgDownloadClick(){
-
+          var canvas = $("#"+"chart").find("canvas").first()[0];
+          var ctx = canvas.getContext('2d');
+          var url=canvas.toDataURL();
+          var link = document.createElement('a');
+          link.href = url;
+          link.download = this.option.title.text+".png";
+          link.click();
         },
         fixChartClick(){
 
         },
-        failureNotice(info) {
+        warningNotice(info) {
           this.$notify({
             title: '警告',
             message: info,
@@ -296,6 +700,7 @@
   }
   #sideMenu{
     width: 200px;
+    height:650px;
     float:left;
     display:flex;
   }
