@@ -121,8 +121,13 @@
         <el-button @click="isSearchNodeVisible= false" style="float:right;margin-left:20px ">取消</el-button>
         <el-button type="primary" style="float:right" @click="searchNode()">搜索</el-button>
         <el-table
+          @selection-change="setSearchNodeResultChosen"
           :data="searchNodeResult"
           style="width: 100%">
+          <el-table-column
+            type="selection"
+            width="100">
+          </el-table-column>
           <el-table-column
             prop="name"
             label="名称"
@@ -138,13 +143,9 @@
             label="类型"
             width="200">
           </el-table-column>
-          <el-table-column
-            prop=""
-            label="操作"
-            width="100">
-          </el-table-column>
         </el-table>
         <span slot="footer" class="dialog-footer">
+          <el-button type="primary"  @click="confirmSearchNode()">标记目标</el-button>
           <el-button @click="isSearchNodeVisible= false">取消</el-button>
         </span>
       </el-dialog>
@@ -180,12 +181,12 @@
               </template>
             </el-autocomplete>
           </el-form-item>
-          <el-form-item label="关系起点" >
+          <el-form-item label="起点实体" >
             <el-autocomplete
               popper-class="my-autocomplete"
               v-model="searchLinkForm.source"
               :fetch-suggestions="getSearchLinkSourceHistory"
-              placeholder="请输入关系起点"
+              placeholder="请输入起点实体名称"
               @select="selectSearchLinkSource"
               style="width: 80%">
               <template slot-scope="{item}">
@@ -193,12 +194,12 @@
               </template>
             </el-autocomplete>
           </el-form-item>
-          <el-form-item label="关系终点" >
+          <el-form-item label="终点实体" >
             <el-autocomplete
               popper-class="my-autocomplete"
               v-model="searchLinkForm.target"
               :fetch-suggestions="getSearchLinkTargetHistory"
-              placeholder="请输入关系终点"
+              placeholder="请输入终点实体名称"
               @select="selectSearchLinkTarget"
               style="width: 80%">
               <template slot-scope="{item}">
@@ -210,8 +211,13 @@
         <el-button @click="isSearchLinkVisible= false" style="float:right;margin-left:20px ">取消</el-button>
         <el-button type="primary" style="float:right" @click="searchLink()">搜索</el-button>
         <el-table
+          @selection-change="setSearchLinkResultChosen"
           :data="searchLinkResult"
           style="width: 100%">
+          <el-table-column
+            type="selection"
+            width="100">
+          </el-table-column>
           <el-table-column
             prop="name"
             label="名称"
@@ -232,13 +238,9 @@
             label="终点实体"
             width="150">
           </el-table-column>
-          <el-table-column
-            prop=""
-            label="操作"
-            width="100">
-          </el-table-column>
         </el-table>
         <span slot="footer" class="dialog-footer">
+          <el-button type="primary"  @click="confirmSearchLink()">标记目标</el-button>
           <el-button @click="isSearchLinkVisible= false">取消</el-button>
         </span>
       </el-dialog>
@@ -259,7 +261,6 @@
       </el-dialog>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -419,6 +420,7 @@
             category:[],
           },
           searchNodeResult:[],
+          searchNodeResultChosen:[],
           searchLinkForm:{
             name:'',
             source:'',
@@ -432,6 +434,7 @@
             des:[],
           },
           searchLinkResult:[],
+          searchLinkResultChosen:[],
           isChartSearchVisible:false,
           isChartInfoEditVisible:false,
           isNodeEdit:false,
@@ -516,12 +519,19 @@
             this.searchNodeHistory.category.push(this.searchNodeForm.category);
           }
           //搜索节点,存放到数组中
-          var res1={
-            name:'123',
-            des:'12314',
-            category:'sdfag',
-          };
-          this.searchNodeResult.push(res1);
+          this.searchNodeResult=[];
+          for(var i=0;i<this.nodes.length;i++){
+            if(this.searchNodeForm.name!==''&&!this.isMatch(this.searchNodeForm.name,this.nodes[i].name))continue;
+            if(this.searchNodeForm.des!==''&&!this.isMatch(this.searchNodeForm.des,this.nodes[i].des))continue;
+            if(this.searchNodeForm.category!==''&&!this.isMatch(this.searchNodeForm.category.toString(),this.nodes[i].category.toString()))continue;
+            let res={
+              name:this.nodes[i].name,
+              des:this.nodes[i].des,
+              category:this.nodes[i].category,
+              index:i,
+            };
+            this.searchNodeResult.push(res);
+          }
         },
         selectSearchNodeName(obj){
           this.searchNodeForm.name=obj.name;
@@ -553,6 +563,15 @@
           }
           cb(res);
         },
+        setSearchNodeResultChosen(val){
+          this.searchNodeResultChosen=val;
+        },
+        confirmSearchNode(){
+          console.log(this.searchNodeResultChosen);
+          //TODO
+          //标红
+        },
+
         searchLinkClick(){
           this.isSearchLinkVisible=true;
         },
@@ -574,13 +593,21 @@
           if($.inArray(this.searchLinkForm.target,this.searchLinkHistory.target)===-1){
             this.searchLinkHistory.target.push(this.searchLinkForm.target);
           }
-          var res1={
-            name:'123',
-            des:'12314',
-            source:'node01',
-            target:'node02'
-          };
-          this.searchLinkResult.push(res1);
+          this.searchLinkResult=[];
+          for(var i=0;i<this.links.length;i++){
+            if(this.searchLinkForm.name!==''&&!this.isMatch(this.searchLinkForm.name,this.links[i].name))continue;
+            if(this.searchLinkForm.des!==''&&!this.isMatch(this.searchLinkForm.des,this.links[i].des))continue;
+            if(this.searchLinkForm.source!==''&&!this.isMatch(this.searchLinkForm.source,this.links[i].source))continue;
+            if(this.searchLinkForm.target!==''&&!this.isMatch(this.searchLinkForm.target,this.links[i].target))continue;
+            let res={
+              name:this.links[i].name,
+              des:this.links[i].des,
+              source:this.links[i].source,
+              target:this.links[i].target,
+              index:i,
+            };
+            this.searchLinkResult.push(res);
+          }
         },
         selectSearchLinkName(obj){
           this.searchLinkForm.name=obj.name;
@@ -621,6 +648,38 @@
             res.push({target:this.searchLinkHistory.target[i]});
           }
           cb(res);
+        },
+        setSearchLinkResultChosen(val){
+          this.searchLinkResultChosen=val;
+        },
+        isMatch(searchStr,str){
+          let index = -1, flag = false;
+          for(var i = 0, arr = searchStr.split(""); i < arr.length; i++ ){
+            //有一个关键字都没匹配到，则没有匹配到数据
+            if(str.indexOf(arr[i]) < 0){
+              break;
+            }else{
+              let match = str.matchAll(arr[i]);
+              let next = match.next();
+              while (!next.done){
+                if(next.value.index > index){
+                  index = next.value.index;
+                  if(i === arr.length - 1){
+                    flag = true
+                  }
+                  break;
+                }
+                next = match.next();
+              }
+
+            }
+          }
+          return flag;
+        },
+        confirmSearchLink(){
+          console.log(this.searchLinkResultChosen);
+          //TODO
+          //标红
         },
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
