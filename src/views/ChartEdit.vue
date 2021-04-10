@@ -258,11 +258,13 @@
           nodes:[{
             name: 'node01',
             des: 'nodedes01',
+            symbol: 'path://M959.965003 223.038575v238.189392a533.078353 533.078353 0 0 1-33.91735 187.697336 601.553004 601.553004 0 0 1-235.501602 294.313007A549.525068 549.525068 0 0 1 512 1018.75241a549.397078 549.397078 0 0 1-178.546051-75.5141 600.913054 600.913054 0 0 1-235.501602-294.377002A532.630388 532.630388 0 0 1 64.034997 461.291962V223.038575a63.995 63.995 0 0 1 39.484916-59.13138l383.970002-158.963581a63.995 63.995 0 0 1 49.02017 0l383.970002 158.963581a63.995 63.995 0 0 1 39.484916 59.13138zM512 505.640497V95.880509L163.099258 241.341145V505.640497H512v415.327552a414.495618 414.495618 0 0 0 128.949926-59.38736 491.801578 491.801578 0 0 0 103.6719-96.056496 513.943848 513.943848 0 0 0 116.278916-259.819701H512z',
             symbolSize: 70,
             category: 0,
           }, {
             name: ' ',
             des: '',
+            symbol: 'pin',
             symbolSize: 0,
             category: 0,
           },{
@@ -322,74 +324,75 @@
           }],
           categories: [{name:'01 class'},{name:'02 class'}],
           option :{
-          // 图的标题
-          title: {
-            text: '知识图谱'
-          },
-          // 提示框的配置
-          tooltip: {
-            formatter: function (x) {
-              return x.data.des;
-            }
-          },
-          // 工具箱
-          toolbox: {
-            // 显示工具箱
-            show: true,
-            feature: {
-              mark: {
-                show: true
-              },
-              // 还原
-              restore: {
-                show: false
-              },
-              // 保存为图片
-              saveAsImage: {
-                show: false
-              }
-            }
-          },
-          legend: [{
-            // selectedMode: 'single',
-            data:[]
-          }],
-          series: [{
-            type: 'graph', // 类型:关系图
-            layout: 'force', //图的布局，类型为力导图
-            symbolSize: 40, // 调整节点的大小
-            roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移,可以设置成 'scale' 或者 'move'。设置成 true 为都开启
-            edgeSymbol: ['circle', 'arrow'],
-            edgeSymbolSize: [2,10],
-            force: {
-              repulsion: 100,
-              gravity:0.01,
-              edgeLength:200
+            // 图的标题
+            title: {
+              text: '知识图谱'
             },
-            autoCurveness: 0.1,
-            draggable: true,
-            lineStyle: {
-              width: 2,
-              color: '#4b565b',
-            },
-            edgeLabel: {
-              position: "middle",
-              fontSize: 20,
-              show: true,
+            // 提示框的配置
+            tooltip: {
               formatter: function (x) {
-                return x.data.name;
+                return x.data.des;
               }
             },
-            label: {
-              show:true,
+            // 工具箱
+            toolbox: {
+              // 显示工具箱
+              show: true,
+              feature: {
+                mark: {
+                  show: true
+                },
+                // 还原
+                restore: {
+                  show: false
+                },
+                // 保存为图片
+                saveAsImage: {
+                  show: false
+                }
+              }
             },
+            legend: [{
+              // selectedMode: 'single',
+              data:[]
+            }],
+            series: [{
+              type: 'graph', // 类型:关系图
+              layout: 'force', //图的布局，类型为力导图
+              symbolSize: 40, // 调整节点的大小
+              roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移,可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+              edgeSymbol: ['circle', 'arrow'],
+              edgeSymbolSize: [2,10],
+              force: {
+                repulsion: 100,
+                gravity:0.01,
+                edgeLength:200
+              },
+              autoCurveness: 0.1,
+              draggable: true,
+              lineStyle: {
+                width: 2,
+                color: '#4b565b',
+              },
+              edgeLabel: {
+                position: "middle",
+                fontSize: 20,
+                show: true,
+                formatter: function (x) {
+                  return x.data.name;
+                }
+              },
+              label: {
+                show:true,
+              },
+              //itemStyle: ,
 
-            // 数据
-            nodes: [],
-            links: [],
-            categories: [],
-          }]
-        },
+              // 数据
+              nodes: [],
+              links: [],
+              categories: [],
+            }]
+          },
           chart:{},
           searchNodeForm:{
             name:'',
