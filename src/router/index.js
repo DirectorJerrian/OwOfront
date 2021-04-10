@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ChartEdit from "../components/ChartEdit";
 Vue.use(Router)
 
 export default new Router({
@@ -8,7 +7,7 @@ export default new Router({
     {
       path: '/ChartEdit',
       name: '图谱编辑',
-      component: ChartEdit
+      component: () => import('@/views/ChartEdit')
     },
     {
       path: '/',
@@ -19,5 +18,10 @@ export default new Router({
       name: 'homePage',
       component: () => import('@/views/home')
     },
+    {
+      path: '/myChart',
+      name: '我的知识图谱',
+      component: () => import('@/views/myChart')
+    }
   ]
 })
