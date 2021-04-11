@@ -10,7 +10,7 @@
         text-color="#fff"
         active-text-color="#ffd04b">
         <el-menu-item index="1">知识图谱处理</el-menu-item>
-        <el-menu-item index="2" disabled>我的知识图谱</el-menu-item>
+        <el-menu-item index="2" >我的知识图谱</el-menu-item>
         <el-menu-item index="3" disabled>我的信息</el-menu-item>
       </el-menu>
     </div>
