@@ -68,8 +68,52 @@
       </el-menu>
     </div>
     <div id="chart"></div>
-<!--    图谱编辑-->
-    <div id="chartInfoEdit" style="width: 0;background-color: #82fff5"></div>
+    <!--图谱编辑-->
+    <el-drawer
+      title="节点编辑"
+      :visible.sync="isChartInfoEditVisible"
+      :before-close="handleClose"
+      destroy-on-close
+      direction="rtl"
+      custom-class="demo-drawer"
+      ref="drawer"
+    >
+      <div class="demo-drawer__content">
+        <el-form ref="form" :model="nodeForm" label-width="80px" v-if="this.isNodeCreate">
+          <el-form-item label="实体名称" >
+            <el-input v-model="nodeForm.name" :placeholder="'nodeName'"></el-input>
+          </el-form-item>
+          <el-form-item label="实体描述" >
+            <el-input v-model="nodeForm.des" :placeholder="'nodeDes'"></el-input>
+          </el-form-item>
+          <el-form-item label="实体大小" >
+            <el-slider v-model="nodeForm.symbolSize"></el-slider>
+            <!--                    <el-input v-model="nodeForm.symbolSize" :placeholder="nodeSymbolSize"></el-input>-->
+          </el-form-item>
+          <el-form-item label="实体种类" >
+            <el-input v-model="nodeForm.category" :placeholder="'nodeCategory'"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form ref="form" :model="linkForm" label-width="80px" v-if="this.isLinkCreate">
+          <el-form-item label="关系名称" >
+            <el-input v-model="linkForm.name" :placeholder="'linkName'"></el-input>
+          </el-form-item>
+          <el-form-item label="起点实体" >
+            <el-input v-model="linkForm.source" :placeholder="'linkSource'" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="终点实体" >
+            <el-input v-model="linkForm.target" :placeholder="'linkTarget'" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="关系描述" >
+            <el-input v-model="linkForm.des" :placeholder="'linkDes'"></el-input>
+          </el-form-item>
+        </el-form>
+        <div class="demo-drawer__footer">
+          <el-button @click="cancelForm">取 消</el-button>
+          <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+        </div>
+      </div>
+    </el-drawer>
 <!--    图谱信息搜索-->
     <div id="chartSearch">
       <el-dialog
@@ -412,6 +456,19 @@
           },
           chart:{},
           statisticChart:{},
+          chosenType:'',
+          nodeForm:{
+            name:'',
+            des:'',
+            symbolSize:'',
+            category:'',
+          },
+          linkForm:{
+            name:'',
+            des:'',
+            source:'',
+            target:'',
+          },
           searchNodeForm:{
             name:'',
             des:'',
@@ -447,6 +504,9 @@
           isSearchNodeVisible:false,
           isSearchLinkVisible:false,
           isStatisticVisible:false,
+          //
+          loading: false,
+          timer: null,
         }
       },
       computed:{
@@ -456,6 +516,34 @@
         this.drawChart();
       },
       methods:{
+        handleClose(done) {
+          if (this.loading) {
+            return;
+          }
+          this.$confirm('确定要提交表单吗？')
+            .then(_ => {
+              this.loading = true;
+              this.timer = setTimeout(() => {
+                done();
+                // 动画关闭需要一定的时间
+                setTimeout(() => {
+                  this.loading = false;
+                }, 400);
+              }, 2000);
+            })
+            .catch(_ => {});
+        },
+        cancelForm() {
+          this.loading = false;
+          this.isChartInfoEditVisible = false;
+          if(this.isNodeCreate){
+            this.isNodeCreate = false;
+          }
+          else{
+            this.isLinkCreate = false;
+          }
+          clearTimeout(this.timer);
+        },
         drawChart(){
           this.chart = this.$echarts.init(document.getElementById('chart'));
           this.showChart();
@@ -476,28 +564,25 @@
         handleSelect(key, keyPath) {
           console.log(key, keyPath);
         },
-        tableAnimation(isOpen){
-          if(isOpen){
-            $("#chart").animate({"width":"1000px"});
-            $("#chartInfoEdit").animate({"width":"300px"});
-          }else{
-            $("#chart").animate({"width":"1300px"});
-            $("#chartInfoEdit").animate({"width":"0"});
-          }
-        },
         createNodeClick(){
-          if(this.isChartInfoEditVisible) {
-            this.isChartInfoEditVisible=false;
-            this.tableAnimation(false);
-            return;
+          if(this.isChartInfoEditVisible){
+            console.log("close");
+            this.isNodeCreate = false;
+            this.isChartInfoEditVisible = false;
           }
-          this.isNodeCreate=true;
-          this.isChartInfoEditVisible=true;
-          this.tableAnimation(true)
-
+          console.log("open");
+          this.isNodeCreate = true;
+          this.isChartInfoEditVisible = true;
         },
         createLinkClick(){
-
+          if(this.isChartInfoEditVisible){
+            console.log("close");
+            this.isLinkCreate = false;
+            this.isChartInfoEditVisible = false;
+          }
+          console.log("open");
+          this.isLinkCreate = true;
+          this.isChartInfoEditVisible = true;
         },
         ///////////////////////////////////////////////////////////
         //搜索//////////////////////////////////////////////////////
