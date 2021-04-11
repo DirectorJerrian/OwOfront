@@ -10,7 +10,7 @@
         text-color="#fff"
         active-text-color="#ffd04b">
         <el-menu-item index="1">知识图谱处理</el-menu-item>
-        <el-menu-item index="2" disabled>我的知识图谱</el-menu-item>
+        <el-menu-item index="2" >我的知识图谱</el-menu-item>
         <el-menu-item index="3" disabled>我的信息</el-menu-item>
       </el-menu>
     </div>
@@ -44,7 +44,7 @@
             <span slot="title">图谱</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="3-1" @click="">信息统计</el-menu-item>
+            <el-menu-item index="3-1" @click="statisticsClick()">信息统计</el-menu-item>
             <el-menu-item index="3-2" @click="">排版模式</el-menu-item>
             <el-menu-item index="3-3" @click="">力导图模式</el-menu-item>
             <el-menu-item index="3-4" @click="fixChartClick()">图谱固定</el-menu-item>
@@ -245,6 +245,21 @@
         </span>
       </el-dialog>
     </div>
+<!--    数据统计-->
+    <div id="chartStatistic">
+      <el-dialog
+        title="图谱信息统计"
+        :visible.sync="isStatisticVisible"
+        width="50%"
+      >
+        <div slot="footer" class="dialog-footer">
+          <div id="statistic" style="width: 700px;height: 400px;margin-top: 2%;"></div>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="isStatisticVisible= false">取消</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -293,10 +308,12 @@
             target: 'node02',
             name: 'link01',
             des: 'link01des',
-          },{source: 'node02',
+          },{
+            source: 'node02',
             target: 'node01',
             name: 'link00',
-            des: 'reverse',},{
+            des: 'reverse',
+          },{
             source: 'node01',
             target: ' ',
             name: 'link02',
@@ -394,6 +411,7 @@
             }]
           },
           chart:{},
+          statisticChart:{},
           searchNodeForm:{
             name:'',
             des:'',
@@ -428,6 +446,7 @@
           isLinkCreate:false,
           isSearchNodeVisible:false,
           isSearchLinkVisible:false,
+          isStatisticVisible:false,
         }
       },
       computed:{
@@ -726,6 +745,35 @@
           link.href = url;
           link.download = this.option.title.text+".png";
           link.click();
+        },
+        //信息统计
+        statisticsClick(){
+          this.statisticChart = this.$echarts.init(document.getElementById('statistic'));
+          var numOfNodes = this.option.series[0].nodes.length;
+          var numOfLinks = this.option.series[0].links.length
+          var numOfCategory =this.option.series[0].categories.length;
+          var statisticOption={
+            title: {
+              text: ''
+            },
+            tooltip: {
+              trigger: 'axis'
+            },
+            legend:{
+              data:['个数']
+            },
+            xAxis: {
+              data: ['节点个数','关系个数','种类个数']
+            },
+            yAxis: {},
+            series: [{
+              name:'个数',
+              type:'bar',
+              data:[numOfNodes,numOfLinks,numOfCategory]
+            }]
+          }
+          this.statisticChart.setOption(statisticOption)
+          this.isStatisticVisible=true;
         },
         fixChartClick(){
 
