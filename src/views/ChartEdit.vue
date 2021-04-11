@@ -81,13 +81,13 @@
       <div class="demo-drawer__content">
         <el-form ref="form" :model="nodeForm" label-width="80px" v-if="this.isNodeCreate">
           <el-form-item label="实体名称" >
-            <el-input v-model="nodeForm.name" :placeholder="'nodeName'"></el-input>
+            <el-input v-model="nodeForm.name" :placeholder="nodeName"></el-input>
           </el-form-item>
           <el-form-item label="实体描述" >
-            <el-input v-model="nodeForm.des" :placeholder="'nodeDes'"></el-input>
+            <el-input v-model="nodeForm.des" :placeholder="nodeDes"></el-input>
           </el-form-item>
           <el-form-item label="实体形状">
-            <el-select v-model="shape" placeholder="请选择">
+            <el-select v-model="shape" :placeholder="nodeSymbol">
               <el-option
                 v-for="item in this.shapes"
                 :key="item.value"
@@ -99,10 +99,10 @@
             <el-slider v-model="nodeForm.symbolSize"></el-slider>
           </el-form-item>
           <el-form-item label="实体颜色">
-            <el-color-picker v-model="color1"></el-color-picker>
+            <el-color-picker v-model="nodeForm.color"></el-color-picker>
           </el-form-item>
           <el-form-item label="实体种类" >
-            <el-input v-model="nodeForm.category" :placeholder="'nodeCategory'"></el-input>
+            <el-input v-model="nodeForm.category" :placeholder="nodeCategory"></el-input>
           </el-form-item>
           <el-form-item label="文字大小">
             <el-slider v-model="nodeForm.fontSize"></el-slider>
@@ -333,36 +333,72 @@
             des: 'nodedes01',
             symbol: 'triangle',
             symbolSize: 70,
+            itemStyle: {
+              color: '#5470c6',
+            },
+            label: {
+              fontSize: 12,
+            },
             category: 0,
           }, {
             name: 'node06',
             des: 'nodedes06',
             symbol: 'triangle',
             symbolSize: 70,
+            itemStyle: {
+              color: '#5470c6',
+            },
+            label: {
+              fontSize: 12,
+            },
             category: 0,
           },{
             name: 'node02',
             des: 'nodedes02',
             symbol: 'circle',
             symbolSize: 50,
+            itemStyle: {
+              color: '#91CC75',
+            },
+            label: {
+              fontSize: 12,
+            },
             category: 1,
           }, {
             name: 'node03',
             des: 'nodedes3',
             symbol: 'circle',
             symbolSize: 50,
+            itemStyle: {
+              color: '#91CC75',
+            },
+            label: {
+              fontSize: 12,
+            },
             category: 1,
           }, {
             name: 'node04',
             des: 'nodedes04',
             symbol: 'circle',
             symbolSize: 50,
+            itemStyle: {
+              color: '#641585',
+            },
+            label: {
+              fontSize: 12,
+            },
             category: 1,
           }, {
             name: 'node05',
             des: 'nodedes05',
             symbol: 'circle',
             symbolSize: 50,
+            itemStyle: {
+              color: '#91CC75',
+            },
+            label: {
+              fontSize: 12,
+            },
             category: 1,
           }],
           links:[{
@@ -474,8 +510,19 @@
           },
           chart:{},
           statisticChart:{},
+          //click event
           chosenType:'',
-          //
+          nodeName:'',
+          nodeDes:'',
+          nodeSymbol:'',
+          nodeSymbolSize:'',
+          nodeCategory:'',
+          nodeFontSize:'',
+          linkName:'',
+          linkDes:'',
+          linkSource:'',
+          linkTarget:'',
+          //chart edit
           loading: false,
           timer: null,
           nodeForm:{
@@ -507,7 +554,8 @@
             label: '菱形'
           }],
           shape: '',
-          color1: '#409EFF',
+          nodeColor: '#409EFF',
+          //search
           searchNodeForm:{
             name:'',
             des:'',
@@ -836,6 +884,36 @@
         //点击事件
         chartClick(param){
           console.log(param);
+          if(param.dataType=='edge'){
+            this.chosenType='link';
+            this.isLinkCreate = true;
+            this.linkForm.name=param.data.name;
+            this.linkForm.des=param.data.des;
+            this.linkForm.source=param.data.source;
+            this.linkForm.target=param.data.target;
+            this.linkName=param.data.name;
+            this.linkDes=param.data.des;
+            this.linkSource=param.data.source;
+            this.linkTarget=param.data.target;
+          }else if(param.dataType=='node'){
+            this.chosenType='node';
+            this.isNodeCreate = true;
+            this.nodeForm.name=param.data.name;
+            this.nodeForm.des=param.data.des;
+            this.nodeForm.symbol=param.data.symbol;
+            this.nodeForm.symbolSize=param.data.symbolSize;
+            this.nodeForm.fontSize=param.data.label.fontSize;
+            this.nodeForm.color=param.color;
+            this.nodeForm.category=this.categories[param.data.category].name;
+            this.nodeName=param.data.name;
+            this.nodeDes=param.data.des;
+            this.nodeSymbol=param.data.symbol;
+            this.nodeSymbolSize=param.data.symbolSize;
+            this.nodeColor=param.color;
+            this.nodeFontSize=param.data.label.fontSize;
+            this.nodeCategory=this.categories[param.data.category].name;
+          }
+          this.isChartInfoEditVisible=true;
         },
         //TODO
         //由于node节点内容修改，需要重写
