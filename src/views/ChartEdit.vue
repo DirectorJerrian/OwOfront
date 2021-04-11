@@ -86,12 +86,26 @@
           <el-form-item label="实体描述" >
             <el-input v-model="nodeForm.des" :placeholder="'nodeDes'"></el-input>
           </el-form-item>
+          <el-form-item label="实体形状">
+            <el-select v-model="shape" placeholder="请选择">
+              <el-option
+                v-for="item in this.shapes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="实体大小" >
             <el-slider v-model="nodeForm.symbolSize"></el-slider>
-            <!--                    <el-input v-model="nodeForm.symbolSize" :placeholder="nodeSymbolSize"></el-input>-->
+          </el-form-item>
+          <el-form-item label="实体颜色">
+            <el-color-picker v-model="color1"></el-color-picker>
           </el-form-item>
           <el-form-item label="实体种类" >
             <el-input v-model="nodeForm.category" :placeholder="'nodeCategory'"></el-input>
+          </el-form-item>
+          <el-form-item label="文字大小">
+            <el-slider v-model="nodeForm.fontSize"></el-slider>
           </el-form-item>
         </el-form>
         <el-form ref="form" :model="linkForm" label-width="80px" v-if="this.isLinkCreate">
@@ -317,33 +331,37 @@
           nodes:[{
             name: 'node01',
             des: 'nodedes01',
-            symbol: 'path://M959.965003 223.038575v238.189392a533.078353 533.078353 0 0 1-33.91735 187.697336 601.553004 601.553004 0 0 1-235.501602 294.313007A549.525068 549.525068 0 0 1 512 1018.75241a549.397078 549.397078 0 0 1-178.546051-75.5141 600.913054 600.913054 0 0 1-235.501602-294.377002A532.630388 532.630388 0 0 1 64.034997 461.291962V223.038575a63.995 63.995 0 0 1 39.484916-59.13138l383.970002-158.963581a63.995 63.995 0 0 1 49.02017 0l383.970002 158.963581a63.995 63.995 0 0 1 39.484916 59.13138zM512 505.640497V95.880509L163.099258 241.341145V505.640497H512v415.327552a414.495618 414.495618 0 0 0 128.949926-59.38736 491.801578 491.801578 0 0 0 103.6719-96.056496 513.943848 513.943848 0 0 0 116.278916-259.819701H512z',
+            symbol: 'triangle',
             symbolSize: 70,
             category: 0,
           }, {
-            name: ' ',
-            des: '',
-            symbol: 'pin',
-            symbolSize: 0,
+            name: 'node06',
+            des: 'nodedes06',
+            symbol: 'triangle',
+            symbolSize: 70,
             category: 0,
           },{
             name: 'node02',
             des: 'nodedes02',
+            symbol: 'circle',
             symbolSize: 50,
             category: 1,
           }, {
             name: 'node03',
             des: 'nodedes3',
+            symbol: 'circle',
             symbolSize: 50,
             category: 1,
           }, {
             name: 'node04',
             des: 'nodedes04',
+            symbol: 'circle',
             symbolSize: 50,
             category: 1,
           }, {
             name: 'node05',
             des: 'nodedes05',
+            symbol: 'circle',
             symbolSize: 50,
             category: 1,
           }],
@@ -457,11 +475,17 @@
           chart:{},
           statisticChart:{},
           chosenType:'',
+          //
+          loading: false,
+          timer: null,
           nodeForm:{
             name:'',
             des:'',
+            color:'',
+            symbol:'',
             symbolSize:'',
             category:'',
+            fontSize:'',
           },
           linkForm:{
             name:'',
@@ -469,6 +493,21 @@
             source:'',
             target:'',
           },
+          shapes: [{
+            value: '选项1',
+            label: '圆形'
+          }, {
+            value: '选项2',
+            label: '矩形'
+          }, {
+            value: '选项3',
+            label: '三角形'
+          }, {
+            value: '选项4',
+            label: '菱形'
+          }],
+          shape: '',
+          color1: '#409EFF',
           searchNodeForm:{
             name:'',
             des:'',
@@ -504,9 +543,7 @@
           isSearchNodeVisible:false,
           isSearchLinkVisible:false,
           isStatisticVisible:false,
-          //
-          loading: false,
-          timer: null,
+
         }
       },
       computed:{
