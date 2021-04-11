@@ -551,6 +551,7 @@
       },
       mounted() {
         this.drawChart();
+        this.chart.on('click',this.chartClick);
       },
       methods:{
         handleClose(done) {
@@ -696,7 +697,6 @@
           //TODO
           //标红
         },
-
         searchLinkClick(){
           this.isSearchLinkVisible=true;
         },
@@ -808,12 +808,34 @@
         },
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
+        /////图表变换////////////////////////////////////////////////
+        fixChart(){
+          var option=this.chart.getOption();
+          for(var i=0;i<data.length;i++){
+            option.series[0].data[i].fixed=true;
+          }
+          this.chart.setOption(option);
+        },
+        flexibleChart(){
+          var option=this.chart.getOption();
+          for(var i=0;i<data.length;i++){
+            option.series[0].data[i].fixed=false;
+          }
+          this.chart.setOption(option);
+        },
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
         //TODO
         //数据库保存
         saveChartClick(){
 
+        },
+        //TODO
+        //点击事件
+        chartClick(param){
+          console.log(param);
         },
         //TODO
         //由于node节点内容修改，需要重写
@@ -898,7 +920,10 @@
           this.isStatisticVisible=true;
         },
         fixChartClick(){
-
+          this.fixChart();
+        },
+        flexibleChartClick(){
+          this.flexibleChart();
         },
         warningNotice(info) {
           this.$notify({
