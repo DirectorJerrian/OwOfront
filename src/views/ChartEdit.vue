@@ -24,7 +24,7 @@
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="createNodeClick()">增加实体</el-menu-item>
             <el-menu-item index="1-2" @click="searchNodeClick()">实体信息搜索</el-menu-item>
-            <el-menu-item index="1-2" @click="">取消实体高亮</el-menu-item>
+            <el-menu-item index="1-2" @click="cancelNodeHighlight()">取消实体高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="2">
@@ -35,7 +35,7 @@
           <el-menu-item-group>
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
             <el-menu-item index="2-2" @click="searchLinkClick()">关系信息搜索</el-menu-item>
-            <el-menu-item index="1-2" @click="">取消关系高亮</el-menu-item>
+            <el-menu-item index="1-2" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3" >
@@ -47,7 +47,8 @@
             <el-menu-item index="3-1" @click="statisticsClick()">信息统计</el-menu-item>
             <el-menu-item index="3-2" @click="">排版模式</el-menu-item>
             <el-menu-item index="3-3" @click="">力导图模式</el-menu-item>
-            <el-menu-item index="3-4" @click="fixChartClick()">图谱固定</el-menu-item>
+            <el-menu-item index="3-4" @click="fixChartClick()" v-if="!isChartFixed">图谱固定</el-menu-item>
+            <el-menu-item index="3-4" @click="flexibleChartClick()" v-else>取消图谱固定</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="4" >
@@ -591,6 +592,7 @@
           isSearchNodeVisible:false,
           isSearchLinkVisible:false,
           isStatisticVisible:false,
+          isChartFixed:false,
 
         }
       },
@@ -600,6 +602,7 @@
       mounted() {
         this.drawChart();
         this.chart.on('click',this.chartClick);
+        this.chart.on('mouseup',this.chartDrag);
       },
       methods:{
         handleClose(done) {
@@ -741,9 +744,19 @@
           this.searchNodeResultChosen=val;
         },
         confirmSearchNode(){
+          if(this.searchNodeResultChosen.length==0){
+            this.warningNotice("未选中任何实体");
+            return;
+          }
           console.log(this.searchNodeResultChosen);
-          //TODO
+          const highlightColor='#FF0000'
           //标红
+          var option=this.chart.getOption();
+          for(var i=0;i<this.searchNodeResultChosen.length;i++){
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=highlightColor;
+          }
+          this.chart.setOption(option);
+          this.isSearchNodeVisible=false;
         },
         searchLinkClick(){
           this.isSearchLinkVisible=true;
@@ -850,40 +863,81 @@
           return flag;
         },
         confirmSearchLink(){
-          console.log(this.searchLinkResultChosen);
-          //TODO
+          if(this.searchLinkResultChosen.length==0){
+            this.warningNotice("未选中任何关系");
+            return;
+          }
+          const highlightColor='#FF0000'
           //标红
+          var option=this.chart.getOption();
+          for(var i=0;i<this.searchLinkResultChosen.length;i++){
+            option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle={};
+            option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle.color=highlightColor;
+          }
+          this.chart.setOption(option);
+          this.isSearchLinkVisible=false;
         },
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
         /////图表变换////////////////////////////////////////////////
         fixChart(){
           var option=this.chart.getOption();
-          for(var i=0;i<data.length;i++){
-            option.series[0].data[i].fixed=true;
+          for(var i=0;i<this.nodes.length;i++){
+            option.series[0].nodes[i].fixed=true;
           }
           this.chart.setOption(option);
+          this.isChartFixed=true;
         },
         flexibleChart(){
           var option=this.chart.getOption();
-          for(var i=0;i<data.length;i++){
-            option.series[0].data[i].fixed=false;
+          for(var i=0;i<this.nodes.length;i++){
+            option.series[0].nodes[i].fixed=false;
           }
           this.chart.setOption(option);
+          this.isChartFixed=false;
         },
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
-        //TODO
         //数据库保存
+        getNodePosition(){
+          var positionArray=this.chart._chartsViews[0]._symbolDraw._data._itemLayouts;
+          return positionArray;
+        },
+        getChartPosition(){
+          var option=this.chart.getOption();
+          var position=[];
+          for(var i=0;i<option.series[0].nodes.length;i++){
+            var pos={x:0,y:0};
+            pos.x=this.getNodePosition()[i][0];
+            pos.y=this.getNodePosition()[i][1];
+            position.push(pos);
+          }
+          return position;
+        },
         saveChartClick(){
+          var chartToBeSaved={
+            nodes:[],
+            links:[],
+            isChartFixed:false,
+          };
+          chartToBeSaved.isChartFixed=this.isChartFixed;
+          chartToBeSaved.nodes=this.nodes;
+          chartToBeSaved.links=this.links;
+          if(this.isChartFixed){
+            chartToBeSaved.position=this.getChartPosition();
+          }
+          //TODO 数据库保存
+          if(this.isChartFixed){
+            this.successNotice("保存成功!（已经保存布局）")
+          }else{
+            this.successNotice("保存成功!（未保存布局）")
+          }
 
         },
-        //TODO
         //点击事件
         chartClick(param){
-          console.log(param);
           if(param.dataType=='edge'){
             this.chosenType='link';
             this.isLinkCreate = true;
@@ -915,8 +969,18 @@
           }
           this.isChartInfoEditVisible=true;
         },
-        //TODO
-        //由于node节点内容修改，需要重写
+        //拖拽事件
+        chartDrag(params){
+          if(this.isChartFixed){
+            var option=this.chart.getOption();
+            option.series[0].nodes[params.dataIndex].x=params.event.offsetX;
+            option.series[0].nodes[params.dataIndex].y=params.event.offsetY;
+            option.series[0].nodes[params.dataIndex].fixed=true;
+            this.chart.setOption(option);
+          }
+
+        },
+        //TODO 由于node节点内容修改，需要重写
         chartXMLDownloadClick(){
           const XMLText=charToText();
           const ele = document.createElement('a');// 创建下载链接

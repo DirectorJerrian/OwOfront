@@ -147,7 +147,7 @@ import Banner from "@/components/banner";
 
 export default {
   name: "home",
-  data() {
+  nodes() {
     return {
       logo_url:
         "https://finclaw.oss-cn-shenzhen.aliyuncs.com/img/finclaw_logo.png",

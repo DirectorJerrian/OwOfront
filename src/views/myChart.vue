@@ -46,7 +46,7 @@
     components:{
       chartCard,
     },
-    data(){
+    nodes(){
       return{
         emptyBox: [{ name: 'box1' }, { name: 'box2'}, {name: 'box3'}],
         chartList:[{

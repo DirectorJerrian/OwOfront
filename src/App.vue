@@ -13,7 +13,7 @@
         reload: this.reload
       }
     },
-    data() {
+    nodes() {
       return {
         isRouterAlive: true
       }

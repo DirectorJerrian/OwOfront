@@ -90,7 +90,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 export default {
   name: "myheader",
   inject: ["reload"],
-  data() {
+  nodes() {
     return {
       logo_url:
         "https://finclaw.oss-cn-shenzhen.aliyuncs.com/img/finclaw_logo.png",

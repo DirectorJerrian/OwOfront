@@ -132,7 +132,7 @@ export default {
   components: {
     Header,
   },
-  data() {
+  nodes() {
     return {};
   },
   mounted() {},
@@ -162,7 +162,7 @@ export default {
 <style scoped src="../assets/css/vue.css"></style>
 <style scoped>
 .add {
-  position: fixed; 
+  position: fixed;
   left:100px;
   top:100px;
 
