@@ -748,7 +748,6 @@
             this.warningNotice("未选中任何实体");
             return;
           }
-          console.log(this.searchNodeResultChosen);
           const highlightColor='#FF0000'
           //标红
           var option=this.chart.getOption();
@@ -876,6 +875,22 @@
           }
           this.chart.setOption(option);
           this.isSearchLinkVisible=false;
+        },
+        cancelNodeHighlight(){
+          var option=this.chart.getOption();
+          for(var i=0;i<this.searchNodeResultChosen.length;i++){
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=this.nodes[i].itemStyle.color;
+          }
+          this.chart.setOption(option);
+        },
+        cancelLinkHighlight(){
+          var option=this.chart.getOption();
+          const defaultColor='#4b565b'
+          for(var i=0;i<this.searchLinkResultChosen.length;i++){
+            option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle={};
+            option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle.color=defaultColor;
+          }
+          this.chart.setOption(option);
         },
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
