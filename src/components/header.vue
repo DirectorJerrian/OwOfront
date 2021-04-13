@@ -90,7 +90,7 @@ import {getToken} from "../utils/auth";
 export default {
   name: "myheader",
   inject: ["reload"],
-  nodes() {
+  data() {
     return {
       logo_url:
         "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/logo.png",
