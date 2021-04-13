@@ -1015,6 +1015,7 @@
             nodes:[],
             links:[],
             isChartFixed:false,
+            position:[],
           };
           chartToBeSaved.isChartFixed=this.isChartFixed;
           chartToBeSaved.nodes=this.nodes;
