@@ -88,7 +88,7 @@
             <el-input v-model="nodeForm.des" :placeholder="nodeDes"></el-input>
           </el-form-item>
           <el-form-item label="实体形状">
-            <el-select v-model="shape" :placeholder="nodeSymbol">
+            <el-select v-model="nodeForm.symbol" :placeholder="nodeSymbol">
               <el-option
                 v-for="item in this.shapes"
                 :key="item.value"
@@ -542,19 +542,18 @@
             target:'',
           },
           shapes: [{
-            value: '选项1',
+            value: 'circle',
             label: '圆形'
           }, {
-            value: '选项2',
+            value: 'roundRect',
             label: '矩形'
           }, {
-            value: '选项3',
+            value: 'triangle',
             label: '三角形'
           }, {
-            value: '选项4',
+            value: 'diamond',
             label: '菱形'
           }],
-          shape: '',
           nodeColor: '#409EFF',
           //search
           searchNodeForm:{
@@ -606,19 +605,16 @@
       },
       methods:{
         handleClose(done) {
-          if (this.loading) {
-            return;
-          }
           this.$confirm('确定要提交表单吗？')
             .then(_ => {
-              this.loading = true;
-              this.timer = setTimeout(() => {
-                done();
-                // 动画关闭需要一定的时间
-                setTimeout(() => {
-                  this.loading = false;
-                }, 400);
-              }, 2000);
+              var isFinish = false;
+              console.log(this.isNodeCreate);
+              if(this.isNodeCreate){
+                isFinish=this.changeNode(this.nodeForm);
+              }else{
+                isFinish=this.changeLink(this.linkForm);
+              }
+              if(isFinish) this.isChartInfoEditVisible=false;
             })
             .catch(_ => {});
         },
@@ -648,10 +644,62 @@
         },
         showChart(){
           this.setChart();
-          this.chart.setOption(this.option)
+          console.log(this.option.series[0].nodes);
+          this.chart.setOption(this.option);
         },
         handleSelect(key, keyPath) {
           console.log(key, keyPath);
+        },
+        //更改实体信息
+        changeNode(nodeForm) {
+          var nodeIndex=this.findNodeIndex(nodeForm.name);
+          if(this.nodes[nodeIndex].name===nodeForm.name &&
+            this.nodes[nodeIndex].category===nodeForm.category &&
+            this.nodes[nodeIndex].des===nodeForm.des &&
+            this.nodes[nodeIndex].symbol===nodeForm.symbol &&
+            this.nodes[nodeIndex].symbolSize===nodeForm.symbolSize &&
+            this.nodes[nodeIndex].itemStyle.color===nodeForm.color &&
+            this.nodes[nodeIndex].label.fontSize===nodeForm.fontSize){
+            this.messageNotice("未作任何修改");
+            return false;
+          }
+          //实体名字重复，但可以和自己一样
+          var isOverlap=false;
+          for(var i=0;i<this.nodes.length;i++){
+            if(i===nodeIndex) continue;
+            else if(this.nodes[i].name===nodeForm.name){
+                isOverlap=true;
+                break;
+            }
+          }
+          if(isOverlap){
+            this.warningNotice("实体名称重复，请重新修改！");
+            return false;
+          }
+          this.nodes[nodeIndex].name=nodeForm.name;
+          this.nodes[nodeIndex].des=nodeForm.des;
+          this.nodes[nodeIndex].symbol=nodeForm.symbol;
+          this.nodes[nodeIndex].symbolSize=parseInt(nodeForm.symbolSize);
+          this.nodes[nodeIndex].itemStyle.color=nodeForm.color;
+          this.nodes[nodeIndex].label.fontSize=parseInt(nodeForm.fontSize);
+          //这边要做额外修改，先不动
+          this.nodes[nodeIndex].category=parseInt(nodeForm.category);
+          //将关系中的实体同样做修改
+          for(var i=0;i<this.links.length;i++){
+            if(this.links[i].source===name)this.links[i].source=nodeForm.name;
+            if(this.links[i].target===name)this.links[i].target=nodeForm.name;
+          }
+          this.showChart();
+          this.successNotice("修改成功");
+          return true;
+        },
+        //寻找该node名字的下标
+        findNodeIndex(name){
+          for(var i=0;i<this.nodes.length;i++){
+            if(this.nodes[i].name===name){
+              return i;
+            }
+          }
         },
         createNodeClick(){
           if(this.isChartInfoEditVisible){
