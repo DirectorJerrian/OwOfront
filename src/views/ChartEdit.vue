@@ -334,6 +334,7 @@
             des: 'nodedes01',
             symbol: 'triangle',
             symbolSize: 70,
+            type:'highlight',
             itemStyle: {
               color: '#5470c6',
             },
@@ -479,6 +480,16 @@
               roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移,可以设置成 'scale' 或者 'move'。设置成 true 为都开启
               edgeSymbol: ['circle', 'arrow'],
               edgeSymbolSize: [2,10],
+              emphasis:{
+                itemStyle:{
+                  color: "#f4ff73",
+                  borderColor:"#74ffeb",
+                  borderWidth: 3
+                },
+                lineStyle:{
+                  color: "#ff0000",
+                }
+              },
               force: {
                 repulsion: 100,
                 gravity:0.01,
@@ -602,6 +613,7 @@
         this.drawChart();
         this.chart.on('click',this.chartClick);
         this.chart.on('mouseup',this.chartDrag);
+        // this.chart.on('mouseover',this.chartHighlight);
       },
       methods:{
         handleClose(done) {
@@ -827,11 +839,13 @@
             this.warningNotice("未选中任何实体");
             return;
           }
-          const highlightColor='#FF0000'
+          const highlightNodeColor='#f4ff73';
+          const highlightBorderColor="#74ffeb";
           //标红
           var option=this.chart.getOption();
           for(var i=0;i<this.searchNodeResultChosen.length;i++){
-            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=highlightColor;
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=highlightNodeColor;
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.borderColor=highlightBorderColor;
           }
           this.chart.setOption(option);
           this.isSearchNodeVisible=false;
@@ -958,7 +972,8 @@
         cancelNodeHighlight(){
           var option=this.chart.getOption();
           for(var i=0;i<this.searchNodeResultChosen.length;i++){
-            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=this.nodes[i].itemStyle.color;
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle={color:this.nodes[i].itemStyle.color};
+
           }
           this.chart.setOption(option);
         },
@@ -1074,6 +1089,13 @@
             this.chart.setOption(option);
           }
 
+        },
+        chartHighlight(params){
+          this.chart.dispatchAction({
+            type: 'highlight',
+            seriesIndex: 0,
+            dataIndex: params.dataIndex
+          });
         },
         //TODO 由于node节点内容修改，需要重写
         chartXMLDownloadClick(){
