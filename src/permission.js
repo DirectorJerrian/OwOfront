@@ -4,7 +4,7 @@ import { getToken } from '@/utils/auth'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import {Message} from 'element-ui'
-const whiteList = ['/login', '/home','/register'];// no redirect whitelist
+const whiteList = ['/login', '/home','/register','/ChartEdit'];// no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
     // start progress bar
@@ -36,7 +36,7 @@ router.beforeEach(async(to, from, next) => {
     }
     next()
   });
-  
+
   router.afterEach(() => {
     // finish progress bar
     NProgress.done()
