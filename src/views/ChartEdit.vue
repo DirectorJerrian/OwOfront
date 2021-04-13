@@ -650,6 +650,19 @@
         handleSelect(key, keyPath) {
           console.log(key, keyPath);
         },
+        //更改关系信息
+        changeLink(linkForm){
+          var linkIndex=this.findLinkIndex(linkForm.name);
+          if(this.links[linkIndex].name===linkForm.name && this.links[linkIndex].des===linkForm.des){
+            this.messageNotice("未作任何修改");
+            return false;
+          }
+          this.links[linkIndex].name=linkForm.name;
+          this.links[linkIndex].des=linkForm.des;
+          this.showChart();
+          this.successNotice("修改成功");
+          return true;
+        },
         //更改实体信息
         changeNode(nodeForm) {
           var nodeIndex=this.findNodeIndex(nodeForm.name);
@@ -697,6 +710,14 @@
         findNodeIndex(name){
           for(var i=0;i<this.nodes.length;i++){
             if(this.nodes[i].name===name){
+              return i;
+            }
+          }
+        },
+        //寻找该link名字的下标
+        findLinkIndex(name){
+          for(var i=0;i<this.links.length;i++){
+            if(this.links[i].name===name){
               return i;
             }
           }
