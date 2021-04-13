@@ -652,9 +652,11 @@
         },
         //更改实体信息
         changeNode(nodeForm) {
-          var nodeIndex=this.findNodeIndex(nodeForm.name);
+          var nodeIndex=this.findNodeIndex(this.nodeName);
+          console.log(nodeForm);
+          console.log(this.nodes[nodeIndex]);
           if(this.nodes[nodeIndex].name===nodeForm.name &&
-            this.nodes[nodeIndex].category===nodeForm.category &&
+            this.nodes[nodeIndex].category===this.getCategoryIndex(nodeForm.category) &&
             this.nodes[nodeIndex].des===nodeForm.des &&
             this.nodes[nodeIndex].symbol===nodeForm.symbol &&
             this.nodes[nodeIndex].symbolSize===nodeForm.symbolSize &&
@@ -683,7 +685,7 @@
           this.nodes[nodeIndex].itemStyle.color=nodeForm.color;
           this.nodes[nodeIndex].label.fontSize=parseInt(nodeForm.fontSize);
           //这边要做额外修改，先不动
-          this.nodes[nodeIndex].category=parseInt(nodeForm.category);
+          this.nodes[nodeIndex].category=this.getCategoryIndex(nodeForm.category);
           //将关系中的实体同样做修改
           for(var i=0;i<this.links.length;i++){
             if(this.links[i].source===name)this.links[i].source=nodeForm.name;
@@ -700,6 +702,14 @@
               return i;
             }
           }
+        },
+        getCategoryIndex(name){
+          for(var i=0;i<this.categories.length;i++){
+            if(name==this.categories[i].name){
+              return i;
+            }
+          }
+          return -1;
         },
         createNodeClick(){
           if(this.isChartInfoEditVisible){
