@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 Vue.use(VueRouter);
+
 const routes = [
   {
     path: '/ChartEdit',
@@ -31,6 +31,12 @@ const routes = [
     meta: { title: 'OwO登录' },
     component: () => import('@/views/login')
   },
+  {
+    path: '/myChart',
+    name: '我的知识图谱',
+    meta: { title: '我的知识图谱' },
+    component: () => import('@/views/myChart')
+  }
 ];
 
 const createRouter = () => new VueRouter({
