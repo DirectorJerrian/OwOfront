@@ -9,7 +9,6 @@
     >
       <el-menu-item index="0" id="label">
         <img :src="logo_url" class="logo" alt="logo" @click="jumpToHome" />
-        <span class="title">NJU-FinClaw</span>
       </el-menu-item>
       <el-menu-item index="1" @click="jumpToHome">首页</el-menu-item>
       <el-menu-item index="2" @click="jumpToCenter">管理中心</el-menu-item>
@@ -87,13 +86,14 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import {getToken} from "../utils/auth";
 export default {
   name: "myheader",
   inject: ["reload"],
   data() {
     return {
       logo_url:
-        "https://finclaw.oss-cn-shenzhen.aliyuncs.com/img/finclaw_logo.png",
+        "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/logo.png",
       isAuthorized: true,
       isRejected: false,
     };
@@ -103,8 +103,10 @@ export default {
     ...mapGetters(["userId", "userInfo"]),
   },
   async mounted() {
-    await this.getUserInfo();
-    console.log(this.userInfo);
+    if (getToken()) {
+      await this.getUserInfo();
+      console.log(this.userInfo);
+    }
   },
   methods: {
     ...mapActions(["logout", "getUserInfo"]),
@@ -175,6 +177,11 @@ export default {
 };
 </script>
 <style scoped lang="less">
+  .el-menu{
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
 .support {
   display: flex;
   align-items: baseline;

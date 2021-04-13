@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-layout>
+    <el-container>
       <Header></Header>
       <Banner></Banner>
       <div id="components-grid-demo-playground">
@@ -13,20 +13,20 @@
             padding-top: 30px;
           "
         >
-          <a-row>
-            <a-col :span="12" :offset="1">
+          <el-row>
+            <el-col :span="12" :offset="1">
               <h2>目前已有<em>323</em>个训练项目</h2>
-            </a-col>
-            <a-col :span="2" :offset="9">
+            </el-col>
+            <el-col :span="2" :offset="9">
               <a style="line-height: 40px" @click="shuffleProjects"
                 >查看更多
                 <a-icon type="right" />
               </a>
-            </a-col>
-          </a-row>
+            </el-col>
+          </el-row>
 
-          <a-row :gutter="[4, 2]">
-            <a-col
+          <el-row :gutter="[4, 2]">
+            <el-col
               v-for="(p,index) in projects"
               :key="index.toString()"
               :span="24 / colCount"
@@ -50,26 +50,26 @@
                     >
                     </a-card-meta>
                     <div class="meta-info">
-                      <a-row :gutter="[0,0]">
-                        <a-col :span="12"
+                      <el-row :gutter="[0,0]">
+                        <el-col :span="12"
                           ><a-tag :color="p.color"
                             >{{p.creator}}</a-tag
-                          ></a-col
+                          ></el-col
                         >
-                        <a-col :span="10" :offset="2">
+                        <el-col :span="10" :offset="2">
                           <a-icon type="calendar" />
                           <span class="meta-date">{{p.createdAt}}</span>
-                        </a-col>
-                      </a-row>
+                        </el-col>
+                      </el-row>
                     </div>
                   </a-card>
                 </router-link>
               </div>
-            </a-col>
-          </a-row>
+            </el-col>
+          </el-row>
         </div>
       </div>
-    </a-layout>
+    </el-container>
 
     <el-container>
       <el-main style="height: 100%; margin-bottom: 3%">

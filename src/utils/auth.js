@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'NJUSE-TOKEN'
+const TokenKey = 'OwO-TOKEN';
 
 export function getToken() {
   return Cookies.get(TokenKey)
