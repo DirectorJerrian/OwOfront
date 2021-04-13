@@ -132,7 +132,7 @@ export default {
   components: {
     Header,
   },
-  nodes() {
+  data() {
     return {};
   },
   mounted() {},

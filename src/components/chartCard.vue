@@ -16,7 +16,7 @@
       props: {
         chart: {},
       },
-      nodes(){
+      data(){
         return{
           name: "",
           imgUrl:"",
