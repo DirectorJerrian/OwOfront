@@ -24,7 +24,7 @@
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="createNodeClick()">增加实体</el-menu-item>
             <el-menu-item index="1-2" @click="searchNodeClick()">实体信息搜索</el-menu-item>
-            <el-menu-item index="1-2" @click="cancelNodeHighlight()">取消实体高亮</el-menu-item>
+            <el-menu-item index="1-3" @click="cancelNodeHighlight()">取消实体高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="2">
@@ -35,7 +35,7 @@
           <el-menu-item-group>
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
             <el-menu-item index="2-2" @click="searchLinkClick()">关系信息搜索</el-menu-item>
-            <el-menu-item index="1-2" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
+            <el-menu-item index="2-3" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3" >
@@ -44,11 +44,12 @@
             <span slot="title">图谱</span>
           </template>
           <el-menu-item-group>
+            <el-menu-item index="3-6" @click="showChart()">重置图谱</el-menu-item>
             <el-menu-item index="3-1" @click="statisticsClick()">信息统计</el-menu-item>
-            <el-menu-item index="3-2" @click="">排版模式</el-menu-item>
-            <el-menu-item index="3-3" @click="">力导图模式</el-menu-item>
+            <el-menu-item index="3-2" @click="showTreeChart()">排版模式</el-menu-item>
+            <el-menu-item index="3-3" @click="showChart()">力导图模式</el-menu-item>
             <el-menu-item index="3-4" @click="fixChartClick()" v-if="!isChartFixed">图谱固定</el-menu-item>
-            <el-menu-item index="3-4" @click="flexibleChartClick()" v-else>取消图谱固定</el-menu-item>
+            <el-menu-item index="3-5" @click="flexibleChartClick()" v-else>取消图谱固定</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="4" >
@@ -451,7 +452,6 @@
                 return x.data.des;
               }
             },
-            // 工具箱
             toolbox: {
               // 显示工具箱
               show: true,
@@ -470,7 +470,6 @@
               }
             },
             legend: [{
-              // selectedMode: 'single',
               data:[]
             }],
             series: [{
@@ -478,6 +477,7 @@
               layout: 'force', //图的布局，类型为力导图
               symbolSize: 40, // 调整节点的大小
               roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移,可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+              zoom:1,
               edgeSymbol: ['circle', 'arrow'],
               edgeSymbolSize: [2,10],
               emphasis:{
@@ -519,6 +519,40 @@
               links: [],
               categories: [],
             }]
+          },
+          treeOption:{
+            title: {
+              text: '排版模式:',
+            },
+            tooltip: {
+              trigger: 'item',
+              triggerOn: 'mousemove'
+            },
+            legend: {
+              orient: 'vertical',
+              data: [],
+              borderColor: '#c23531'
+            },
+            series:[]
+          },
+          treeOptionSeriesModel:{
+            type: 'tree',
+            name:'',
+            data: '',
+            expandAndCollapse: true,//默认：true；子树折叠和展开的交互，默认打开 。
+            label: {
+              position: 'left',
+              verticalAlign: 'middle',
+              align: 'right'
+            },
+            leaves: {
+              label: {
+                position: 'right',
+                verticalAlign: 'middle',
+                align: 'left'
+              }
+            },
+            animationDurationUpdate: 750,
           },
           chart:{},
           statisticChart:{},
@@ -603,7 +637,8 @@
           isSearchLinkVisible:false,
           isStatisticVisible:false,
           isChartFixed:false,
-
+          //当前是否为力导图模式
+          isForceChart:true,
         }
       },
       computed:{
@@ -641,6 +676,13 @@
           }
           clearTimeout(this.timer);
         },
+        handleSelect(key, keyPath) {
+          console.log(key, keyPath);
+        },
+        //////////////////////////////////////////////
+        //////////////////////////////////////////////
+        /////////////图谱展示///////////////////////////
+        //////////////////////////////////////////////
         drawChart(){
           this.chart = this.$echarts.init(document.getElementById('chart'));
           this.showChart();
@@ -654,13 +696,69 @@
             return a.name;
           });
         },
+        //展示力道图
         showChart(){
           this.setChart();
-          console.log(this.option.series[0].nodes);
           this.chart.setOption(this.option);
         },
-        handleSelect(key, keyPath) {
-          console.log(key, keyPath);
+        //获取排版图数据信息
+        getTreeChartData(){
+          var tree=[
+            {
+            legendData:{
+              name:'tree01',
+              icon:'rectangle'
+            },
+            treeData:{
+              name:'00',
+              value:1234,
+            }
+          },
+            {
+              legendData:{
+                name:'tree02',
+                icon:'rectangle'
+              },
+              treeData:{
+                name:'01',
+                value:1234,
+                children:[
+                  {
+                    name:'02',
+                    value:1234,
+                  },{
+                    name:'03',
+                    value:1234,
+                  },{
+                    name:'04',
+                    children:[
+                      {
+                        name:'04:01',
+                        value:1234,
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+          return tree;
+        },
+        //展示排版图
+        showTreeChart(){
+          let treeChartData=this.getTreeChartData();
+          for(var i=0;i<treeChartData.length;i++){
+            this.treeOption.legend.data.push(treeChartData[i].legendData);
+            var series=Object.assign({},this.treeOptionSeriesModel);
+            series.name=treeChartData[i].legendData.name;
+            series.top=(5*i).toString()+"%";
+            let data=[treeChartData[i].treeData]
+            series.data=data;
+            this.treeOption.series.push(series);
+          }
+          this.treeOption.title.text+=this.option.title.text;
+          this.chart.setOption(this.treeOption);
+          console.log(this.treeOption);
         },
         //更改关系信息
         changeLink(linkForm){
@@ -1027,6 +1125,7 @@
         },
         saveChartClick(){
           var chartToBeSaved={
+            titile:this.option.title.text,
             nodes:[],
             links:[],
             isChartFixed:false,
@@ -1038,6 +1137,16 @@
           if(this.isChartFixed){
             chartToBeSaved.position=this.getChartPosition();
           }
+          //测试json文件生成
+          var jsonData=JSON.stringify(chartToBeSaved,undefined,4);
+          const blob=new Blob([jsonData],{type:'text/json'});
+          var e = document.createEvent('MouseEvents');
+          var a = document.createElement('a')
+          a.download = "chart.json";
+          a.href = window.URL.createObjectURL(blob)
+          a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
+          e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+          a.dispatchEvent(e);
           //TODO 数据库保存
           if(this.isChartFixed){
             this.successNotice("保存成功!（已经保存布局）")

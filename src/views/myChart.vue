@@ -124,9 +124,8 @@
         uploadFile(file){
           if(this.beforeFileUpload(file)){
             this.fileInfo.file=file;
-            console.log('success');
-            console.log(this.fileInfo.file);
           }
+          this.$message.success(this.fileInfo.file.name+'上传成功!');
         },
         getXMLObject(file) {
           return new Promise(function (resolve, reject) {
@@ -139,7 +138,7 @@
                   res(evt.target.result);
                 }
               }
-              reader.readAsText(file, 'gbk');
+              reader.readAsText(file, 'UTF-8');
             })
             promise.then((xmlStr)=>{
               console.log(xmlStr);
@@ -167,35 +166,32 @@
                   res(evt.target.result);
                 }
               }
-              reader.readAsText(file, 'gbk');
+              reader.readAsText(file, 'UTF-8');
             })
-            promise.then((xmlStr)=>{
-              console.log(xmlStr);
-              var xmlObj = {};
-              if (document.all) {
-                var xmlDom = new ActiveXObject("Microsoft.XMLDOM");
-                xmlDom.loadXML(xmlStr);
-                xmlObj = xmlDom;
-              } else {
-                xmlObj = new DOMParser().parseFromString(xmlStr, "text/xml");
-              }
-              resolve(xmlObj);
+            promise.then((jsonStr)=>{
+              console.log(jsonStr);
+              var jsonObj=JSON.parse(jsonStr);
+              resolve(jsonObj);
             })
           })
 
         },
         analyzeChart(){
+          var promise;
           if(this.fileInfo.type=='xml'){
             this.getXMLObject(this.fileInfo.file).then((XMLObject)=>{
-              console.log(XMLObject);
+              this.setChartData(XMLObject);
             });
 
           }else if(this.fileInfo.type=='json'){
             this.getJSONObject(this.fileInfo.file).then((JSONObject)=>{
-              console.log(JSONObject);
+              this.setChartData(JSONObject);
             });
           }
         },
+        setChartData(chartData){
+          console.log(chartData);
+        }
       }
 
     }
