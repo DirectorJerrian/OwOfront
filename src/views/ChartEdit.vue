@@ -420,9 +420,9 @@
             name: 'link02',
             des: 'myself',
           },{
-            source: ' ',
+            source: '123 ',
             target: 'node01',
-            name: '',
+            name: '124124',
             des: 'myself',
           },{
             source: 'node01',
@@ -1123,20 +1123,24 @@
           }
           return position;
         },
-        saveChartClick(){
+        getChartData(){
           var chartToBeSaved={
-            titile:this.option.title.text,
+            title:this.option.title.text,
             nodes:[],
             links:[],
             isChartFixed:false,
-            position:[],
+            positions:[],
           };
           chartToBeSaved.isChartFixed=this.isChartFixed;
           chartToBeSaved.nodes=this.nodes;
           chartToBeSaved.links=this.links;
           if(this.isChartFixed){
-            chartToBeSaved.position=this.getChartPosition();
+            chartToBeSaved.positions=this.getChartPosition();
           }
+          return chartToBeSaved;
+        },
+        saveChartClick(){
+          var chartToBeSaved=this.getChartData();
           //测试json文件生成
           var jsonData=JSON.stringify(chartToBeSaved,undefined,4);
           const blob=new Blob([jsonData],{type:'text/json'});
@@ -1208,7 +1212,7 @@
         },
         //TODO 由于node节点内容修改，需要重写
         chartXMLDownloadClick(){
-          const XMLText=charToText();
+          const XMLText='<?xml version="1.0" encoding="UTF-8"?>'+'<chart>'+this.objectToXMLStr(this.getChartData())+'</chart>';
           const ele = document.createElement('a');// 创建下载链接
           ele.download ="MyChart.xml"
           ele.style.display = 'none';// 隐藏的可下载链接
@@ -1218,36 +1222,36 @@
           ele.click();
           document.body.removeChild(ele);
         },
-        charToText(){
-          var res='<?xml version="1.0" encoding="utf-8" standalone="no"?>';
-          res+="<chart>";
-          ////////////////////
-          //添加实体
-          res+="<data>";
-          for(var i=0;i<data.length;i++){
-            res+="<node>";
-            res+="<name>"+data[i].name+"</name>";
-            res+="<des>"+data[i].des+"</des>";
-            res+="<symbolSize>"+data[i].symbolSize+"</symbolSize>";
-            res+="<category>"+data[i].category+"</category>";
-            res+="</node>";
+        getEleTag(obj){
+
+        },
+        objectToXMLStr(data,sig){
+          var xmldata = '';
+          var str='';
+          for(var i in data){
+            if(data.constructor==Array){
+              if(sig.length<=0){
+                str='data';
+              }else{
+                str=sig;
+                str=str.substring(0,str.length-1);
+              }
+            }else{
+              str=i.toString();
+            }
+            xmldata+= '<'+str+'>';
+            if(typeof data[i]=='object'){
+              if(data[i].constructor==Array){
+                xmldata+= this.objectToXMLStr(data[i],i.toString());
+              }else{
+                xmldata+=this.objectToXMLStr(data[i],'');
+              }
+            }else{
+              xmldata+=data[i];
+            }
+            xmldata+= '</'+str+'>';
           }
-          res+="</data>";
-          ///////////////////
-          res+="<links>";
-          for(var i=0;i<links.length;i++){
-            res+="<link>";
-            res+="<source>"+links[i].source+"</source>";
-            res+="<target>"+links[i].target+"</target>";
-            res+="<name>"+links[i].name+"</name>>";
-            res+="<des>"+links[i].des+"</des>";
-            res+="</link>";
-          }
-          res+="</links>";
-          //添加关系
-          //////////////////
-          res+="</chart>";
-          return res;
+          return xmldata;
         },
         chartImgDownloadClick(){
           var canvas = $("#"+"chart").find("canvas").first()[0];

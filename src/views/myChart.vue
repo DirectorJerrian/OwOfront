@@ -41,6 +41,7 @@
 
 <script>
   import chartCard from '../components/chartCard'
+  import router from '@/router'
     export default {
       name: "myChart",
       components:{
@@ -127,7 +128,74 @@
           }
           this.$message.success(this.fileInfo.file.name+'上传成功!');
         },
+        getSimpleDataByNode(node){
+          var result = {};
+          for(var i = 0 ; i < node.childNodes.length ; ++i){
+            if(node.childNodes[i].nodeType==1){
+              result[node.childNodes[i].nodeName] = this.getSimpleDataByNode(node.childNodes[i]);
+            }else if(node.childNodes[i].nodeType==3){
+              return node.childNodes[i].nodeValue;
+            }
+          }
+          return result;
+        } ,
+        chartDataFormatFilter(data){
+          for(var i=0;i<data.nodes.length;i++){
+            data.nodes[i].symbolSize=parseInt(data.nodes[i].symbolSize);
+            data.nodes[i].label.fontSize=parseInt(data.nodes[i].label.fontSize);
+          }
+          if(data.isChartFixed){
+            for(var i=0;i<data.positions.length;i++){
+              data.positions[i].x=parseFloat(data.positions[i].x);
+              data.positions[i].y=parseFloat(data.positions[i].y);
+            }
+          }
+          return data;
+        },
+        getDataByNodeName(name,nodeList,isArray){
+          if(isArray){
+            var res=[];
+            for(var i=0;i<nodeList.length;i++){
+              if(nodeList[i].nodeName==name){
+                const sonList=nodeList[i].childNodes;
+                for(var j=0;j<sonList.length;j++){
+                  res.push(this.getSimpleDataByNode(sonList[j]));
+                }
+                return res;
+              }
+            }
+            return res;
+          }else{
+            for(var i=0;i<nodeList.length;i++){
+              if(nodeList[i].nodeName==name){
+                return nodeList[i].textContent;
+              }
+            }
+          }
+        },
+        xmlToObject(node){
+          var nodeList=node.childNodes[0].childNodes;
+          console.log(nodeList);
+          var chartData={
+            title:'',
+            nodes:[],
+            links:[],
+            isChartFixed:false,
+            positions:[],
+          }
+          chartData.title=this.getDataByNodeName('title',nodeList,false);
+          if(this.getDataByNodeName('isChartFixed',nodeList,false)){
+            chartData.isChartFixed=true;
+          }
+          chartData.nodes=this.getDataByNodeName('nodes',nodeList,true);
+          chartData.links=this.getDataByNodeName('links',nodeList,true);
+          if(chartData.isChartFixed){
+            chartData.positions=this.getDataByNodeName('positions',nodeList,true);
+          }
+          return this.chartDataFormatFilter(chartData);
+        } ,
         getXMLObject(file) {
+          let area=this;
           return new Promise(function (resolve, reject) {
             file = file.raw;
             var xmlStr = '';
@@ -141,16 +209,16 @@
               reader.readAsText(file, 'UTF-8');
             })
             promise.then((xmlStr)=>{
-              console.log(xmlStr);
               var xmlObj = {};
               if (document.all) {
-                var xmlDom = new ActiveXObject("Microsoft.XMLDOM");
+                var xmlDom = new ActiveXObject("Microsoft.XmlDom");
                 xmlDom.loadXML(xmlStr);
                 xmlObj = xmlDom;
               } else {
                 xmlObj = new DOMParser().parseFromString(xmlStr, "text/xml");
               }
-              resolve(xmlObj);
+              var chartData=area.xmlToObject(xmlObj);
+              resolve(chartData);
             })
           })
 
@@ -169,7 +237,6 @@
               reader.readAsText(file, 'UTF-8');
             })
             promise.then((jsonStr)=>{
-              console.log(jsonStr);
               var jsonObj=JSON.parse(jsonStr);
               resolve(jsonObj);
             })
@@ -177,7 +244,6 @@
 
         },
         analyzeChart(){
-          var promise;
           if(this.fileInfo.type=='xml'){
             this.getXMLObject(this.fileInfo.file).then((XMLObject)=>{
               this.setChartData(XMLObject);
@@ -191,6 +257,7 @@
         },
         setChartData(chartData){
           console.log(chartData);
+          //router.push('/ChartEdit');
         }
       }
 
