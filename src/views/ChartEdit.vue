@@ -80,7 +80,7 @@
       ref="drawer"
     >
       <div class="demo-drawer__content">
-        <el-form ref="form" :model="nodeForm" label-width="80px" v-if="this.isNodeCreate">
+        <el-form ref="form" :model="nodeForm" label-width="80px" v-if="this.isNodeCreate || this.isNodeEdit">
           <el-form-item label="实体名称" >
             <el-input v-model="nodeForm.name" :placeholder="nodeName"></el-input>
           </el-form-item>
@@ -109,7 +109,7 @@
             <el-slider v-model="nodeForm.fontSize"></el-slider>
           </el-form-item>
         </el-form>
-        <el-form ref="form" :model="linkForm" label-width="80px" v-if="this.isLinkCreate">
+        <el-form ref="form" :model="linkForm" label-width="80px" v-if="this.isLinkCreate || this.isLinkEdit">
           <el-form-item label="关系名称" >
             <el-input v-model="linkForm.name" :placeholder="'linkName'"></el-input>
           </el-form-item>
@@ -126,6 +126,8 @@
         <div class="demo-drawer__footer">
           <el-button @click="cancelForm">取 消</el-button>
           <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+          <el-button type="danger" v-if="this.isNodeEdit" @click="deleteNode(nodeForm.name)">删 除</el-button>
+          <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm.name)">删 除</el-button>
         </div>
       </div>
     </el-drawer>
@@ -608,8 +610,8 @@
           this.$confirm('确定要提交表单吗？')
             .then(_ => {
               var isFinish = false;
-              console.log(this.isNodeCreate);
-              if(this.isNodeCreate){
+              console.log(this.isNodeEdit);
+              if(this.isNodeEdit){
                 isFinish=this.changeNode(this.nodeForm);
               }else{
                 isFinish=this.changeLink(this.linkForm);
@@ -621,6 +623,12 @@
         cancelForm() {
           this.loading = false;
           this.isChartInfoEditVisible = false;
+          if(this.isNodeEdit){
+            this.isNodeEdit = false;
+          }
+          else{
+            this.isLinkEdit = false;
+          }
           if(this.isNodeCreate){
             this.isNodeCreate = false;
           }
@@ -649,6 +657,32 @@
         },
         handleSelect(key, keyPath) {
           console.log(key, keyPath);
+        },
+        deleteNode(name) {
+          //删除data中的实体
+          var nodeIndex = this.findNodeIndex(name);
+          this.nodes.splice(nodeIndex, 1);
+          //删除links中包含此实体的关系
+          var newLinks = [];
+          for (var i = 0; i < this.links.length; i++) {
+            if (this.links[i].source !== name && this.links[i].target !== name) {
+              newLinks.push(this.links[i]);
+            }
+          }
+          this.links = newLinks;
+          this.isChartInfoEditVisible = false;
+          this.isNodeEdit = false;
+          this.showChart();
+          this.successNotice("删除成功");
+          return true;
+        },
+        deleteLink(name){
+          //删除关系
+          var linkIndex=this.findLinkIndex(name);
+          links.splice(linkIndex,1);
+          this.showChart();
+          this.successNotice("删除成功");
+          return true;
         },
         //更改关系信息
         changeLink(linkForm){
@@ -1035,7 +1069,7 @@
         chartClick(param){
           if(param.dataType=='edge'){
             this.chosenType='link';
-            this.isLinkCreate = true;
+            this.isLinkEdit = true;
             this.linkForm.name=param.data.name;
             this.linkForm.des=param.data.des;
             this.linkForm.source=param.data.source;
@@ -1046,7 +1080,7 @@
             this.linkTarget=param.data.target;
           }else if(param.dataType=='node'){
             this.chosenType='node';
-            this.isNodeCreate = true;
+            this.isNodeEdit = true;
             this.nodeForm.name=param.data.name;
             this.nodeForm.des=param.data.des;
             this.nodeForm.symbol=param.data.symbol;
