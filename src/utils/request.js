@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import axios from 'axios'
 import {VueAxios} from './axios'
+import {Notification, Message} from "element-ui";
 import store from '@/store'
-import { getToken } from './auth'
+import {getToken} from './auth'
 import router from '../router'
 
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? '': 'http://localhost:80',
+  baseURL: process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8082',
   withCredentials: true
 });
 console.log(process.env.NODE_ENV);
@@ -15,16 +16,10 @@ const err = (error) => {
     const data = error.response.data;
     const token = Vue.ls.get('ACCESS_TOKEN');
     if (error.response.status === 403) {
-      notification.error({
-        message: 'Forbidden',
-        description: data.message
-      })
+      Notification.error('Forbidden');
     }
     if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
-      notification.error({
-        message: 'Unauthorized',
-        description: 'Authorization verification failed'
-      });
+      Notification.error('Unauthorized');
       if (token) {
         store.dispatch('Logout').then(() => {
           setTimeout(() => {
@@ -35,8 +30,7 @@ const err = (error) => {
     }
   }
   return Promise.reject(error)
- };
-
+};
 service.interceptors.request.use((config) => {
   return {
     ...config,
@@ -45,23 +39,24 @@ service.interceptors.request.use((config) => {
 }, err);
 
 service.interceptors.response.use((response) => {
+  // console.log(response)
   switch (response.status) {
     case 200:
-      if(response.data.success && response.data.success){
-        return response.data.content
+      if (response.data.res === "success") {
+        return response.data
       }
-      message.error(response.data.message);
+      Message.error(response.data.msg);
       break;
     case 404:
       return false;
     default:
-      message.error(response.data.message)
+      Message.error(response.data.msg)
   }
 });
 
 const installer = {
   vm: {},
-  install (Vue) {
+  install(Vue) {
     Vue.use(VueAxios, service)
   }
 };
@@ -69,4 +64,4 @@ const installer = {
 export {
   installer as VueAxios,
   service as axios
-}
+};

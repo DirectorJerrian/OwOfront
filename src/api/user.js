@@ -5,6 +5,7 @@ const api = {
   userPre: '/api/user'
 };
 export function verifyAccountAPI(data){
+  console.log(data);
   return axios({
     url:`${api.userPre}/login`,
     method: 'POST',
