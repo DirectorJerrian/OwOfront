@@ -325,181 +325,192 @@
 
 <script>
   import $ from 'jquery'
+  import router from '@/router'
+  import {mapActions, mapGetters} from "vuex";
     export default {
       name: "ChartEdit",
       data () {
         return {
           headActiveIndex: '1',
-          nodes:[{
-            name: 'node01',
-            des: 'nodedes01',
-            symbol: 'triangle',
-            symbolSize: 70,
-            type:'highlight',
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          },
-            {
-            name: 'node06',
-            des: 'nodedes06',
-            symbol: 'triangle',
-            symbolSize: 70,
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          },{
-            name: 'node02',
-            des: 'nodedes02',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node03',
-            des: 'nodedes3',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node04',
-            des: 'nodedes04',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#641585',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node05',
-            des: 'nodedes05',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          },{
-            name: 'node10',
-            des: 'nodedes01',
-            symbol: 'triangle',
-            symbolSize: 70,
-            type:'highlight',
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          },{
-            name: 'node11',
-            des: 'nodedes01',
-            symbol: 'triangle',
-            symbolSize: 70,
-            type:'highlight',
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          },{
-            name: 'node12',
-            des: 'nodedes01',
-            symbol: 'triangle',
-            symbolSize: 70,
-            type:'highlight',
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          }],
-          links:[{
-            source: 'node01',
-            target: 'node02',
-            name: 'link01',
-            des: 'link01des',
-          },{
-            source: 'node02',
-            target: 'node01',
-            name: 'link00',
-            des: 'reverse',
-          },{
-            source: 'node01',
-            target: 'node03',
-            name: 'link02',
-            des: 'myself',
-          },{
-            source: 'node02',
-            target: 'node01',
-            name: '124124',
-            des: 'myself',
-          },{
-            source: 'node01',
-            target: 'node03',
-            name: 'link02',
-            des: 'link02des'
-          }, {
-            source: 'node01',
-            target: 'node04',
-            name: 'link03',
-            des: 'link03des'
-          }, {
-            source: 'node01',
-            target: 'node05',
-            name: 'link04',
-            des: 'link05des'
-          },{
-            source: 'node02',
-            target: 'node11',
-            name: 'link02',
-            des: 'myself',
-          },{
-            source: 'node11',
-            target: 'node12',
-            name: 'link02',
-            des: 'myself',
-          },{
-            source: 'node12',
-            target: 'node11',
-            name: 'link02',
-            des: 'myself',
-          },{
-            source: 'node03',
-            target: 'node04',
-            name: 'link02',
-            des: 'myself',
-          }],
+          nodes:[],
+          links:[],
+          // nodes:[{
+          //   name: 'node01',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node06',
+          //   des: 'nodedes06',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node02',
+          //   des: 'nodedes02',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node03',
+          //   des: 'nodedes3',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node04',
+          //   des: 'nodedes04',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#641585',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node05',
+          //   des: 'nodedes05',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node10',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node11',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node12',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // }],
+          // links:[{
+          //   source: 'node01',
+          //   target: 'node02',
+          //   name: 'link01',
+          //   des: 'link01des',
+          // },{
+          //   source: 'node02',
+          //   target: 'node01',
+          //   name: 'link00',
+          //   des: 'reverse',
+          // },{
+          //   source: 'node01',
+          //   target: 'node03',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node02',
+          //   target: 'node01',
+          //   name: '124124',
+          //   des: 'myself',
+          // },{
+          //   source: 'node01',
+          //   target: 'node03',
+          //   name: 'link02',
+          //   des: 'link02des'
+          // }, {
+          //   source: 'node01',
+          //   target: 'node04',
+          //   name: 'link03',
+          //   des: 'link03des'
+          // }, {
+          //   source: 'node01',
+          //   target: 'node05',
+          //   name: 'link04',
+          //   des: 'link05des'
+          // },{
+          //   source: 'node02',
+          //   target: 'node11',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node11',
+          //   target: 'node12',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node12',
+          //   target: 'node11',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node03',
+          //   target: 'node04',
+          //   name: 'link02',
+          //   des: 'myself',
+          // }],
           categories: [{name:'01 class'},{name:'02 class'}],
           option :{
             // 图的标题
@@ -668,15 +679,42 @@
         }
       },
       computed:{
+        ...mapGetters([
+          'chartData'
+        ]),
 
       },
       mounted() {
+        if(this.chartData==null){
+          this.warningNotice("未读入任何图谱信息,请导入图谱信息后编辑！");
+          router.push('/myChart');
+          return;
+        }
+        this.processChartData();
         this.drawChart();
         this.chart.on('click',this.chartClick);
         this.chart.on('mouseup',this.chartDrag);
-        // this.chart.on('mouseover',this.chartHighlight);
       },
       methods:{
+        ...mapActions([
+          'addChart'
+        ]),
+        //页面打开处理图谱信息
+        processChartData(){
+          this.nodes=this.chartData.nodes;
+          this.links=this.chartData.links;
+          this.option.title.text=this.chartData.title;
+          this.isChartFixed=this.chartData.isChartFixed;
+          if(this.isChartFixed){
+            this.positions=this.chartData.positions;
+            for(var i=0;i<this.nodes.length;i++){
+              this.nodes[i].x=this.positions[i].x;
+              this.nodes[i].y=this.positions[i].y;
+              this.nodes[i].fixed=true;
+            }
+          }
+        },
+        //编辑函数
         handleClose(done) {
           this.$confirm('确定要提交表单吗？')
             .then(_ => {
@@ -731,10 +769,6 @@
         //排版模式算法////////////////////////////////////
         ////////////////////////////////////////////////
         ////////////////////////////////////////////////
-        //获取排版图数据信息
-        getTreeChartData(){
-
-        },
         //展示排版图
         showArrangementChart(){
           this.setArrangementChartPosition();
@@ -1314,14 +1348,6 @@
           }
 
         },
-        chartHighlight(params){
-          this.chart.dispatchAction({
-            type: 'highlight',
-            seriesIndex: 0,
-            dataIndex: params.dataIndex
-          });
-        },
-        //TODO 由于node节点内容修改，需要重写
         chartXMLDownloadClick(){
           const XMLText='<?xml version="1.0" encoding="UTF-8"?>'+'<chart>'+this.objectToXMLStr(this.getChartData())+'</chart>';
           const ele = document.createElement('a');// 创建下载链接
@@ -1332,9 +1358,6 @@
           document.body.appendChild(ele);
           ele.click();
           document.body.removeChild(ele);
-        },
-        getEleTag(obj){
-
         },
         objectToXMLStr(data,sig){
           var xmldata = '';
