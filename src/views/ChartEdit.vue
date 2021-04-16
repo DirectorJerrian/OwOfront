@@ -46,7 +46,7 @@
           <el-menu-item-group>
             <el-menu-item index="3-6" @click="showChart()">重置图谱</el-menu-item>
             <el-menu-item index="3-1" @click="statisticsClick()">信息统计</el-menu-item>
-            <el-menu-item index="3-2" @click="showTreeChart()">排版模式</el-menu-item>
+            <el-menu-item index="3-2" @click="showArrangementChart()">排版模式</el-menu-item>
             <el-menu-item index="3-3" @click="showChart()">力导图模式</el-menu-item>
             <el-menu-item index="3-4" @click="fixChartClick()" v-if="!isChartFixed">图谱固定</el-menu-item>
             <el-menu-item index="3-5" @click="flexibleChartClick()" v-else>取消图谱固定</el-menu-item>
@@ -343,7 +343,8 @@
               fontSize: 12,
             },
             category: 0,
-          }, {
+          },
+            {
             name: 'node06',
             des: 'nodedes06',
             symbol: 'triangle',
@@ -403,6 +404,45 @@
               fontSize: 12,
             },
             category: 1,
+          },{
+            name: 'node10',
+            des: 'nodedes01',
+            symbol: 'triangle',
+            symbolSize: 70,
+            type:'highlight',
+            itemStyle: {
+              color: '#5470c6',
+            },
+            label: {
+              fontSize: 12,
+            },
+            category: 0,
+          },{
+            name: 'node11',
+            des: 'nodedes01',
+            symbol: 'triangle',
+            symbolSize: 70,
+            type:'highlight',
+            itemStyle: {
+              color: '#5470c6',
+            },
+            label: {
+              fontSize: 12,
+            },
+            category: 0,
+          },{
+            name: 'node12',
+            des: 'nodedes01',
+            symbol: 'triangle',
+            symbolSize: 70,
+            type:'highlight',
+            itemStyle: {
+              color: '#5470c6',
+            },
+            label: {
+              fontSize: 12,
+            },
+            category: 0,
           }],
           links:[{
             source: 'node01',
@@ -416,11 +456,11 @@
             des: 'reverse',
           },{
             source: 'node01',
-            target: ' ',
+            target: 'node03',
             name: 'link02',
             des: 'myself',
           },{
-            source: '123 ',
+            source: 'node02',
             target: 'node01',
             name: '124124',
             des: 'myself',
@@ -439,6 +479,26 @@
             target: 'node05',
             name: 'link04',
             des: 'link05des'
+          },{
+            source: 'node02',
+            target: 'node11',
+            name: 'link02',
+            des: 'myself',
+          },{
+            source: 'node11',
+            target: 'node12',
+            name: 'link02',
+            des: 'myself',
+          },{
+            source: 'node12',
+            target: 'node11',
+            name: 'link02',
+            des: 'myself',
+          },{
+            source: 'node03',
+            target: 'node04',
+            name: 'link02',
+            des: 'myself',
           }],
           categories: [{name:'01 class'},{name:'02 class'}],
           option :{
@@ -519,40 +579,6 @@
               links: [],
               categories: [],
             }]
-          },
-          treeOption:{
-            title: {
-              text: '排版模式:',
-            },
-            tooltip: {
-              trigger: 'item',
-              triggerOn: 'mousemove'
-            },
-            legend: {
-              orient: 'vertical',
-              data: [],
-              borderColor: '#c23531'
-            },
-            series:[]
-          },
-          treeOptionSeriesModel:{
-            type: 'tree',
-            name:'',
-            data: '',
-            expandAndCollapse: true,//默认：true；子树折叠和展开的交互，默认打开 。
-            label: {
-              position: 'left',
-              verticalAlign: 'middle',
-              align: 'right'
-            },
-            leaves: {
-              label: {
-                position: 'right',
-                verticalAlign: 'middle',
-                align: 'left'
-              }
-            },
-            animationDurationUpdate: 750,
           },
           chart:{},
           statisticChart:{},
@@ -696,70 +722,149 @@
             return a.name;
           });
         },
-        //展示力道图
+        //展示力导图
         showChart(){
           this.setChart();
           this.chart.setOption(this.option);
         },
+        ////////////////////////////////////////////////
+        //排版模式算法////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
         //获取排版图数据信息
         getTreeChartData(){
-          var tree=[
-            {
-            legendData:{
-              name:'tree01',
-              icon:'rectangle'
-            },
-            treeData:{
-              name:'00',
-              value:1234,
-            }
-          },
-            {
-              legendData:{
-                name:'tree02',
-                icon:'rectangle'
-              },
-              treeData:{
-                name:'01',
-                value:1234,
-                children:[
-                  {
-                    name:'02',
-                    value:1234,
-                  },{
-                    name:'03',
-                    value:1234,
-                  },{
-                    name:'04',
-                    children:[
-                      {
-                        name:'04:01',
-                        value:1234,
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          ]
-          return tree;
+
         },
         //展示排版图
-        showTreeChart(){
-          let treeChartData=this.getTreeChartData();
-          for(var i=0;i<treeChartData.length;i++){
-            this.treeOption.legend.data.push(treeChartData[i].legendData);
-            var series=Object.assign({},this.treeOptionSeriesModel);
-            series.name=treeChartData[i].legendData.name;
-            series.top=(5*i).toString()+"%";
-            let data=[treeChartData[i].treeData]
-            series.data=data;
-            this.treeOption.series.push(series);
-          }
-          this.treeOption.title.text+=this.option.title.text;
-          this.chart.setOption(this.treeOption);
-          console.log(this.treeOption);
+        showArrangementChart(){
+          this.setArrangementChartPosition();
         },
+        setArrangementChartPosition(){
+          var positionData=this.getArrangementChartPosition();
+          this.isChartFixed=true;
+          console.log(positionData);
+          for(var i=0;i<this.nodes.length;i++){
+            this.nodes[i].x=positionData[i].x;
+            this.nodes[i].y=positionData[i].y;
+            this.nodes[i].fixed=true;
+          }
+          this.chart.clear();
+          this.showChart();
+        },
+        //获取简化的图谱信息
+        getNodeIndex(nodes,name){
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].name===name)return i;
+          }
+        },
+        getArrangementChartData(){
+          var data={nodes:[],links:[]}
+          for(var i=0;i<this.nodes.length;i++){
+            data.nodes.push({name:this.nodes[i].name,times:0,level_x:0,level_y:0,isArranged:false});
+          }
+          for(var i=0;i<this.links.length;i++){
+            if(this.links[i].source===this.links[i].target) continue;
+            data.links.push({source:data.nodes[this.getNodeIndex(data.nodes,this.links[i].source)],target:data.nodes[this.getNodeIndex(data.nodes,this.links[i].target)]});
+          }
+          return data;
+        },
+        getLevelData(data){
+          var nodes=data.nodes;
+          var res={
+            x_count:0,
+            y_count:0,
+          }
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].level_x>res.x_count)res.x_count=nodes[i].level_x;
+            if(nodes[i].level_y>res.y_count)res.y_count=nodes[i].level_y
+          }
+          res.x_count++;
+          res.y_count++;
+          return res;
+        },
+        getArrangementChartPosition(){
+          var level_y=0;
+          var data=this.getArrangementChartData();
+          while(true){
+            this.countSourceTimes(data);
+            var node=this.getTopTimesNode(data);
+            //所有节点都被安排位置则退出
+            if(node==null)break;
+            this.setNode(node,0,level_y,data);
+            this.clearTimes(data);
+            level_y++;
+          }
+          //根据层级信息，设置具体的位置
+          const start_x=100;
+          const start_y=100;
+          const pace_x=200;
+          const pace_y=150;
+          const levelData=this.getLevelData(data);
+          const x_count=levelData.x_count;
+          const y_count=levelData.y_count;
+          var positionArray=Array(x_count).fill(0);
+          var nodes=data.nodes;
+          for(var y=0;y<y_count;y++){
+            for(var i=0;i<nodes.length;i++){
+              if(nodes[i].level_y===y){
+                nodes[i].x=nodes[i].level_x*pace_x+start_x;
+                nodes[i].y=positionArray[nodes[i].level_x]*pace_y+start_y;
+                positionArray[nodes[i].level_x]++;
+              }
+            }
+          }
+          return nodes;
+        },
+        countSourceTimes(data){
+          var links=data.links;
+          for(var i=0;i<links.length;i++){
+            if(!links[i].source.isArranged)
+            links[i].source.times++;
+          }
+        },
+        clearTimes(data){
+          var nodes=data.nodes;
+          for(var i=0;i<nodes.length;i++){
+            nodes[i].times=0;
+          }
+        },
+        getTopTimesNode(data){
+          var nodes=data.nodes;
+          var firstNotArrangedIndex=-1;
+          //找到第一个没有被安排位置的节点
+          for(var i=0;i<nodes.length;i++){
+            if(!nodes[i].isArranged){
+              firstNotArrangedIndex=i;
+              break;
+            }
+          }
+          //若所有节点都被安排位置，则返回null
+          if(firstNotArrangedIndex===-1)return null;
+          //寻找出度最大的没有被安排位置的节点
+          var resIndex=firstNotArrangedIndex;
+          for(var i=resIndex+1;i<nodes.length;i++){
+            if(!nodes[i].isArranged && nodes[i].times>nodes[resIndex].times){
+              resIndex=i;
+            }
+          }
+          return nodes[resIndex];
+        },
+        setNode(node,level_x,level_y,data){
+          node.level_x=level_x;
+          node.level_y=level_y;
+          node.isArranged=true;
+          var links=data.links;
+          for(var i=0;i<links.length;i++){
+            if(links[i].source===node && !links[i].target.isArranged){
+              this.setNode(links[i].target,level_x+1,level_y,data);
+            }
+          }
+
+        },
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
         //更改关系信息
         changeLink(linkForm){
           var linkIndex=this.findLinkIndex(linkForm.name);
@@ -1087,6 +1192,12 @@
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
         /////图表变换////////////////////////////////////////////////
+        fixChartClick(){
+          this.fixChart();
+        },
+        flexibleChartClick(){
+          this.flexibleChart();
+        },
         fixChart(){
           var option=this.chart.getOption();
           for(var i=0;i<this.nodes.length;i++){
@@ -1290,12 +1401,6 @@
           }
           this.statisticChart.setOption(statisticOption)
           this.isStatisticVisible=true;
-        },
-        fixChartClick(){
-          this.fixChart();
-        },
-        flexibleChartClick(){
-          this.flexibleChart();
         },
         warningNotice(info) {
           this.$notify({
