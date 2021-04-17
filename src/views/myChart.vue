@@ -1,39 +1,30 @@
 <template>
   <div class="myChart">
-    <div id="headMenu">
-      <el-menu
-        :default-active="headActiveIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select=""
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1">知识图谱处理</el-menu-item>
-        <el-menu-item index="2">我的知识图谱</el-menu-item>
-        <el-menu-item index="3" disabled>我的信息</el-menu-item>
-      </el-menu>
-    </div>
-    <div id="operation">
-      <el-upload
-        action=""
-        :on-change="uploadFile"
-        :auto-upload="false"
-        :show-file-list="false">
-        <el-button slot="trigger" size="max" type="primary">读入图谱</el-button>
-        <el-button style="margin-left: 10px;" size="max" type="success" @click="analyzeChart">解析图谱并编辑</el-button>
-      </el-upload>
-    </div>
-    <div id="chartList">
+    <el-container>
 
-        <div class="card-wrapper">
-          <chartCard :chart="item" v-for="(item,index) in chartList" :key="index" @click.native="" class="chartCard">
+      <el-main>
+        <el-upload
+          action=""
+          :on-change="uploadFile"
+          :auto-upload="false"
+          :show-file-list="false">
+            <el-button slot="trigger" size="max" type="primary">读入图谱</el-button>
+        </el-upload>
+        <el-button size="max" type="success" @click="analyzeChart">解析图谱并编辑</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        <div id="chartList">
+          <div class="card-wrapper">
+            <chartCard :chart="item" v-for="(item,index) in chartList" :key="index" @click.native="" class="chartCard">
+            </chartCard>
+          </div>
 
-          </chartCard>
+
         </div>
+      </el-main>
+
+    </el-container>
 
 
-    </div>
 
   </div>
 
@@ -282,6 +273,9 @@
     float: left;
     width: 20%;
     margin: 2%;
+  }
+  .el-row {
+    margin-bottom: 20px
   }
 
 </style>
