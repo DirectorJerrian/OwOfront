@@ -25,6 +25,7 @@
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
             <el-menu-item index="2-2" @click="searchLinkClick()">关系信息搜索</el-menu-item>
             <el-menu-item index="2-3" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
+            <el-menu-item index="2-4" @click="cancelLabelShow()">不显示关系标签</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3" >
@@ -671,6 +672,8 @@
           isChartFixed:false,
           //当前是否为力导图模式
           isForceChart:true,
+          //是否显示关系标签
+          isLinksLabelVisible:true
         }
       },
       computed:{
@@ -795,6 +798,18 @@
           this.chart.clear();
           this.showChart();
         },
+        cancelLabelShow(){
+          this.option = this.chart.getOption();
+          if(this.isLinksLabelVisible){
+            this.isLinksLabelVisible = false;
+            this.option.series[0].edgeLabel.show = false;
+          }
+          else{
+            this.isLinksLabelVisible = true;
+            this.option.series[0].edgeLabel.show = true;
+          }
+          this.chart.setOption(this.option);
+        },
         createNode(nodeForm){
           var name=nodeForm.name;
           var des=nodeForm.des;
@@ -821,7 +836,6 @@
             category:category,
           };
           this.nodes.push(node);
-          console.log(this.nodes);
           this.showChart();
           this.successNotice("创建成功");
           return true;
@@ -896,7 +910,10 @@
         deleteLink(name){
           //删除关系
           var linkIndex=this.findLinkIndex(name);
-          links.splice(linkIndex,1);
+          console.log(linkIndex);
+          this.links.splice(linkIndex,1);
+          this.isChartInfoEditVisible = false;
+          this.isNodeEdit = false;
           this.showChart();
           this.successNotice("删除成功");
           return true;
