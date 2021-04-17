@@ -2,7 +2,6 @@ import router from '@/router'
 import {getToken, setToken, removeToken} from '../../utils/auth'
 import {resetRouter} from '@/router'
 import {Message} from 'element-ui'
-import {axios} from '@/utils/request'
 
 import {
   verifyAccountAPI,
