@@ -64,7 +64,6 @@
   import chartCard from '../components/chartCard';
   import {mapActions, mapGetters,mapMutations} from "vuex";
   import router from '@/router';
-  import chart from "../store/modules/chart";
     export default {
       name: "myChart",
       components:{
@@ -124,7 +123,7 @@
       },
       methods:{
         ...mapActions([
-
+          'getKg',
         ]),
         ...mapMutations([
           'setChartData',
@@ -300,10 +299,14 @@
           }
         },
         analyzeText(){
-          var jsonStr=chart.actions.getKg(this.textData);
-          var jsonObj=JSON.parse(jsonStr);
-          this.setChartData(jsonObj);
-          router.push('/ChartEdit');
+          this.getKg(this.textData).then((jsonStr)=>{
+            console.log(jsonStr);
+          });
+          // console.log(jsonStr);
+          // var jsonObj=JSON.parse(jsonStr);
+          // console.log(jsonObj);
+          // this.setChartData(jsonObj);
+          // router.push('/ChartEdit');
         }
       }
 

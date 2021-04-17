@@ -37,8 +37,8 @@ const chart={
       }
       const res= await getKgAPI(dataVO);
       if(res){
-        console.log(res.msg)
         return res.msg;
+        // resolve(res.msg);
       }
     },
   }

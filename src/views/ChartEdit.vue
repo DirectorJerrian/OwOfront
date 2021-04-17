@@ -712,7 +712,6 @@
                 maxCategory=this.chartData.nodes[i].category;
             }
           }
-          console.log(myCategories);
           this.categories=[];
           for(var i=0;i<maxCategory+1;i++){
             this.categories.push({ name: "" });
