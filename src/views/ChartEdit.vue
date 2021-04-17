@@ -802,9 +802,84 @@
           this.showChart();
         },
         createNode(nodeForm){
+          var name=nodeForm.name;
+          var des=nodeForm.des;
+          var symbolSize=parseInt(nodeForm.symbolSize);
+          var category=parseInt(nodeForm.category);
+          var symbol=nodeForm.symbol;
+          var color=nodeForm.color;
+          var fontSize=parseInt(nodeForm.fontSize);
+
+          if(this.isNodeExist(name)){
+            this.warningNotice("实体名称重复，请重新命名！");
+            return false;
+          }
+          var node={
+            name:name,
+            des:des,
+            symbol:symbol,
+            symbolSize:symbolSize,
+            itemStyle:{
+              color:color,
+            },
+            label:{
+              fontSize:fontSize,
+            },
+            category:category,
+          };
+          nodes.push(node);
+          console.log(nodes);
+          this.showChart();
+          this.successNotice("创建成功");
           return true;
         },
         createLink(linkForm){
+          console.log(linkForm);
+          var name=linkForm.name;
+          var des=linkForm.des;
+          var source=linkForm.source;
+          var target=linkForm.target;
+          var nodeNotExistMessage='';
+          if(!this.isNodeExist(source)){
+            nodeNotExistMessage += "起点实体不存在!\n";
+          }
+          if(!this.isNodeExist(target)){
+            nodeNotExistMessage += '目标实体不存在!';
+          }
+          if(nodeNotExistMessage!==''){
+            this.warningNotice(nodeNotExistMessage);
+            return false;
+          }
+          if(this.isLinkExist(source,target)){
+            this.warningNotice("关系已经存在");
+            return false;
+          }
+          var link={
+            name:name,
+            des:des,
+            source:source,
+            target:target
+          };
+          links.push(link);
+          this.showChart();
+          this.successNotice("创建成功");
+          return true;
+        },
+        //寻找是否存该名字的实体
+        isNodeExist(name) {
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].name===name){
+              return true;
+            }
+          }
+          return false;
+        },
+        isLinkExist(source,target) {
+          for(var i=0;i<links.length;i++){
+            if(links[i].source===source && links[i].target===target){
+              return true;
+            }
+          }
           return false;
         },
         deleteNode(name) {
