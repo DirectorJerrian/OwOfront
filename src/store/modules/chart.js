@@ -32,8 +32,12 @@ const chart={
       }
     },
     getKg: async ({dispatch,commit},data)=>{
-      const res= await getKgAPI(data);
+      var dataVO={
+        dataString:data
+      }
+      const res= await getKgAPI(dataVO);
       if(res){
+        console.log(res.msg)
         return res.msg;
       }
     },

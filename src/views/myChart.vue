@@ -64,6 +64,7 @@
   import chartCard from '../components/chartCard';
   import {mapActions, mapGetters,mapMutations} from "vuex";
   import router from '@/router';
+  import chart from "../store/modules/chart";
     export default {
       name: "myChart",
       components:{
@@ -299,11 +300,10 @@
           }
         },
         analyzeText(){
-          var jsonString=getKgAPI(this.textData);
-          promise.then((jsonString)=>{
-            var jsonObj=JSON.parse(jsonString);
-            resolve(jsonObj);
-          })
+          var jsonStr=chart.actions.getKg(this.textData);
+          var jsonObj=JSON.parse(jsonStr);
+          this.setChartData(jsonObj);
+          router.push('/ChartEdit');
         }
       }
 
