@@ -115,7 +115,7 @@
           </el-form-item>
         </el-form>
         <div class="demo-drawer__footer">
-          <el-button @click="cancelForm">取 消</el-button>
+          <el-button style="margin-left: 100px" @click="cancelForm">取 消</el-button>
           <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
           <el-button type="danger" v-if="this.isNodeEdit" @click="deleteNode(nodeForm.name)">删 除</el-button>
           <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm.name)">删 除</el-button>
