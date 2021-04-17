@@ -21,9 +21,8 @@ export function addAccountAPI(data){
 }
 export function sendCodeAPI(data){
   return axios({
-    url: `${api.userPre}/code`,
-    method: 'POST',
-    data
+    url: `${api.userPre}/${data}/code`,
+    method: 'GET'
   })
 }
 export function getUserInfoAPI(id){
