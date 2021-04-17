@@ -5,6 +5,7 @@ import {
   saveChartAPI,
   getKgAPI
 } from "../../api/chart";
+import da from "element-ui/src/locale/lang/da";
 
 const getDefaultState=()=>{
   return {
@@ -28,6 +29,12 @@ const chart={
       const res= await saveChartAPI(data);
       if(res){
 
+      }
+    },
+    getKg: async ({dispatch,commit},data)=>{
+      const res= await getKgAPI(data);
+      if(res){
+        return res.msg;
       }
     },
   }

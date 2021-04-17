@@ -64,7 +64,6 @@
   import chartCard from '../components/chartCard';
   import {mapActions, mapGetters,mapMutations} from "vuex";
   import router from '@/router';
-  import getKgAPI from '@/api/chart'
     export default {
       name: "myChart",
       components:{
