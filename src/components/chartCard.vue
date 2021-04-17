@@ -12,6 +12,8 @@
 
 <script>
   import $ from 'jquery'
+  import {mapActions, mapGetters,mapMutations} from "vuex";
+  import router from '@/router'
     export default {
       name:'chartCard',
       props: {
@@ -24,19 +26,24 @@
           jsonUrl:"",
         }
       },
+
       mounted() {
         this.name=this.chart.name;
         this.imgUrl=this.chart.imgUrl;
         this.jsonUrl=this.chart.jsonUrl;
       },
       methods:{
+        ...mapMutations([
+          'setChartData',
+        ]),
         getUrl(){
           const preStr="http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/"
           return this.jsonUrl.substring(preStr.length);
         },
         editChart(){
           this.$axios.get("/aliyun/"+this.getUrl()).then((res)=>{
-            console.log(res.data);
+            this.setChartData(res.data);
+            router.push('/ChartEdit');
           })
         }
       }

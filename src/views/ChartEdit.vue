@@ -682,7 +682,6 @@
         ...mapGetters([
           'chartData'
         ]),
-
       },
       mounted() {
         if(this.chartData==null){
