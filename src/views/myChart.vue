@@ -301,12 +301,11 @@
         analyzeText(){
           this.getKg(this.textData).then((jsonStr)=>{
             console.log(jsonStr);
+            var jsonObj=JSON.parse(jsonStr);
+            console.log(jsonObj);
+            this.setChartData(jsonObj);
+            router.push('/ChartEdit');
           });
-          // console.log(jsonStr);
-          // var jsonObj=JSON.parse(jsonStr);
-          // console.log(jsonObj);
-          // this.setChartData(jsonObj);
-          // router.push('/ChartEdit');
         }
       }
 
