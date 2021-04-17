@@ -114,10 +114,10 @@
             <el-input v-model="linkForm.name" :placeholder="'linkName'"></el-input>
           </el-form-item>
           <el-form-item label="起点实体" >
-            <el-input v-model="linkForm.source" :placeholder="'linkSource'" disabled></el-input>
+            <el-input v-model="linkForm.source" :placeholder="'linkSource'"></el-input>
           </el-form-item>
           <el-form-item label="终点实体" >
-            <el-input v-model="linkForm.target" :placeholder="'linkTarget'" disabled></el-input>
+            <el-input v-model="linkForm.target" :placeholder="'linkTarget'"></el-input>
           </el-form-item>
           <el-form-item label="关系描述" >
             <el-input v-model="linkForm.des" :placeholder="'linkDes'"></el-input>
@@ -610,11 +610,19 @@
           this.$confirm('确定要提交表单吗？')
             .then(_ => {
               var isFinish = false;
-              console.log(this.isNodeEdit);
+              console.log(this.isNodeCreate);
+
               if(this.isNodeEdit){
                 isFinish=this.changeNode(this.nodeForm);
-              }else{
+              }
+              else if(this.isLinkEdit){
                 isFinish=this.changeLink(this.linkForm);
+              }
+              else if(this.isNodeCreate){
+                isFinish=this.createNode(this.nodeForm);
+              }
+              else{
+                isFinish=this.createLink(this.linkForm);
               }
               if(isFinish) this.isChartInfoEditVisible=false;
             })
@@ -657,6 +665,12 @@
         },
         handleSelect(key, keyPath) {
           console.log(key, keyPath);
+        },
+        createNode(nodeForm){
+          return true;
+        },
+        createLink(linkForm){
+          return false;
         },
         deleteNode(name) {
           //删除data中的实体
