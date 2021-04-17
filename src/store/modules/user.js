@@ -2,6 +2,7 @@ import router from '@/router'
 import {getToken, setToken, removeToken} from '@/utils/auth'
 import { resetRouter } from '@/router'
 import {Message} from 'element-ui'
+import { axios } from '@/utils/request'
 
 import {
   verifyAccountAPI,
@@ -48,9 +49,9 @@ const user = {
   actions: {
     verifyAccount: async ({dispatch, commit}, userData) => {
       const res = await verifyAccountAPI(userData);
-      if (res) {
-        setToken(res.id);
-        commit('setUserId', res.id);
+      if (res.obj) {
+        setToken(res.obj.id);
+        commit('setUserId', res.obj.id);
         dispatch('getUserInfo');
         router.push('/ChartEdit')
       } else {

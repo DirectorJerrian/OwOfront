@@ -24,7 +24,7 @@
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="createNodeClick()">增加实体</el-menu-item>
             <el-menu-item index="1-2" @click="searchNodeClick()">实体信息搜索</el-menu-item>
-            <el-menu-item index="1-2" @click="cancelNodeHighlight()">取消实体高亮</el-menu-item>
+            <el-menu-item index="1-3" @click="cancelNodeHighlight()">取消实体高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="2">
@@ -35,7 +35,7 @@
           <el-menu-item-group>
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
             <el-menu-item index="2-2" @click="searchLinkClick()">关系信息搜索</el-menu-item>
-            <el-menu-item index="1-2" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
+            <el-menu-item index="2-3" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3" >
@@ -44,11 +44,12 @@
             <span slot="title">图谱</span>
           </template>
           <el-menu-item-group>
+            <el-menu-item index="3-6" @click="showChart()">重置图谱</el-menu-item>
             <el-menu-item index="3-1" @click="statisticsClick()">信息统计</el-menu-item>
-            <el-menu-item index="3-2" @click="">排版模式</el-menu-item>
-            <el-menu-item index="3-3" @click="">力导图模式</el-menu-item>
+            <el-menu-item index="3-2" @click="showArrangementChart()">排版模式</el-menu-item>
+            <el-menu-item index="3-3" @click="showChart()">力导图模式</el-menu-item>
             <el-menu-item index="3-4" @click="fixChartClick()" v-if="!isChartFixed">图谱固定</el-menu-item>
-            <el-menu-item index="3-4" @click="flexibleChartClick()" v-else>取消图谱固定</el-menu-item>
+            <el-menu-item index="3-5" @click="flexibleChartClick()" v-else>取消图谱固定</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="4" >
@@ -326,120 +327,192 @@
 
 <script>
   import $ from 'jquery'
+  import router from '@/router'
+  import {mapActions, mapGetters} from "vuex";
     export default {
       name: "ChartEdit",
       data () {
         return {
           headActiveIndex: '1',
-          nodes:[{
-            name: 'node01',
-            des: 'nodedes01',
-            symbol: 'triangle',
-            symbolSize: 70,
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          }, {
-            name: 'node06',
-            des: 'nodedes06',
-            symbol: 'triangle',
-            symbolSize: 70,
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          },{
-            name: 'node02',
-            des: 'nodedes02',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node03',
-            des: 'nodedes3',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node04',
-            des: 'nodedes04',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#641585',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node05',
-            des: 'nodedes05',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }],
-          links:[{
-            source: 'node01',
-            target: 'node02',
-            name: 'link01',
-            des: 'link01des',
-          },{
-            source: 'node02',
-            target: 'node01',
-            name: 'link00',
-            des: 'reverse',
-          },{
-            source: 'node01',
-            target: ' ',
-            name: 'link02',
-            des: 'myself',
-          },{
-            source: ' ',
-            target: 'node01',
-            name: '',
-            des: 'myself',
-          },{
-            source: 'node01',
-            target: 'node03',
-            name: 'link02',
-            des: 'link02des'
-          }, {
-            source: 'node01',
-            target: 'node04',
-            name: 'link03',
-            des: 'link03des'
-          }, {
-            source: 'node01',
-            target: 'node05',
-            name: 'link04',
-            des: 'link05des'
-          }],
+          nodes:[],
+          links:[],
+          // nodes:[{
+          //   name: 'node01',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node06',
+          //   des: 'nodedes06',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node02',
+          //   des: 'nodedes02',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node03',
+          //   des: 'nodedes3',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node04',
+          //   des: 'nodedes04',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#641585',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node05',
+          //   des: 'nodedes05',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node10',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node11',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node12',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // }],
+          // links:[{
+          //   source: 'node01',
+          //   target: 'node02',
+          //   name: 'link01',
+          //   des: 'link01des',
+          // },{
+          //   source: 'node02',
+          //   target: 'node01',
+          //   name: 'link00',
+          //   des: 'reverse',
+          // },{
+          //   source: 'node01',
+          //   target: 'node03',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node02',
+          //   target: 'node01',
+          //   name: '124124',
+          //   des: 'myself',
+          // },{
+          //   source: 'node01',
+          //   target: 'node03',
+          //   name: 'link02',
+          //   des: 'link02des'
+          // }, {
+          //   source: 'node01',
+          //   target: 'node04',
+          //   name: 'link03',
+          //   des: 'link03des'
+          // }, {
+          //   source: 'node01',
+          //   target: 'node05',
+          //   name: 'link04',
+          //   des: 'link05des'
+          // },{
+          //   source: 'node02',
+          //   target: 'node11',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node11',
+          //   target: 'node12',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node12',
+          //   target: 'node11',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node03',
+          //   target: 'node04',
+          //   name: 'link02',
+          //   des: 'myself',
+          // }],
           categories: [{name:'01 class'},{name:'02 class'}],
           option :{
             // 图的标题
@@ -452,7 +525,6 @@
                 return x.data.des;
               }
             },
-            // 工具箱
             toolbox: {
               // 显示工具箱
               show: true,
@@ -471,7 +543,6 @@
               }
             },
             legend: [{
-              // selectedMode: 'single',
               data:[]
             }],
             series: [{
@@ -479,8 +550,19 @@
               layout: 'force', //图的布局，类型为力导图
               symbolSize: 40, // 调整节点的大小
               roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移,可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+              zoom:1,
               edgeSymbol: ['circle', 'arrow'],
               edgeSymbolSize: [2,10],
+              emphasis:{
+                itemStyle:{
+                  color: "#f4ff73",
+                  borderColor:"#74ffeb",
+                  borderWidth: 3
+                },
+                lineStyle:{
+                  color: "#ff0000",
+                }
+              },
               force: {
                 repulsion: 100,
                 gravity:0.01,
@@ -594,18 +676,47 @@
           isSearchLinkVisible:false,
           isStatisticVisible:false,
           isChartFixed:false,
-
+          //当前是否为力导图模式
+          isForceChart:true,
         }
       },
       computed:{
+        ...mapGetters([
+          'chartData'
+        ]),
 
       },
       mounted() {
+        if(this.chartData==null){
+          this.warningNotice("未读入任何图谱信息,请导入图谱信息后编辑！");
+          router.push('/myChart');
+          return;
+        }
+        this.processChartData();
         this.drawChart();
         this.chart.on('click',this.chartClick);
         this.chart.on('mouseup',this.chartDrag);
       },
       methods:{
+        ...mapActions([
+          'addChart'
+        ]),
+        //页面打开处理图谱信息
+        processChartData(){
+          this.nodes=this.chartData.nodes;
+          this.links=this.chartData.links;
+          this.option.title.text=this.chartData.title;
+          this.isChartFixed=this.chartData.isChartFixed;
+          if(this.isChartFixed){
+            this.positions=this.chartData.positions;
+            for(var i=0;i<this.nodes.length;i++){
+              this.nodes[i].x=this.positions[i].x;
+              this.nodes[i].y=this.positions[i].y;
+              this.nodes[i].fixed=true;
+            }
+          }
+        },
+        //编辑函数
         handleClose(done) {
           this.$confirm('确定要提交表单吗？')
             .then(_ => {
@@ -645,6 +756,13 @@
           }
           clearTimeout(this.timer);
         },
+        handleSelect(key, keyPath) {
+          console.log(key, keyPath);
+        },
+        //////////////////////////////////////////////
+        //////////////////////////////////////////////
+        /////////////图谱展示///////////////////////////
+        //////////////////////////////////////////////
         drawChart(){
           this.chart = this.$echarts.init(document.getElementById('chart'));
           this.showChart();
@@ -658,13 +776,30 @@
             return a.name;
           });
         },
+        //展示力导图
         showChart(){
           this.setChart();
-          console.log(this.option.series[0].nodes);
           this.chart.setOption(this.option);
         },
-        handleSelect(key, keyPath) {
-          console.log(key, keyPath);
+        ////////////////////////////////////////////////
+        //排版模式算法////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        //展示排版图
+        showArrangementChart(){
+          this.setArrangementChartPosition();
+        },
+        setArrangementChartPosition(){
+          var positionData=this.getArrangementChartPosition();
+          this.isChartFixed=true;
+          console.log(positionData);
+          for(var i=0;i<this.nodes.length;i++){
+            this.nodes[i].x=positionData[i].x;
+            this.nodes[i].y=positionData[i].y;
+            this.nodes[i].fixed=true;
+          }
+          this.chart.clear();
+          this.showChart();
         },
         createNode(nodeForm){
           return true;
@@ -698,6 +833,120 @@
           this.successNotice("删除成功");
           return true;
         },
+        //获取简化的图谱信息
+        getNodeIndex(nodes,name){
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].name===name)return i;
+          }
+        },
+        getArrangementChartData(){
+          var data={nodes:[],links:[]}
+          for(var i=0;i<this.nodes.length;i++){
+            data.nodes.push({name:this.nodes[i].name,times:0,level_x:0,level_y:0,isArranged:false});
+          }
+          for(var i=0;i<this.links.length;i++){
+            if(this.links[i].source===this.links[i].target) continue;
+            data.links.push({source:data.nodes[this.getNodeIndex(data.nodes,this.links[i].source)],target:data.nodes[this.getNodeIndex(data.nodes,this.links[i].target)]});
+          }
+          return data;
+        },
+        getLevelData(data){
+          var nodes=data.nodes;
+          var res={
+            x_count:0,
+            y_count:0,
+          }
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].level_x>res.x_count)res.x_count=nodes[i].level_x;
+            if(nodes[i].level_y>res.y_count)res.y_count=nodes[i].level_y
+          }
+          res.x_count++;
+          res.y_count++;
+          return res;
+        },
+        getArrangementChartPosition(){
+          var level_y=0;
+          var data=this.getArrangementChartData();
+          while(true){
+            this.countSourceTimes(data);
+            var node=this.getTopTimesNode(data);
+            //所有节点都被安排位置则退出
+            if(node==null)break;
+            this.setNode(node,0,level_y,data);
+            this.clearTimes(data);
+            level_y++;
+          }
+          //根据层级信息，设置具体的位置
+          const start_x=100;
+          const start_y=100;
+          const pace_x=200;
+          const pace_y=150;
+          const levelData=this.getLevelData(data);
+          const x_count=levelData.x_count;
+          const y_count=levelData.y_count;
+          var positionArray=Array(x_count).fill(0);
+          var nodes=data.nodes;
+          for(var y=0;y<y_count;y++){
+            for(var i=0;i<nodes.length;i++){
+              if(nodes[i].level_y===y){
+                nodes[i].x=nodes[i].level_x*pace_x+start_x;
+                nodes[i].y=positionArray[nodes[i].level_x]*pace_y+start_y;
+                positionArray[nodes[i].level_x]++;
+              }
+            }
+          }
+          return nodes;
+        },
+        countSourceTimes(data){
+          var links=data.links;
+          for(var i=0;i<links.length;i++){
+            if(!links[i].source.isArranged)
+            links[i].source.times++;
+          }
+        },
+        clearTimes(data){
+          var nodes=data.nodes;
+          for(var i=0;i<nodes.length;i++){
+            nodes[i].times=0;
+          }
+        },
+        getTopTimesNode(data){
+          var nodes=data.nodes;
+          var firstNotArrangedIndex=-1;
+          //找到第一个没有被安排位置的节点
+          for(var i=0;i<nodes.length;i++){
+            if(!nodes[i].isArranged){
+              firstNotArrangedIndex=i;
+              break;
+            }
+          }
+          //若所有节点都被安排位置，则返回null
+          if(firstNotArrangedIndex===-1)return null;
+          //寻找出度最大的没有被安排位置的节点
+          var resIndex=firstNotArrangedIndex;
+          for(var i=resIndex+1;i<nodes.length;i++){
+            if(!nodes[i].isArranged && nodes[i].times>nodes[resIndex].times){
+              resIndex=i;
+            }
+          }
+          return nodes[resIndex];
+        },
+        setNode(node,level_x,level_y,data){
+          node.level_x=level_x;
+          node.level_y=level_y;
+          node.isArranged=true;
+          var links=data.links;
+          for(var i=0;i<links.length;i++){
+            if(links[i].source===node && !links[i].target.isArranged){
+              this.setNode(links[i].target,level_x+1,level_y,data);
+            }
+          }
+
+        },
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
         //更改关系信息
         changeLink(linkForm){
           var linkIndex=this.findLinkIndex(linkForm.name);
@@ -875,11 +1124,13 @@
             this.warningNotice("未选中任何实体");
             return;
           }
-          const highlightColor='#FF0000'
+          const highlightNodeColor='#f4ff73';
+          const highlightBorderColor="#74ffeb";
           //标红
           var option=this.chart.getOption();
           for(var i=0;i<this.searchNodeResultChosen.length;i++){
-            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=highlightColor;
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=highlightNodeColor;
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.borderColor=highlightBorderColor;
           }
           this.chart.setOption(option);
           this.isSearchNodeVisible=false;
@@ -1006,7 +1257,8 @@
         cancelNodeHighlight(){
           var option=this.chart.getOption();
           for(var i=0;i<this.searchNodeResultChosen.length;i++){
-            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=this.nodes[i].itemStyle.color;
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle={color:this.nodes[i].itemStyle.color};
+
           }
           this.chart.setOption(option);
         },
@@ -1022,6 +1274,12 @@
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
         /////图表变换////////////////////////////////////////////////
+        fixChartClick(){
+          this.fixChart();
+        },
+        flexibleChartClick(){
+          this.flexibleChart();
+        },
         fixChart(){
           var option=this.chart.getOption();
           for(var i=0;i<this.nodes.length;i++){
@@ -1058,19 +1316,34 @@
           }
           return position;
         },
-        saveChartClick(){
+        getChartData(){
           var chartToBeSaved={
+            title:this.option.title.text,
             nodes:[],
             links:[],
             isChartFixed:false,
-            position:[],
+            positions:[],
           };
           chartToBeSaved.isChartFixed=this.isChartFixed;
           chartToBeSaved.nodes=this.nodes;
           chartToBeSaved.links=this.links;
           if(this.isChartFixed){
-            chartToBeSaved.position=this.getChartPosition();
+            chartToBeSaved.positions=this.getChartPosition();
           }
+          return chartToBeSaved;
+        },
+        saveChartClick(){
+          var chartToBeSaved=this.getChartData();
+          //测试json文件生成
+          var jsonData=JSON.stringify(chartToBeSaved,undefined,4);
+          const blob=new Blob([jsonData],{type:'text/json'});
+          var e = document.createEvent('MouseEvents');
+          var a = document.createElement('a')
+          a.download = "chart.json";
+          a.href = window.URL.createObjectURL(blob)
+          a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
+          e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+          a.dispatchEvent(e);
           //TODO 数据库保存
           if(this.isChartFixed){
             this.successNotice("保存成功!（已经保存布局）")
@@ -1123,9 +1396,8 @@
           }
 
         },
-        //TODO 由于node节点内容修改，需要重写
         chartXMLDownloadClick(){
-          const XMLText=charToText();
+          const XMLText='<?xml version="1.0" encoding="UTF-8"?>'+'<chart>'+this.objectToXMLStr(this.getChartData())+'</chart>';
           const ele = document.createElement('a');// 创建下载链接
           ele.download ="MyChart.xml"
           ele.style.display = 'none';// 隐藏的可下载链接
@@ -1135,36 +1407,33 @@
           ele.click();
           document.body.removeChild(ele);
         },
-        charToText(){
-          var res='<?xml version="1.0" encoding="utf-8" standalone="no"?>';
-          res+="<chart>";
-          ////////////////////
-          //添加实体
-          res+="<data>";
-          for(var i=0;i<data.length;i++){
-            res+="<node>";
-            res+="<name>"+data[i].name+"</name>";
-            res+="<des>"+data[i].des+"</des>";
-            res+="<symbolSize>"+data[i].symbolSize+"</symbolSize>";
-            res+="<category>"+data[i].category+"</category>";
-            res+="</node>";
+        objectToXMLStr(data,sig){
+          var xmldata = '';
+          var str='';
+          for(var i in data){
+            if(data.constructor==Array){
+              if(sig.length<=0){
+                str='data';
+              }else{
+                str=sig;
+                str=str.substring(0,str.length-1);
+              }
+            }else{
+              str=i.toString();
+            }
+            xmldata+= '<'+str+'>';
+            if(typeof data[i]=='object'){
+              if(data[i].constructor==Array){
+                xmldata+= this.objectToXMLStr(data[i],i.toString());
+              }else{
+                xmldata+=this.objectToXMLStr(data[i],'');
+              }
+            }else{
+              xmldata+=data[i];
+            }
+            xmldata+= '</'+str+'>';
           }
-          res+="</data>";
-          ///////////////////
-          res+="<links>";
-          for(var i=0;i<links.length;i++){
-            res+="<link>";
-            res+="<source>"+links[i].source+"</source>";
-            res+="<target>"+links[i].target+"</target>";
-            res+="<name>"+links[i].name+"</name>>";
-            res+="<des>"+links[i].des+"</des>";
-            res+="</link>";
-          }
-          res+="</links>";
-          //添加关系
-          //////////////////
-          res+="</chart>";
-          return res;
+          return xmldata;
         },
         chartImgDownloadClick(){
           var canvas = $("#"+"chart").find("canvas").first()[0];
@@ -1203,12 +1472,6 @@
           }
           this.statisticChart.setOption(statisticOption)
           this.isStatisticVisible=true;
-        },
-        fixChartClick(){
-          this.fixChart();
-        },
-        flexibleChartClick(){
-          this.flexibleChart();
         },
         warningNotice(info) {
           this.$notify({

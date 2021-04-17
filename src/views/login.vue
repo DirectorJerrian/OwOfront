@@ -11,22 +11,24 @@
         <el-main>
           <el-row>
             <el-col :span="4">
-              <el-button class="myHome">
-                <img src="http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/home.png" width="60px"
-                     height="auto" alt="home加载失败">
-              </el-button>
+              <el-row>
+                <el-button class="myHome">
+                  <img src="http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/home.png" width="60px"
+                       height="auto" alt="home加载失败">
+                </el-button>
+              </el-row>
             </el-col>
             <el-col :span="16">
               <div class="centerArea">
                 <el-form label-position="right" class="centerBox" :model="loginForm" :rules="rules" ref="loginForm">
-                  <el-form-item label="账号" prop="email" class="boxItem" required="true" >
+                  <el-form-item label="账号" prop="email" class="boxItem" required>
                     <el-input placeholder="请输入邮箱" v-model="loginForm.email"></el-input>
                   </el-form-item>
-                  <el-form-item label="密码" prop="password" class="boxItem" required="true">
+                  <el-form-item label="密码" prop="password" class="boxItem" required>
                     <el-input placeholder="请输入密码" v-model="loginForm.password" show-password></el-input>
                   </el-form-item>
                   <el-form-item class="boxItem">
-                    <el-button type="primary" @click="submitForm('ruleForm')" class="buttonInLogin">登录</el-button>
+                    <el-button type="primary" @click="submitForm('loginForm')" class="buttonInLogin">登录</el-button>
                     <el-button @click="goRegister" class="buttonInLogin">注册</el-button>
                   </el-form-item>
                 </el-form>
@@ -42,12 +44,13 @@
 <script>
   import Header from "@/components/header";
   import router from '@/router'
+  import {mapActions, mapGetters} from "vuex";
 
   export default {
     name: "login",
     data() {
       const checkEmail = (rule, value, callback) => {
-        const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+        const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
         if (!value) {
           return callback(new Error('请输入邮箱'))
         }
@@ -79,11 +82,30 @@
     components: {
       Header,
     },
+    computed: {
+      ...mapGetters([
+        'token'
+      ])
+    },
+    mounted() {
+
+    },
+    watch: {
+      $route: {
+        handler: function(route) {
+          this.redirect = route.query && route.query.redirect
+        },
+        immediate: true
+      },
+    },
     methods: {
+      ...mapActions([
+        'verifyAccount'
+      ]),
       submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+        this.$refs[formName].validate(async (valid) => {
           if (valid) {
-            alert('submit!');
+            await this.verifyAccount(this.loginForm)
           } else {
             console.log('error submit!!');
             return false;
@@ -110,7 +132,7 @@
   }
 
   .myHome {
-    margin: 100px 0 0 100px;
+    margin: 100px 0;
     background: transparent;
     /*color: transparent;*/
     border: 0;
