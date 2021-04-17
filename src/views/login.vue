@@ -128,7 +128,7 @@
   }
 
   .el-header {
-    padding: 20px;
+    padding: 0px;
   }
 
   .myHome {

@@ -1,7 +1,9 @@
 <template>
   <div>
     <el-container>
-      <Header></Header>
+      <el-header style="padding: 0">
+        <Header></Header>
+      </el-header>
       <Banner></Banner>
       <div id="components-grid-demo-playground">
         <div
@@ -13,60 +15,6 @@
             padding-top: 30px;
           "
         >
-          <el-row>
-            <el-col :span="12" :offset="1">
-              <h2>目前已有<em>323</em>个训练项目</h2>
-            </el-col>
-            <el-col :span="2" :offset="9">
-              <a style="line-height: 40px" @click="shuffleProjects"
-                >查看更多
-                <a-icon type="right" />
-              </a>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="[4, 2]">
-            <el-col
-              v-for="(p,index) in projects"
-              :key="index.toString()"
-              :span="24 / colCount"
-            >
-              <div>
-                <router-link
-                  tag="detail"
-                  :to="{ name: 'detail', params: { projectId: 1 } }"
-                >
-                  <a-card hoverable style="width: 300px">
-                    <img
-                      slot="cover"
-                      alt="example"
-                      :src="p.image"
-                    />
-                    <div class="mask"><em>@FinClaw8</em></div>
-                    <a-icon type="line-chart" style="float: right"></a-icon>
-                    <a-card-meta
-                      :title="p.title"
-                      :description="p.description"
-                    >
-                    </a-card-meta>
-                    <div class="meta-info">
-                      <el-row :gutter="[0,0]">
-                        <el-col :span="12"
-                          ><a-tag :color="p.color"
-                            >{{p.creator}}</a-tag
-                          ></el-col
-                        >
-                        <el-col :span="10" :offset="2">
-                          <a-icon type="calendar" />
-                          <span class="meta-date">{{p.createdAt}}</span>
-                        </el-col>
-                      </el-row>
-                    </div>
-                  </a-card>
-                </router-link>
-              </div>
-            </el-col>
-          </el-row>
         </div>
       </div>
     </el-container>
@@ -195,17 +143,17 @@ export default {
         "https://image.tianyancha.com/fae09e7374f44f40865bebfe6ef59a01.jpg@!hotNews_f_273x171",
         "https://image.tianyancha.com/e4234fc1e6bd49c8a6c8ddf6fbb27d72.jpg@!hotNews_f_273x171",
         "https://image.tianyancha.com/29479646109a4d489be6817824e6c740.jpg@!hotNews_f_273x171",
-      ]
-      const projectNum = 8
-      var tmpProjects = []
+      ];
+      const projectNum = 8;
+      var tmpProjects = [];
       for (let i=0;i<projectNum;++i) {
-        let tmpProject = {}
-        let o = this.randomChoice(orgs)
-        tmpProject.creator = o.name
-        tmpProject.color = o.color
-        tmpProject.industry = this.randomChoice(industries)
-        tmpProject.createdAt = this.getRandomDate()
-        tmpProject.description = "为中小微企业提供高效、便携的融资服务"
+        let tmpProject = {};
+        let o = this.randomChoice(orgs);
+        tmpProject.creator = o.name;
+        tmpProject.color = o.color;
+        tmpProject.industry = this.randomChoice(industries);
+        tmpProject.createdAt = this.getRandomDate();
+        tmpProject.description = "为中小微企业提供高效、便携的融资服务";
         tmpProject.title = tmpProject.creator.substring(0,2) +tmpProject.industry+"行业训练项目"
         tmpProject.image = imageUrls[(i+8*this.shuffleTime)%imageUrls.length]
         tmpProjects.push(tmpProject)
@@ -221,8 +169,8 @@ export default {
       return this.$moment(randomDate).format("YYYY-MM-DD")
     },
     getRandom(min,max) {
-      min = Math.ceil(min)
-      max = Math.floor(max)
+      min = Math.ceil(min);
+      max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
     randomChoice(array) {
