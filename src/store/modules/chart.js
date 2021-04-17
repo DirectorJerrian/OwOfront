@@ -1,7 +1,10 @@
 import router from '@/router'
 import { resetRouter } from '@/router'
 import {Message} from 'element-ui'
-import {saveChartAPI} from "../../api/chart";
+import {
+  saveChartAPI,
+  getKgAPI
+} from "../../api/chart";
 
 const getDefaultState=()=>{
   return {

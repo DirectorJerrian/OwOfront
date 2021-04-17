@@ -703,6 +703,25 @@
         processChartData(){
           this.nodes=this.chartData.nodes;
           this.links=this.chartData.links;
+          var myCategories=[];
+          var numOfCategories=0;
+          for(var i=0;i<this.chartData.nodes.length;i++){
+            if(myCategories.indexOf(this.chartData.nodes[i].category+"")>-1)
+              continue;
+            else{
+              myCategories.push(this.chartData.nodes[i].category+"");
+              // myCategories.push({ name: "" });
+              // myCategories[numOfCategories].name= this.chartData.nodes[i].category+" class";
+              numOfCategories+=1;
+            }
+          }
+          // this.categories=myCategories;
+          myCategories=myCategories.sort();
+          for(var i=0;i<numOfCategories;i++){
+            this.categories.push({ name: "" });
+            this.categories[i].name= myCategories[i]+" class";
+          }
+          console.log(this.categories);
           this.option.title.text=this.chartData.title;
           this.isChartFixed=this.chartData.isChartFixed;
           if(this.isChartFixed){
