@@ -7,10 +7,12 @@ import * as echarts from 'echarts'
 import moment from 'moment'
 import store from './store'
 import '@/permission'
+import Axios from 'axios'
 
 Vue.config.productionTip = false;
 Vue.prototype.$moment = moment;
 Vue.prototype.$echarts = echarts;
+Vue.prototype.$axios = Axios;
 
 const options = {
   namespace: 'pro__',

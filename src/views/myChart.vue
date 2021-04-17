@@ -50,10 +50,10 @@
       },
       data(){
         return{
-          emptyBox: [{ name: 'box1' }, { name: 'box2'}, {name: 'box3'}],
           chartList:[{
             name:'chart01',
-            imgUrl:''
+            imgUrl:'12345678',
+            jsonUrl:'http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/chartJson/chart%20with%20positon.json',
           },
           {
             name:'chart02',
@@ -103,6 +103,10 @@
         ...mapMutations([
           'setChartData',
         ]),
+        setFileInfo(file,type){
+          this.fileInfo.file=file;
+          this.fileInfo.type=type;
+        },
         isFileMatchAndSetFileType(filename){
           var target='.xml';
           var start = filename.length-target.length;

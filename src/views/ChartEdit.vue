@@ -684,7 +684,6 @@
         ...mapGetters([
           'chartData'
         ]),
-
       },
       mounted() {
         if(this.chartData==null){
@@ -1471,6 +1470,24 @@
           }
 
         },
+        //文件导出函数
+        canvasDataURLtoFile (dataurl, filename = 'file') {
+          let arr = dataurl.split(',')
+          let mime = arr[0].match(/:(.*?);/)[1]
+          let bstr = atob(arr[1])
+          let n = bstr.length
+          let u8arr = new Uint8Array(n)
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n)
+          }
+          var file=new File([u8arr], filename, {type: mime});
+          console.log(file);
+          return file;
+        },
+        getCanvasDataUrl(){
+          var canvas = $("#"+"chart").find("canvas").first()[0];
+          return canvas.toDataURL();
+        },
         chartXMLDownloadClick(){
           const XMLText='<?xml version="1.0" encoding="UTF-8"?>'+'<chart>'+this.objectToXMLStr(this.getChartData())+'</chart>';
           const ele = document.createElement('a');// 创建下载链接
@@ -1511,13 +1528,15 @@
           return xmldata;
         },
         chartImgDownloadClick(){
-          var canvas = $("#"+"chart").find("canvas").first()[0];
-          var ctx = canvas.getContext('2d');
-          var url=canvas.toDataURL();
+          var url=this.getCanvasDataUrl();
           var link = document.createElement('a');
           link.href = url;
           link.download = this.option.title.text+".png";
           link.click();
+        },
+        getChartImgFile(){
+          var url=this.getCanvasDataUrl();
+          return this.canvasDataURLtoFile(url);
         },
         //信息统计
         statisticsClick(){
