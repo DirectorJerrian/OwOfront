@@ -34,6 +34,13 @@
       </el-main>
     </el-container>
 
+    <div class="text-area">
+      <textarea v-model="textData" placeholder="请输入解析文本...">
+      </textarea>
+      <el-row>
+        <el-button size="max" type="success" @click="analyzeText">解析文本</el-button>
+      </el-row>
+    </div>
 
 
 
@@ -57,6 +64,7 @@
   import chartCard from '../components/chartCard';
   import {mapActions, mapGetters,mapMutations} from "vuex";
   import router from '@/router';
+  import getKgAPI from '@/api/chart'
     export default {
       name: "myChart",
       components:{
@@ -65,6 +73,7 @@
       },
       data(){
         return{
+          textData:'',
           chartList:[{
             name:'chart01',
             imgUrl:'12345678',
@@ -290,6 +299,13 @@
             });
           }
         },
+        analyzeText(){
+          var jsonString=getKgAPI(this.textData);
+          promise.then((jsonString)=>{
+            var jsonObj=JSON.parse(jsonString);
+            resolve(jsonObj);
+          })
+        }
       }
 
     }
@@ -304,6 +320,25 @@
   }
   .el-row{
     margin-left: 20px;
+  }
+  .text-area{
+    width: 100%;
+    border-top:1px solid gainsboro;
+    border-bottom:1px solid gainsboro;
+
+  }
+  .text-area textarea {
+    width: 80%;
+    margin: 0.75rem  0;
+    border: none;
+    outline: none;
+    padding-left: 1.125rem;
+    height: 6.5rem ;
+  }
+
+  .text-area textarea::-webkit-input-placeholder {
+    color: #9E9E9E;
+
   }
 
 </style>
