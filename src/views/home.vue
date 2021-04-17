@@ -69,8 +69,8 @@
             <br />
 
             <span style="font-size: 16px"
-              ><a href="https://github.com/garyGlh/FinClaw"> 版本更新 </a><br />
-              <a href="https://github.com/garyGlh/FinClaw"> 联系我们</a>
+              ><a href="http://212.129.149.40/users/sign_in"> 版本更新 </a><br />
+              <a href="http://212.129.149.40/users/sign_in"> 联系我们</a>
             </span>
           </el-col>
           <el-col :span="4" offset="6" class="footer-pic">
@@ -82,7 +82,7 @@
         </el-row>
         <el-row :gutter="10">
           <el-col :span="4" :offset="6">
-            <span style="font-size: 16px">©NJU FinClaw8</span>
+            <span style="font-size: 16px">©OwO COIN</span>
           </el-col>
         </el-row>
       </el-footer>
