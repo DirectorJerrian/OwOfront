@@ -722,7 +722,9 @@
                 isFinish=this.changeLink(this.linkForm);
               }
               else if(this.isNodeCreate){
+                console.log("start create");
                 isFinish=this.createNode(this.nodeForm);
+                console.log(isFinish);
               }
               else{
                 isFinish=this.createLink(this.linkForm);
@@ -801,7 +803,6 @@
           var symbol=nodeForm.symbol;
           var color=nodeForm.color;
           var fontSize=parseInt(nodeForm.fontSize);
-
           if(this.isNodeExist(name)){
             this.warningNotice("实体名称重复，请重新命名！");
             return false;
@@ -819,8 +820,8 @@
             },
             category:category,
           };
-          nodes.push(node);
-          console.log(nodes);
+          this.nodes.push(node);
+          console.log(this.nodes);
           this.showChart();
           this.successNotice("创建成功");
           return true;
@@ -852,23 +853,23 @@
             source:source,
             target:target
           };
-          links.push(link);
+          this.links.push(link);
           this.showChart();
           this.successNotice("创建成功");
           return true;
         },
         //寻找是否存该名字的实体
         isNodeExist(name) {
-          for(var i=0;i<nodes.length;i++){
-            if(nodes[i].name===name){
+          for(var i=0;i<this.nodes.length;i++){
+            if(this.nodes[i].name===name){
               return true;
             }
           }
           return false;
         },
         isLinkExist(source,target) {
-          for(var i=0;i<links.length;i++){
-            if(links[i].source===source && links[i].target===target){
+          for(var i=0;i<this.links.length;i++){
+            if(this.links[i].source===source && this.links[i].target===target){
               return true;
             }
           }
