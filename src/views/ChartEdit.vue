@@ -704,6 +704,7 @@
         processChartData(){
           this.nodes=this.chartData.nodes;
           this.links=this.chartData.links;
+          //获取categories
           var myCategories=[];
           var numOfCategories=0;
           for(var i=0;i<this.chartData.nodes.length;i++){
@@ -722,7 +723,6 @@
             this.categories.push({ name: "" });
             this.categories[i].name= myCategories[i]+" class";
           }
-          console.log(this.categories);
           this.option.title.text=this.chartData.title;
           this.isChartFixed=this.chartData.isChartFixed;
           if(this.isChartFixed){

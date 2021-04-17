@@ -23,7 +23,8 @@ export function saveChartAPI(data) {//data里要包含两个文件以及用户id
 
 export function getKgAPI(data){
   return axios({
-    url:`${api.kgPre}/${data}/getKg`,
-    method: 'GET'
+    url:`${api.chartPre}/getKg`,
+    method: 'POST',
+    data
   })
 }
