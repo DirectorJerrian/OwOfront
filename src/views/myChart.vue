@@ -1,19 +1,8 @@
 <template>
   <div class="myChart">
-    <div id="headMenu">
-      <el-menu
-        :default-active="headActiveIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select=""
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1">知识图谱处理</el-menu-item>
-        <el-menu-item index="2">我的知识图谱</el-menu-item>
-        <el-menu-item index="3" disabled>我的信息</el-menu-item>
-      </el-menu>
-    </div>
+    <el-header style="padding: 0px">
+      <Header></Header>
+    </el-header>
     <div id="operation">
       <el-upload
         action=""
@@ -40,13 +29,15 @@
 </template>
 
 <script>
-  import chartCard from '../components/chartCard'
+  import Header from "@/components/header";
+  import chartCard from '../components/chartCard';
   import {mapActions, mapGetters,mapMutations} from "vuex";
-  import router from '@/router'
+  import router from '@/router';
     export default {
       name: "myChart",
       components:{
         chartCard,
+        Header,
       },
       data(){
         return{

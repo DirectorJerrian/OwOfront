@@ -1,19 +1,8 @@
 <template>
   <div class="chartEdit">
-    <div id="headMenu">
-      <el-menu
-        :default-active="headActiveIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select=""
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1">知识图谱处理</el-menu-item>
-        <el-menu-item index="2" >我的知识图谱</el-menu-item>
-        <el-menu-item index="3" disabled>我的信息</el-menu-item>
-      </el-menu>
-    </div>
+    <el-header style="padding: 0px">
+      <Header></Header>
+    </el-header>
     <div id="sideMenu">
       <el-menu default-active="1" class="el-menu-vertical-demo" >
         <el-submenu index="1">
@@ -326,11 +315,15 @@
 </template>
 
 <script>
+  import Header from "@/components/header";
   import $ from 'jquery'
   import router from '@/router'
   import {mapActions, mapGetters} from "vuex";
     export default {
       name: "ChartEdit",
+      components: {
+        Header,
+      },
       data () {
         return {
           headActiveIndex: '1',
@@ -1429,14 +1422,15 @@
           var chartToBeSaved=this.getChartData();
           //测试json文件生成
           var jsonData=JSON.stringify(chartToBeSaved,undefined,4);
-          const blob=new Blob([jsonData],{type:'text/json'});
-          var e = document.createEvent('MouseEvents');
-          var a = document.createElement('a')
-          a.download = "chart.json";
-          a.href = window.URL.createObjectURL(blob)
-          a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
-          e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-          a.dispatchEvent(e);
+          const jsonFile=new Blob([jsonData],{type:'text/json'});
+          const imgFile=this.getChartImgFile();
+          // var e = document.createEvent('MouseEvents');
+          // var a = document.createElement('a')
+          // a.download = "chart.json";
+          // a.href = window.URL.createObjectURL(blob)
+          // a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
+          // e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+          // a.dispatchEvent(e);
           //TODO 数据库保存
           if(this.isChartFixed){
             this.successNotice("保存成功!（已经保存布局）")
