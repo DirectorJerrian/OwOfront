@@ -41,6 +41,7 @@
     </div>
   </div>
 </template>
+
 <script>
   import Header from "@/components/header";
   import router from '@/router'
