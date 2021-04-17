@@ -1,19 +1,8 @@
 <template>
   <div class="chartEdit">
-    <div id="headMenu">
-      <el-menu
-        :default-active="headActiveIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select=""
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1">知识图谱处理</el-menu-item>
-        <el-menu-item index="2" >我的知识图谱</el-menu-item>
-        <el-menu-item index="3" disabled>我的信息</el-menu-item>
-      </el-menu>
-    </div>
+    <el-header style="padding: 0px">
+      <Header></Header>
+    </el-header>
     <div id="sideMenu">
       <el-menu default-active="1" class="el-menu-vertical-demo" >
         <el-submenu index="1">
@@ -326,11 +315,15 @@
 </template>
 
 <script>
+  import Header from "@/components/header";
   import $ from 'jquery'
   import router from '@/router'
   import {mapActions, mapGetters} from "vuex";
     export default {
       name: "ChartEdit",
+      components: {
+        Header,
+      },
       data () {
         return {
           headActiveIndex: '1',

@@ -11,29 +11,15 @@
         <img :src="logo_url" class="logo" alt="logo" @click="jumpToHome" />
       </el-menu-item>
       <el-menu-item index="1" @click="jumpToHome">首页</el-menu-item>
-      <el-menu-item index="2" @click="jumpToCenter">管理中心</el-menu-item>
-      <el-submenu index="2">
+      <el-menu-item index="2" @click="jumpToCenter">知识图谱处理</el-menu-item>
+      <el-menu-item index="3" @click="jumpToMyChart">我的知识图谱</el-menu-item>
+      <el-menu-item index="4" @click="jumpToUserInfo">我的信息</el-menu-item>
+      <el-submenu index="1">
         <template slot="title">使用文档</template>
-        <el-menu-item index="2-1">联邦学习容器部署</el-menu-item>
-        <el-menu-item index="2-2">平台使用说明</el-menu-item>
-        <el-menu-item index="2-3">注册说明</el-menu-item>
+        <el-menu-item index="1-1">平台使用说明</el-menu-item>
+        <el-menu-item index="1-2">注册说明</el-menu-item>
       </el-submenu>
-      <el-submenu index="3">
-        <template slot="title">客户支持</template>
-        <el-menu-item index="3-1" class="support">
-          <h2>FinClaw8 Support</h2>
-          <h5>: 故障修复、问题解决和积极指导</h5>
-        </el-menu-item>
-        <el-menu-item index="3-2" class="support">
-          <h2>FinClaw8 Managed Services</h2>
-          <h5>: 替您运维FinClaw8基础设施</h5>
-        </el-menu-item>
-        <el-menu-item index="3-3" class="support">
-          <h2>FinClaw8 IQ</h2>
-          <h5>: 来自FinClaw8认证的第三方专家的按需协助</h5>
-        </el-menu-item>
-      </el-submenu>
-      <el-menu-item index="4">探索更多信息</el-menu-item>
+      <el-menu-item index="5">探索更多信息</el-menu-item>
       <el-menu-item
         id="loginBox"
         style="float: right; margin-left: 40px; cursor: pointer"
@@ -88,7 +74,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import {getToken} from "../utils/auth";
 export default {
-  name: "myheader",
+  name: "Header",
   inject: ["reload"],
   data() {
     return {
