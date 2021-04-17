@@ -137,6 +137,9 @@ export default {
     jumpToRegister() {
       this.$router.push("/register");
     },
+    jumpToMyChart(){
+      this.$router.push("/myChart");
+    },
     jumpToCenter() {
       const r = this.userInfo.role;
       if (r == "Bank") {

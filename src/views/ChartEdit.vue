@@ -1404,14 +1404,15 @@
           var chartToBeSaved=this.getChartData();
           //测试json文件生成
           var jsonData=JSON.stringify(chartToBeSaved,undefined,4);
-          const blob=new Blob([jsonData],{type:'text/json'});
-          var e = document.createEvent('MouseEvents');
-          var a = document.createElement('a')
-          a.download = "chart.json";
-          a.href = window.URL.createObjectURL(blob)
-          a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
-          e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-          a.dispatchEvent(e);
+          const jsonFile=new Blob([jsonData],{type:'text/json'});
+          const imgFile=this.getChartImgFile();
+          // var e = document.createEvent('MouseEvents');
+          // var a = document.createElement('a')
+          // a.download = "chart.json";
+          // a.href = window.URL.createObjectURL(blob)
+          // a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
+          // e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+          // a.dispatchEvent(e);
           //TODO 数据库保存
           if(this.isChartFixed){
             this.successNotice("保存成功!（已经保存布局）")
