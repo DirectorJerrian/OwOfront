@@ -48,8 +48,6 @@ const user = {
   actions: {
     verifyAccount: async ({dispatch, commit}, userData) => {
       const res = await verifyAccountAPI(userData);
-      // console.log(res)
-      // console.log(1)
       if (res.obj) {
         setToken(res.obj.id);
         commit('setToken', res.obj.id);

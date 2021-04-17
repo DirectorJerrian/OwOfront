@@ -4,7 +4,7 @@ const api = {
   chartPre: '/api/chart'
 };
 
-export function updateUserAvatarAPI(data) {//data里要包含两个文件以及用户id
+export function saveChartAPI(data) {//data里要包含两个文件以及用户id
   let fd = new FormData(); //通过form数据格式来传\
   fd.append("jsonFile", data.jsonFile);
   fd.append('xmlFile',data.xmlFile);

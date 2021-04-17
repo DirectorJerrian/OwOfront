@@ -41,6 +41,7 @@
 
 <script>
   import chartCard from '../components/chartCard'
+  import {mapActions, mapGetters,mapMutations} from "vuex";
   import router from '@/router'
     export default {
       name: "myChart",
@@ -49,10 +50,10 @@
       },
       data(){
         return{
-          emptyBox: [{ name: 'box1' }, { name: 'box2'}, {name: 'box3'}],
           chartList:[{
             name:'chart01',
-            imgUrl:''
+            imgUrl:'12345678',
+            jsonUrl:'http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/chartJson/chart%20with%20positon.json',
           },
           {
             name:'chart02',
@@ -88,11 +89,24 @@
           }
       },
       computed:{
+        ...mapGetters([
+          'chartData',
+        ]),
 
       },
       mounted() {
       },
       methods:{
+        ...mapActions([
+
+        ]),
+        ...mapMutations([
+          'setChartData',
+        ]),
+        setFileInfo(file,type){
+          this.fileInfo.file=file;
+          this.fileInfo.type=type;
+        },
         isFileMatchAndSetFileType(filename){
           var target='.xml';
           var start = filename.length-target.length;
@@ -247,18 +261,16 @@
           if(this.fileInfo.type=='xml'){
             this.getXMLObject(this.fileInfo.file).then((XMLObject)=>{
               this.setChartData(XMLObject);
+              router.push('/ChartEdit');
             });
 
           }else if(this.fileInfo.type=='json'){
             this.getJSONObject(this.fileInfo.file).then((JSONObject)=>{
-              this.setChartData(JSONObject);
+              this.setChartData(JSONObject)
+              router.push('/ChartEdit');
             });
           }
         },
-        setChartData(chartData){
-          console.log(chartData);
-          //router.push('/ChartEdit');
-        }
       }
 
     }

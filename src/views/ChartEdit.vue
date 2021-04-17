@@ -46,7 +46,7 @@
           <el-menu-item-group>
             <el-menu-item index="3-6" @click="showChart()">重置图谱</el-menu-item>
             <el-menu-item index="3-1" @click="statisticsClick()">信息统计</el-menu-item>
-            <el-menu-item index="3-2" @click="showTreeChart()">排版模式</el-menu-item>
+            <el-menu-item index="3-2" @click="showArrangementChart()">排版模式</el-menu-item>
             <el-menu-item index="3-3" @click="showChart()">力导图模式</el-menu-item>
             <el-menu-item index="3-4" @click="fixChartClick()" v-if="!isChartFixed">图谱固定</el-menu-item>
             <el-menu-item index="3-5" @click="flexibleChartClick()" v-else>取消图谱固定</el-menu-item>
@@ -81,7 +81,7 @@
       ref="drawer"
     >
       <div class="demo-drawer__content">
-        <el-form ref="form" :model="nodeForm" label-width="80px" v-if="this.isNodeCreate">
+        <el-form ref="form" :model="nodeForm" label-width="80px" v-if="this.isNodeCreate || this.isNodeEdit">
           <el-form-item label="实体名称" >
             <el-input v-model="nodeForm.name" :placeholder="nodeName"></el-input>
           </el-form-item>
@@ -110,15 +110,15 @@
             <el-slider v-model="nodeForm.fontSize"></el-slider>
           </el-form-item>
         </el-form>
-        <el-form ref="form" :model="linkForm" label-width="80px" v-if="this.isLinkCreate">
+        <el-form ref="form" :model="linkForm" label-width="80px" v-if="this.isLinkCreate || this.isLinkEdit">
           <el-form-item label="关系名称" >
             <el-input v-model="linkForm.name" :placeholder="'linkName'"></el-input>
           </el-form-item>
           <el-form-item label="起点实体" >
-            <el-input v-model="linkForm.source" :placeholder="'linkSource'" disabled></el-input>
+            <el-input v-model="linkForm.source" :placeholder="'linkSource'"></el-input>
           </el-form-item>
           <el-form-item label="终点实体" >
-            <el-input v-model="linkForm.target" :placeholder="'linkTarget'" disabled></el-input>
+            <el-input v-model="linkForm.target" :placeholder="'linkTarget'"></el-input>
           </el-form-item>
           <el-form-item label="关系描述" >
             <el-input v-model="linkForm.des" :placeholder="'linkDes'"></el-input>
@@ -127,6 +127,8 @@
         <div class="demo-drawer__footer">
           <el-button @click="cancelForm">取 消</el-button>
           <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+          <el-button type="danger" v-if="this.isNodeEdit" @click="deleteNode(nodeForm.name)">删 除</el-button>
+          <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm.name)">删 除</el-button>
         </div>
       </div>
     </el-drawer>
@@ -325,121 +327,192 @@
 
 <script>
   import $ from 'jquery'
+  import router from '@/router'
+  import {mapActions, mapGetters} from "vuex";
     export default {
       name: "ChartEdit",
       data () {
         return {
           headActiveIndex: '1',
-          nodes:[{
-            name: 'node01',
-            des: 'nodedes01',
-            symbol: 'triangle',
-            symbolSize: 70,
-            type:'highlight',
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          }, {
-            name: 'node06',
-            des: 'nodedes06',
-            symbol: 'triangle',
-            symbolSize: 70,
-            itemStyle: {
-              color: '#5470c6',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 0,
-          },{
-            name: 'node02',
-            des: 'nodedes02',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node03',
-            des: 'nodedes3',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node04',
-            des: 'nodedes04',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#641585',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }, {
-            name: 'node05',
-            des: 'nodedes05',
-            symbol: 'circle',
-            symbolSize: 50,
-            itemStyle: {
-              color: '#91CC75',
-            },
-            label: {
-              fontSize: 12,
-            },
-            category: 1,
-          }],
-          links:[{
-            source: 'node01',
-            target: 'node02',
-            name: 'link01',
-            des: 'link01des',
-          },{
-            source: 'node02',
-            target: 'node01',
-            name: 'link00',
-            des: 'reverse',
-          },{
-            source: 'node01',
-            target: ' ',
-            name: 'link02',
-            des: 'myself',
-          },{
-            source: '123 ',
-            target: 'node01',
-            name: '124124',
-            des: 'myself',
-          },{
-            source: 'node01',
-            target: 'node03',
-            name: 'link02',
-            des: 'link02des'
-          }, {
-            source: 'node01',
-            target: 'node04',
-            name: 'link03',
-            des: 'link03des'
-          }, {
-            source: 'node01',
-            target: 'node05',
-            name: 'link04',
-            des: 'link05des'
-          }],
+          nodes:[],
+          links:[],
+          // nodes:[{
+          //   name: 'node01',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node06',
+          //   des: 'nodedes06',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node02',
+          //   des: 'nodedes02',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node03',
+          //   des: 'nodedes3',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node04',
+          //   des: 'nodedes04',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#641585',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node05',
+          //   des: 'nodedes05',
+          //   symbol: 'circle',
+          //   symbolSize: 50,
+          //   itemStyle: {
+          //     color: '#91CC75',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 1,
+          // },
+          //   {
+          //   name: 'node10',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node11',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // },
+          //   {
+          //   name: 'node12',
+          //   des: 'nodedes01',
+          //   symbol: 'triangle',
+          //   symbolSize: 70,
+          //   type:'highlight',
+          //   itemStyle: {
+          //     color: '#5470c6',
+          //   },
+          //   label: {
+          //     fontSize: 12,
+          //   },
+          //   category: 0,
+          // }],
+          // links:[{
+          //   source: 'node01',
+          //   target: 'node02',
+          //   name: 'link01',
+          //   des: 'link01des',
+          // },{
+          //   source: 'node02',
+          //   target: 'node01',
+          //   name: 'link00',
+          //   des: 'reverse',
+          // },{
+          //   source: 'node01',
+          //   target: 'node03',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node02',
+          //   target: 'node01',
+          //   name: '124124',
+          //   des: 'myself',
+          // },{
+          //   source: 'node01',
+          //   target: 'node03',
+          //   name: 'link02',
+          //   des: 'link02des'
+          // }, {
+          //   source: 'node01',
+          //   target: 'node04',
+          //   name: 'link03',
+          //   des: 'link03des'
+          // }, {
+          //   source: 'node01',
+          //   target: 'node05',
+          //   name: 'link04',
+          //   des: 'link05des'
+          // },{
+          //   source: 'node02',
+          //   target: 'node11',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node11',
+          //   target: 'node12',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node12',
+          //   target: 'node11',
+          //   name: 'link02',
+          //   des: 'myself',
+          // },{
+          //   source: 'node03',
+          //   target: 'node04',
+          //   name: 'link02',
+          //   des: 'myself',
+          // }],
           categories: [{name:'01 class'},{name:'02 class'}],
           option :{
             // 图的标题
@@ -519,40 +592,6 @@
               links: [],
               categories: [],
             }]
-          },
-          treeOption:{
-            title: {
-              text: '排版模式:',
-            },
-            tooltip: {
-              trigger: 'item',
-              triggerOn: 'mousemove'
-            },
-            legend: {
-              orient: 'vertical',
-              data: [],
-              borderColor: '#c23531'
-            },
-            series:[]
-          },
-          treeOptionSeriesModel:{
-            type: 'tree',
-            name:'',
-            data: '',
-            expandAndCollapse: true,//默认：true；子树折叠和展开的交互，默认打开 。
-            label: {
-              position: 'left',
-              verticalAlign: 'middle',
-              align: 'right'
-            },
-            leaves: {
-              label: {
-                position: 'right',
-                verticalAlign: 'middle',
-                align: 'left'
-              }
-            },
-            animationDurationUpdate: 750,
           },
           chart:{},
           statisticChart:{},
@@ -642,24 +681,58 @@
         }
       },
       computed:{
-
+        ...mapGetters([
+          'chartData'
+        ]),
       },
       mounted() {
+        if(this.chartData==null){
+          this.warningNotice("未读入任何图谱信息,请导入图谱信息后编辑！");
+          router.push('/myChart');
+          return;
+        }
+        this.processChartData();
         this.drawChart();
         this.chart.on('click',this.chartClick);
         this.chart.on('mouseup',this.chartDrag);
-        // this.chart.on('mouseover',this.chartHighlight);
       },
       methods:{
+        ...mapActions([
+          'addChart'
+        ]),
+        //页面打开处理图谱信息
+        processChartData(){
+          this.nodes=this.chartData.nodes;
+          this.links=this.chartData.links;
+          this.option.title.text=this.chartData.title;
+          this.isChartFixed=this.chartData.isChartFixed;
+          if(this.isChartFixed){
+            this.positions=this.chartData.positions;
+            for(var i=0;i<this.nodes.length;i++){
+              this.nodes[i].x=this.positions[i].x;
+              this.nodes[i].y=this.positions[i].y;
+              this.nodes[i].fixed=true;
+            }
+          }
+        },
+        //编辑函数
         handleClose(done) {
           this.$confirm('确定要提交表单吗？')
             .then(_ => {
               var isFinish = false;
               console.log(this.isNodeCreate);
-              if(this.isNodeCreate){
+
+              if(this.isNodeEdit){
                 isFinish=this.changeNode(this.nodeForm);
-              }else{
+              }
+              else if(this.isLinkEdit){
                 isFinish=this.changeLink(this.linkForm);
+              }
+              else if(this.isNodeCreate){
+                isFinish=this.createNode(this.nodeForm);
+              }
+              else{
+                isFinish=this.createLink(this.linkForm);
               }
               if(isFinish) this.isChartInfoEditVisible=false;
             })
@@ -668,6 +741,12 @@
         cancelForm() {
           this.loading = false;
           this.isChartInfoEditVisible = false;
+          if(this.isNodeEdit){
+            this.isNodeEdit = false;
+          }
+          else{
+            this.isLinkEdit = false;
+          }
           if(this.isNodeCreate){
             this.isNodeCreate = false;
           }
@@ -696,70 +775,252 @@
             return a.name;
           });
         },
-        //展示力道图
+        //展示力导图
         showChart(){
           this.setChart();
           this.chart.setOption(this.option);
         },
-        //获取排版图数据信息
-        getTreeChartData(){
-          var tree=[
-            {
-            legendData:{
-              name:'tree01',
-              icon:'rectangle'
+        ////////////////////////////////////////////////
+        //排版模式算法////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        //展示排版图
+        showArrangementChart(){
+          this.setArrangementChartPosition();
+        },
+        setArrangementChartPosition(){
+          var positionData=this.getArrangementChartPosition();
+          this.isChartFixed=true;
+          console.log(positionData);
+          for(var i=0;i<this.nodes.length;i++){
+            this.nodes[i].x=positionData[i].x;
+            this.nodes[i].y=positionData[i].y;
+            this.nodes[i].fixed=true;
+          }
+          this.chart.clear();
+          this.showChart();
+        },
+        createNode(nodeForm){
+          var name=nodeForm.name;
+          var des=nodeForm.des;
+          var symbolSize=parseInt(nodeForm.symbolSize);
+          var category=parseInt(nodeForm.category);
+          var symbol=nodeForm.symbol;
+          var color=nodeForm.color;
+          var fontSize=parseInt(nodeForm.fontSize);
+
+          if(this.isNodeExist(name)){
+            this.warningNotice("实体名称重复，请重新命名！");
+            return false;
+          }
+          var node={
+            name:name,
+            des:des,
+            symbol:symbol,
+            symbolSize:symbolSize,
+            itemStyle:{
+              color:color,
             },
-            treeData:{
-              name:'00',
-              value:1234,
+            label:{
+              fontSize:fontSize,
+            },
+            category:category,
+          };
+          nodes.push(node);
+          console.log(nodes);
+          this.showChart();
+          this.successNotice("创建成功");
+          return true;
+        },
+        createLink(linkForm){
+          console.log(linkForm);
+          var name=linkForm.name;
+          var des=linkForm.des;
+          var source=linkForm.source;
+          var target=linkForm.target;
+          var nodeNotExistMessage='';
+          if(!this.isNodeExist(source)){
+            nodeNotExistMessage += "起点实体不存在!\n";
+          }
+          if(!this.isNodeExist(target)){
+            nodeNotExistMessage += '目标实体不存在!';
+          }
+          if(nodeNotExistMessage!==''){
+            this.warningNotice(nodeNotExistMessage);
+            return false;
+          }
+          if(this.isLinkExist(source,target)){
+            this.warningNotice("关系已经存在");
+            return false;
+          }
+          var link={
+            name:name,
+            des:des,
+            source:source,
+            target:target
+          };
+          links.push(link);
+          this.showChart();
+          this.successNotice("创建成功");
+          return true;
+        },
+        //寻找是否存该名字的实体
+        isNodeExist(name) {
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].name===name){
+              return true;
             }
-          },
-            {
-              legendData:{
-                name:'tree02',
-                icon:'rectangle'
-              },
-              treeData:{
-                name:'01',
-                value:1234,
-                children:[
-                  {
-                    name:'02',
-                    value:1234,
-                  },{
-                    name:'03',
-                    value:1234,
-                  },{
-                    name:'04',
-                    children:[
-                      {
-                        name:'04:01',
-                        value:1234,
-                      }
-                    ]
-                  }
-                ]
+          }
+          return false;
+        },
+        isLinkExist(source,target) {
+          for(var i=0;i<links.length;i++){
+            if(links[i].source===source && links[i].target===target){
+              return true;
+            }
+          }
+          return false;
+        },
+        deleteNode(name) {
+          //删除data中的实体
+          var nodeIndex = this.findNodeIndex(name);
+          this.nodes.splice(nodeIndex, 1);
+          //删除links中包含此实体的关系
+          var newLinks = [];
+          for (var i = 0; i < this.links.length; i++) {
+            if (this.links[i].source !== name && this.links[i].target !== name) {
+              newLinks.push(this.links[i]);
+            }
+          }
+          this.links = newLinks;
+          this.isChartInfoEditVisible = false;
+          this.isNodeEdit = false;
+          this.showChart();
+          this.successNotice("删除成功");
+          return true;
+        },
+        deleteLink(name){
+          //删除关系
+          var linkIndex=this.findLinkIndex(name);
+          links.splice(linkIndex,1);
+          this.showChart();
+          this.successNotice("删除成功");
+          return true;
+        },
+        //获取简化的图谱信息
+        getNodeIndex(nodes,name){
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].name===name)return i;
+          }
+        },
+        getArrangementChartData(){
+          var data={nodes:[],links:[]}
+          for(var i=0;i<this.nodes.length;i++){
+            data.nodes.push({name:this.nodes[i].name,times:0,level_x:0,level_y:0,isArranged:false});
+          }
+          for(var i=0;i<this.links.length;i++){
+            if(this.links[i].source===this.links[i].target) continue;
+            data.links.push({source:data.nodes[this.getNodeIndex(data.nodes,this.links[i].source)],target:data.nodes[this.getNodeIndex(data.nodes,this.links[i].target)]});
+          }
+          return data;
+        },
+        getLevelData(data){
+          var nodes=data.nodes;
+          var res={
+            x_count:0,
+            y_count:0,
+          }
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].level_x>res.x_count)res.x_count=nodes[i].level_x;
+            if(nodes[i].level_y>res.y_count)res.y_count=nodes[i].level_y
+          }
+          res.x_count++;
+          res.y_count++;
+          return res;
+        },
+        getArrangementChartPosition(){
+          var level_y=0;
+          var data=this.getArrangementChartData();
+          while(true){
+            this.countSourceTimes(data);
+            var node=this.getTopTimesNode(data);
+            //所有节点都被安排位置则退出
+            if(node==null)break;
+            this.setNode(node,0,level_y,data);
+            this.clearTimes(data);
+            level_y++;
+          }
+          //根据层级信息，设置具体的位置
+          const start_x=100;
+          const start_y=100;
+          const pace_x=200;
+          const pace_y=150;
+          const levelData=this.getLevelData(data);
+          const x_count=levelData.x_count;
+          const y_count=levelData.y_count;
+          var positionArray=Array(x_count).fill(0);
+          var nodes=data.nodes;
+          for(var y=0;y<y_count;y++){
+            for(var i=0;i<nodes.length;i++){
+              if(nodes[i].level_y===y){
+                nodes[i].x=nodes[i].level_x*pace_x+start_x;
+                nodes[i].y=positionArray[nodes[i].level_x]*pace_y+start_y;
+                positionArray[nodes[i].level_x]++;
               }
             }
-          ]
-          return tree;
-        },
-        //展示排版图
-        showTreeChart(){
-          let treeChartData=this.getTreeChartData();
-          for(var i=0;i<treeChartData.length;i++){
-            this.treeOption.legend.data.push(treeChartData[i].legendData);
-            var series=Object.assign({},this.treeOptionSeriesModel);
-            series.name=treeChartData[i].legendData.name;
-            series.top=(5*i).toString()+"%";
-            let data=[treeChartData[i].treeData]
-            series.data=data;
-            this.treeOption.series.push(series);
           }
-          this.treeOption.title.text+=this.option.title.text;
-          this.chart.setOption(this.treeOption);
-          console.log(this.treeOption);
+          return nodes;
         },
+        countSourceTimes(data){
+          var links=data.links;
+          for(var i=0;i<links.length;i++){
+            if(!links[i].source.isArranged)
+            links[i].source.times++;
+          }
+        },
+        clearTimes(data){
+          var nodes=data.nodes;
+          for(var i=0;i<nodes.length;i++){
+            nodes[i].times=0;
+          }
+        },
+        getTopTimesNode(data){
+          var nodes=data.nodes;
+          var firstNotArrangedIndex=-1;
+          //找到第一个没有被安排位置的节点
+          for(var i=0;i<nodes.length;i++){
+            if(!nodes[i].isArranged){
+              firstNotArrangedIndex=i;
+              break;
+            }
+          }
+          //若所有节点都被安排位置，则返回null
+          if(firstNotArrangedIndex===-1)return null;
+          //寻找出度最大的没有被安排位置的节点
+          var resIndex=firstNotArrangedIndex;
+          for(var i=resIndex+1;i<nodes.length;i++){
+            if(!nodes[i].isArranged && nodes[i].times>nodes[resIndex].times){
+              resIndex=i;
+            }
+          }
+          return nodes[resIndex];
+        },
+        setNode(node,level_x,level_y,data){
+          node.level_x=level_x;
+          node.level_y=level_y;
+          node.isArranged=true;
+          var links=data.links;
+          for(var i=0;i<links.length;i++){
+            if(links[i].source===node && !links[i].target.isArranged){
+              this.setNode(links[i].target,level_x+1,level_y,data);
+            }
+          }
+
+        },
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
         //更改关系信息
         changeLink(linkForm){
           var linkIndex=this.findLinkIndex(linkForm.name);
@@ -1087,6 +1348,12 @@
         ///////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////
         /////图表变换////////////////////////////////////////////////
+        fixChartClick(){
+          this.fixChart();
+        },
+        flexibleChartClick(){
+          this.flexibleChart();
+        },
         fixChart(){
           var option=this.chart.getOption();
           for(var i=0;i<this.nodes.length;i++){
@@ -1163,7 +1430,7 @@
         chartClick(param){
           if(param.dataType=='edge'){
             this.chosenType='link';
-            this.isLinkCreate = true;
+            this.isLinkEdit = true;
             this.linkForm.name=param.data.name;
             this.linkForm.des=param.data.des;
             this.linkForm.source=param.data.source;
@@ -1174,7 +1441,7 @@
             this.linkTarget=param.data.target;
           }else if(param.dataType=='node'){
             this.chosenType='node';
-            this.isNodeCreate = true;
+            this.isNodeEdit = true;
             this.nodeForm.name=param.data.name;
             this.nodeForm.des=param.data.des;
             this.nodeForm.symbol=param.data.symbol;
@@ -1203,14 +1470,24 @@
           }
 
         },
-        chartHighlight(params){
-          this.chart.dispatchAction({
-            type: 'highlight',
-            seriesIndex: 0,
-            dataIndex: params.dataIndex
-          });
+        //文件导出函数
+        canvasDataURLtoFile (dataurl, filename = 'file') {
+          let arr = dataurl.split(',')
+          let mime = arr[0].match(/:(.*?);/)[1]
+          let bstr = atob(arr[1])
+          let n = bstr.length
+          let u8arr = new Uint8Array(n)
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n)
+          }
+          var file=new File([u8arr], filename, {type: mime});
+          console.log(file);
+          return file;
         },
-        //TODO 由于node节点内容修改，需要重写
+        getCanvasDataUrl(){
+          var canvas = $("#"+"chart").find("canvas").first()[0];
+          return canvas.toDataURL();
+        },
         chartXMLDownloadClick(){
           const XMLText='<?xml version="1.0" encoding="UTF-8"?>'+'<chart>'+this.objectToXMLStr(this.getChartData())+'</chart>';
           const ele = document.createElement('a');// 创建下载链接
@@ -1221,9 +1498,6 @@
           document.body.appendChild(ele);
           ele.click();
           document.body.removeChild(ele);
-        },
-        getEleTag(obj){
-
         },
         objectToXMLStr(data,sig){
           var xmldata = '';
@@ -1254,13 +1528,15 @@
           return xmldata;
         },
         chartImgDownloadClick(){
-          var canvas = $("#"+"chart").find("canvas").first()[0];
-          var ctx = canvas.getContext('2d');
-          var url=canvas.toDataURL();
+          var url=this.getCanvasDataUrl();
           var link = document.createElement('a');
           link.href = url;
           link.download = this.option.title.text+".png";
           link.click();
+        },
+        getChartImgFile(){
+          var url=this.getCanvasDataUrl();
+          return this.canvasDataURLtoFile(url);
         },
         //信息统计
         statisticsClick(){
@@ -1290,12 +1566,6 @@
           }
           this.statisticChart.setOption(statisticOption)
           this.isStatisticVisible=true;
-        },
-        fixChartClick(){
-          this.fixChart();
-        },
-        flexibleChartClick(){
-          this.flexibleChart();
         },
         warningNotice(info) {
           this.$notify({
