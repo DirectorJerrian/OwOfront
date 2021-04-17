@@ -81,7 +81,7 @@
       ref="drawer"
     >
       <div class="demo-drawer__content">
-        <el-form ref="form" :model="nodeForm" label-width="80px" v-if="this.isNodeCreate">
+        <el-form ref="form" :model="nodeForm" label-width="80px" v-if="this.isNodeCreate || this.isNodeEdit">
           <el-form-item label="实体名称" >
             <el-input v-model="nodeForm.name" :placeholder="nodeName"></el-input>
           </el-form-item>
@@ -110,15 +110,15 @@
             <el-slider v-model="nodeForm.fontSize"></el-slider>
           </el-form-item>
         </el-form>
-        <el-form ref="form" :model="linkForm" label-width="80px" v-if="this.isLinkCreate">
+        <el-form ref="form" :model="linkForm" label-width="80px" v-if="this.isLinkCreate || this.isLinkEdit">
           <el-form-item label="关系名称" >
             <el-input v-model="linkForm.name" :placeholder="'linkName'"></el-input>
           </el-form-item>
           <el-form-item label="起点实体" >
-            <el-input v-model="linkForm.source" :placeholder="'linkSource'" disabled></el-input>
+            <el-input v-model="linkForm.source" :placeholder="'linkSource'"></el-input>
           </el-form-item>
           <el-form-item label="终点实体" >
-            <el-input v-model="linkForm.target" :placeholder="'linkTarget'" disabled></el-input>
+            <el-input v-model="linkForm.target" :placeholder="'linkTarget'"></el-input>
           </el-form-item>
           <el-form-item label="关系描述" >
             <el-input v-model="linkForm.des" :placeholder="'linkDes'"></el-input>
@@ -127,6 +127,8 @@
         <div class="demo-drawer__footer">
           <el-button @click="cancelForm">取 消</el-button>
           <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+          <el-button type="danger" v-if="this.isNodeEdit" @click="deleteNode(nodeForm.name)">删 除</el-button>
+          <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm.name)">删 除</el-button>
         </div>
       </div>
     </el-drawer>
@@ -682,7 +684,6 @@
         ...mapGetters([
           'chartData'
         ]),
-
       },
       mounted() {
         if(this.chartData==null){
@@ -739,10 +740,18 @@
             .then(_ => {
               var isFinish = false;
               console.log(this.isNodeCreate);
-              if(this.isNodeCreate){
+
+              if(this.isNodeEdit){
                 isFinish=this.changeNode(this.nodeForm);
-              }else{
+              }
+              else if(this.isLinkEdit){
                 isFinish=this.changeLink(this.linkForm);
+              }
+              else if(this.isNodeCreate){
+                isFinish=this.createNode(this.nodeForm);
+              }
+              else{
+                isFinish=this.createLink(this.linkForm);
               }
               if(isFinish) this.isChartInfoEditVisible=false;
             })
@@ -751,6 +760,12 @@
         cancelForm() {
           this.loading = false;
           this.isChartInfoEditVisible = false;
+          if(this.isNodeEdit){
+            this.isNodeEdit = false;
+          }
+          else{
+            this.isLinkEdit = false;
+          }
           if(this.isNodeCreate){
             this.isNodeCreate = false;
           }
@@ -803,6 +818,113 @@
           }
           this.chart.clear();
           this.showChart();
+        },
+        createNode(nodeForm){
+          var name=nodeForm.name;
+          var des=nodeForm.des;
+          var symbolSize=parseInt(nodeForm.symbolSize);
+          var category=parseInt(nodeForm.category);
+          var symbol=nodeForm.symbol;
+          var color=nodeForm.color;
+          var fontSize=parseInt(nodeForm.fontSize);
+
+          if(this.isNodeExist(name)){
+            this.warningNotice("实体名称重复，请重新命名！");
+            return false;
+          }
+          var node={
+            name:name,
+            des:des,
+            symbol:symbol,
+            symbolSize:symbolSize,
+            itemStyle:{
+              color:color,
+            },
+            label:{
+              fontSize:fontSize,
+            },
+            category:category,
+          };
+          nodes.push(node);
+          console.log(nodes);
+          this.showChart();
+          this.successNotice("创建成功");
+          return true;
+        },
+        createLink(linkForm){
+          console.log(linkForm);
+          var name=linkForm.name;
+          var des=linkForm.des;
+          var source=linkForm.source;
+          var target=linkForm.target;
+          var nodeNotExistMessage='';
+          if(!this.isNodeExist(source)){
+            nodeNotExistMessage += "起点实体不存在!\n";
+          }
+          if(!this.isNodeExist(target)){
+            nodeNotExistMessage += '目标实体不存在!';
+          }
+          if(nodeNotExistMessage!==''){
+            this.warningNotice(nodeNotExistMessage);
+            return false;
+          }
+          if(this.isLinkExist(source,target)){
+            this.warningNotice("关系已经存在");
+            return false;
+          }
+          var link={
+            name:name,
+            des:des,
+            source:source,
+            target:target
+          };
+          links.push(link);
+          this.showChart();
+          this.successNotice("创建成功");
+          return true;
+        },
+        //寻找是否存该名字的实体
+        isNodeExist(name) {
+          for(var i=0;i<nodes.length;i++){
+            if(nodes[i].name===name){
+              return true;
+            }
+          }
+          return false;
+        },
+        isLinkExist(source,target) {
+          for(var i=0;i<links.length;i++){
+            if(links[i].source===source && links[i].target===target){
+              return true;
+            }
+          }
+          return false;
+        },
+        deleteNode(name) {
+          //删除data中的实体
+          var nodeIndex = this.findNodeIndex(name);
+          this.nodes.splice(nodeIndex, 1);
+          //删除links中包含此实体的关系
+          var newLinks = [];
+          for (var i = 0; i < this.links.length; i++) {
+            if (this.links[i].source !== name && this.links[i].target !== name) {
+              newLinks.push(this.links[i]);
+            }
+          }
+          this.links = newLinks;
+          this.isChartInfoEditVisible = false;
+          this.isNodeEdit = false;
+          this.showChart();
+          this.successNotice("删除成功");
+          return true;
+        },
+        deleteLink(name){
+          //删除关系
+          var linkIndex=this.findLinkIndex(name);
+          links.splice(linkIndex,1);
+          this.showChart();
+          this.successNotice("删除成功");
+          return true;
         },
         //获取简化的图谱信息
         getNodeIndex(nodes,name){
@@ -1327,7 +1449,7 @@
         chartClick(param){
           if(param.dataType=='edge'){
             this.chosenType='link';
-            this.isLinkCreate = true;
+            this.isLinkEdit = true;
             this.linkForm.name=param.data.name;
             this.linkForm.des=param.data.des;
             this.linkForm.source=param.data.source;
@@ -1338,7 +1460,7 @@
             this.linkTarget=param.data.target;
           }else if(param.dataType=='node'){
             this.chosenType='node';
-            this.isNodeCreate = true;
+            this.isNodeEdit = true;
             this.nodeForm.name=param.data.name;
             this.nodeForm.des=param.data.des;
             this.nodeForm.symbol=param.data.symbol;
@@ -1366,6 +1488,24 @@
             this.chart.setOption(option);
           }
 
+        },
+        //文件导出函数
+        canvasDataURLtoFile (dataurl, filename = 'file') {
+          let arr = dataurl.split(',')
+          let mime = arr[0].match(/:(.*?);/)[1]
+          let bstr = atob(arr[1])
+          let n = bstr.length
+          let u8arr = new Uint8Array(n)
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n)
+          }
+          var file=new File([u8arr], filename, {type: mime});
+          console.log(file);
+          return file;
+        },
+        getCanvasDataUrl(){
+          var canvas = $("#"+"chart").find("canvas").first()[0];
+          return canvas.toDataURL();
         },
         chartXMLDownloadClick(){
           const XMLText='<?xml version="1.0" encoding="UTF-8"?>'+'<chart>'+this.objectToXMLStr(this.getChartData())+'</chart>';
@@ -1407,13 +1547,15 @@
           return xmldata;
         },
         chartImgDownloadClick(){
-          var canvas = $("#"+"chart").find("canvas").first()[0];
-          var ctx = canvas.getContext('2d');
-          var url=canvas.toDataURL();
+          var url=this.getCanvasDataUrl();
           var link = document.createElement('a');
           link.href = url;
           link.download = this.option.title.text+".png";
           link.click();
+        },
+        getChartImgFile(){
+          var url=this.getCanvasDataUrl();
+          return this.canvasDataURLtoFile(url);
         },
         //信息统计
         statisticsClick(){
