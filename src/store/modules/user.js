@@ -70,12 +70,12 @@ const user = {
           email:data.email
         };
         const res = await addAccountAPI(temp);
-        console.log(res)
+        // console.log(res);
         if (res) {
           Message.success('注册成功!稍后将自动跳转');
           setToken(res.obj.id);
           commit('setToken', res.obj.id);
-          console.log(state.token)
+          // console.log(state.token);
           dispatch('getUserInfo');
           setTimeout(() => {
             router.push('/ChartEdit')
@@ -108,7 +108,7 @@ const user = {
         })
       }
     },
-    getUserInfo({state, commit}) {
+    getUserInfo({commit}) {
       return new Promise((resolve, reject) => {
         getUserInfoAPI(getToken()).then(res => {
           if (!res) {
@@ -116,7 +116,7 @@ const user = {
           }
           commit('setUserInfo', res.obj);
           commit('setUserId', res.obj.id);
-          console.log(state)
+          // console.log(state);
           resolve(res)
         }).catch(error => {
           reject(error)

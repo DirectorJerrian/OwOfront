@@ -1,5 +1,4 @@
 import { axios } from '@/utils/request'
-import qs from "qs";
 
 const api = {
   userPre: '/api/user'
