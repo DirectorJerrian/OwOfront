@@ -300,9 +300,9 @@
         },
         analyzeText(){
           this.getKg(this.textData).then((jsonStr)=>{
-            console.log(jsonStr);
+            // console.log(jsonStr);
             var jsonObj=JSON.parse(jsonStr);
-            console.log(jsonObj);
+            // console.log(jsonObj);
             this.setChartData(jsonObj);
             router.push('/ChartEdit');
           });
@@ -329,8 +329,11 @@
 
   }
   .text-area textarea {
-    width: 80%;
-    margin: 0.75rem  0;
+    background-color:rgba(241,241,241,.98);
+    width: 90%;
+    margin-left: 20px;
+    margin-right: 10px;
+    margin-top: 10px;
     border: none;
     outline: none;
     padding-left: 1.125rem;
