@@ -30,9 +30,9 @@ export function getKgAPI(data){
   })
 }
 
-export function getUserChartAPI(id){
+export function getUserChartsAPI(id){
   return axios({
-    url: `${api.userPre}/${id}/getUserChart`,
+    url: `${api.chartPre}/${id}/getUserCharts`,
     method: 'GET'
   })
 }

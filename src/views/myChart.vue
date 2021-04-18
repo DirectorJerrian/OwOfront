@@ -73,36 +73,36 @@
       data(){
         return{
           textData:'',
-          chartList:[{
-            name:'chart01',
-            imgUrl:'12345678',
-            jsonUrl:'http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/chartJson/chart%20with%20positon.json',
-          },
-          {
-            name:'chart02',
-            imgUrl:''
-          },{
-              name:'chart01',
-              imgUrl:''
-            },
-            {
-              name:'chart02',
-              imgUrl:''
-            },{
-              name:'chart01',
-              imgUrl:''
-            },
-            {
-              name:'chart02',
-              imgUrl:''
-            },{
-              name:'chart01',
-              imgUrl:''
-            },
-            {
-              name:'chart02',
-              imgUrl:''
-            },],
+          // chartList:[{
+          //   name:'chart01',
+          //   imgUrl:'12345678',
+          //   jsonUrl:'http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/chartJson/chart%20with%20positon.json',
+          // },
+          // {
+          //   name:'chart02',
+          //   imgUrl:''
+          // },{
+          //     name:'chart01',
+          //     imgUrl:''
+          //   },
+          //   {
+          //     name:'chart02',
+          //     imgUrl:''
+          //   },{
+          //     name:'chart01',
+          //     imgUrl:''
+          //   },
+          //   {
+          //     name:'chart02',
+          //     imgUrl:''
+          //   },{
+          //     name:'chart01',
+          //     imgUrl:''
+          //   },
+          //   {
+          //     name:'chart02',
+          //     imgUrl:''
+          //   },],
           headActiveIndex:'2',
             fileInfo:{
               file:'',
@@ -116,14 +116,17 @@
       computed:{
         ...mapGetters([
           'chartData',
+          'chartList'
         ]),
 
       },
       mounted() {
+        this.getChartList();
       },
       methods:{
         ...mapActions([
           'getKg',
+          'getChartList'
         ]),
         ...mapMutations([
           'setChartData',
@@ -317,7 +320,7 @@
   .chartCard{
     display: flex;
     float: left;
-    width: 20%;
+    width: 25%;
     margin: 2%;
   }
   .el-row{

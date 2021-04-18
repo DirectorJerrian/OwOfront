@@ -4,7 +4,7 @@ import {Message} from 'element-ui'
 import {getToken, setToken, removeToken} from '../../utils/auth'
 import {
   saveChartAPI,
-  getKgAPI
+  getKgAPI, getUserChartsAPI
 } from "../../api/chart";
 import da from "element-ui/src/locale/lang/da";
 
@@ -49,6 +49,13 @@ const chart={
         // resolve(res.msg);
       }
     },
+    getChartList: async ({dispatch,commit})=>{
+      var id=getToken();
+      const res=await getUserChartsAPI(id);
+      if(res){
+        commit('setChartList',res.obj);
+      }
+    }
   }
 };
 

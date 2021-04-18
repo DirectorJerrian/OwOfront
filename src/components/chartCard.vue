@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
+    <img :src="imgUrl" class="image" style="width: 400px;height: 200px"/>
     <div style="padding: 14px;">
       <span>{{name}}</span>
       <div class="bottom clearfix">
@@ -29,8 +29,8 @@
 
       mounted() {
         this.name=this.chart.name;
-        this.imgUrl=this.chart.imgUrl;
-        this.jsonUrl=this.chart.jsonUrl;
+        this.imgUrl=this.chart.imgURL;
+        this.jsonUrl=this.chart.jsonURL;
       },
       methods:{
         ...mapMutations([
