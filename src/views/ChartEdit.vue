@@ -1439,12 +1439,12 @@
           }
           return chartToBeSaved;
         },
-        saveChartClick(){
-          var chartToBeSaved=this.getChartData();
+        async saveChartClick() {
+          var chartToBeSaved = this.getChartData();
           //测试json文件生成
-          var jsonData=JSON.stringify(chartToBeSaved,undefined,4);
-          const jsonFile=new Blob([jsonData],{type:'text/json'});
-          const imgFile=this.getChartImgFile();
+          var jsonData = JSON.stringify(chartToBeSaved, undefined, 4);
+          const jsonFile = new Blob([jsonData], {type: 'text/json'});
+          const imgFile = this.getChartImgFile();
           // var e = document.createEvent('MouseEvents');
           // var a = document.createElement('a')
           // a.download = "chart.json";
@@ -1453,12 +1453,19 @@
           // e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
           // a.dispatchEvent(e);
           //TODO 数据库保存
-          if(this.isChartFixed){
-            this.successNotice("保存成功!（已经保存布局）")
+          const data = {
+            jsonFile: jsonFile,
+            imgFile: imgFile
+          };
+          if ( await this.addChart(data)) {
+            if (this.isChartFixed) {
+              this.successNotice("保存成功!（已经保存布局）")
+            } else {
+              this.successNotice("保存成功!（未保存布局）")
+            }
           }else{
-            this.successNotice("保存成功!（未保存布局）")
+            this.warningNotice("保存失败！")
           }
-
         },
         //点击事件
         chartClick(param){

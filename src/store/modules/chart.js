@@ -1,6 +1,7 @@
 import router from '@/router'
 import { resetRouter } from '@/router'
 import {Message} from 'element-ui'
+import {getToken, setToken, removeToken} from '../../utils/auth'
 import {
   saveChartAPI,
   getKgAPI
@@ -12,7 +13,7 @@ const getDefaultState=()=>{
     chartData: null,
     chartList:[],
   }
-}
+};
 
 const chart={
   state:getDefaultState(),
@@ -25,16 +26,22 @@ const chart={
     }
   },
   actions:{
-    addChart: async ({dispatch,commit},data)=>{
-      const res= await saveChartAPI(data);
+    addChart: async ({dispatch,state,commit},data)=>{
+      const fileData={
+        id: getToken(),
+        jsonFile: data.jsonFile,
+        imgFile: data.imgFile
+      };
+      const res= await saveChartAPI(fileData);
       if(res){
+        return true
 
       }
     },
     getKg: async ({dispatch,commit},data)=>{
       var dataVO={
         dataString:data
-      }
+      };
       const res= await getKgAPI(dataVO);
       if(res){
         return res.msg;
@@ -42,7 +49,7 @@ const chart={
       }
     },
   }
-}
+};
 
 export default chart
 
