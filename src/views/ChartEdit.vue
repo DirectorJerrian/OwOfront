@@ -1597,14 +1597,14 @@
               trigger: 'axis'
             },
             legend:{
-              data:['个数']
+              data:['数目']
             },
             xAxis: {
-              data: ['节点个数','关系个数','种类个数']
+              data: ['实体数目','关系数目','种类数目']
             },
             yAxis: {},
             series: [{
-              name:'个数',
+              name:'数目',
               type:'bar',
               data:[numOfNodes,numOfLinks,numOfCategory]
             }]
