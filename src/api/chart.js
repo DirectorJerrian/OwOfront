@@ -29,3 +29,10 @@ export function getKgAPI(data){
     data
   })
 }
+
+export function getUserChartAPI(id){
+  return axios({
+    url: `${api.userPre}/${id}/getUserChart`,
+    method: 'GET'
+  })
+}
