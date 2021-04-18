@@ -30,7 +30,8 @@ const chart={
       const fileData={
         id: getToken(),
         jsonFile: data.jsonFile,
-        imgFile: data.imgFile
+        imgFile: data.imgFile,
+        name:data.name
       };
       const res= await saveChartAPI(fileData);
       if(res){

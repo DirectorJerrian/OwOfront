@@ -6,8 +6,8 @@ const api = {
 
 export function saveChartAPI(data) {//data里要包含两个文件以及用户id
   let fd = new FormData();
-  fd.append("files",data.jsonFile,data.jsonFile.name);
-  fd.append("files",data.imgFile,data.imgFile.name);
+  fd.append("files",data.jsonFile,data.name);
+  fd.append("files",data.imgFile,data.name);
   console.log(fd.get("files"));
   return axios({
     withCredentials: true,
@@ -27,5 +27,12 @@ export function getKgAPI(data){
     url:`${api.chartPre}/getKg`,
     method: 'POST',
     data
+  })
+}
+
+export function getUserChartAPI(id){
+  return axios({
+    url: `${api.userPre}/${id}/getUserChart`,
+    method: 'GET'
   })
 }
