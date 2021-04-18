@@ -184,6 +184,7 @@
           for(var i=0;i<data.nodes.length;i++){
             data.nodes[i].symbolSize=parseInt(data.nodes[i].symbolSize);
             data.nodes[i].label.fontSize=parseInt(data.nodes[i].label.fontSize);
+            data.nodes[i].category=parseInt(data.nodes[i].category);
           }
           if(data.isChartFixed){
             for(var i=0;i<data.positions.length;i++){
@@ -324,6 +325,7 @@
   }
   .text-area{
     width: 100%;
+    padding-bottom: 10px;
     border-top:1px solid gainsboro;
     border-bottom:1px solid gainsboro;
 
@@ -334,6 +336,7 @@
     margin-left: 20px;
     margin-right: 10px;
     margin-top: 10px;
+    margin-bottom: 10px;
     border: none;
     outline: none;
     padding-left: 1.125rem;
