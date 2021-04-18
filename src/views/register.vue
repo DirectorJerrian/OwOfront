@@ -20,30 +20,36 @@
             </el-col>
             <el-col :span="16">
               <div class="centerArea">
-                <el-form label-position="right" class="centerBox" :model="registerForm" :rules="rules"
-                         ref="registerForm">
-                  <el-form-item label="用户名" prop="username" class="boxItem" required>
-                    <el-input placeholder="请输入用户名" v-model="registerForm.username"></el-input>
-                  </el-form-item>
-                  <el-form-item label="邮箱" prop="email" class="boxItem" required>
-                    <el-input placeholder="请输入邮箱" v-model="registerForm.email"></el-input>
-                  </el-form-item>
-                  <el-form-item label="邮箱验证" prop="code" class="boxItem" required>
-                    <el-input placeholder="请输入验证码" v-model="registerForm.code"></el-input>
-                    <el-button type="primary" @click="getCode" class="getCode">获取验证码</el-button>
-                  </el-form-item>
-                  <el-form-item label="密码" prop="password" class="boxItem" required>
-                    <el-input placeholder="请输入密码" v-model="registerForm.password" show-password></el-input>
-                  </el-form-item>
-                  <el-form-item label="确认密码" prop="secondPassword" class="boxItem" required>
-                    <el-input placeholder="请再次输入密码" v-model="registerForm.secondPassword" show-password></el-input>
-                  </el-form-item>
-                  <el-form-item class="boxItem">
-                    <el-button type="primary" @click="submitForm('registerForm')" class="buttonInRegister">注册
-                    </el-button>
-                    <el-link class="loginDirectly" @click="goLogin"><span>已有账号？直接登录</span></el-link>
-                  </el-form-item>
-                </el-form>
+                <div class="centerBox">
+                  <el-form label-position="right" class="centerForm" :model="registerForm" :rules="rules"
+                           ref="registerForm" label-width="100px">
+                    <el-form-item label="用户名:" prop="username" class="boxItem" required>
+                      <el-input placeholder="请输入用户名" v-model="registerForm.username"></el-input>
+                    </el-form-item>
+                    <el-form-item label="邮箱:" prop="email" class="boxItem" required>
+                      <el-input placeholder="请输入邮箱" v-model="registerForm.email"></el-input>
+                    </el-form-item>
+                    <el-form-item label="邮箱验证:" prop="code" class="boxItem" required>
+                      <el-col :span="15">
+                        <el-input placeholder="请输入验证码" v-model="registerForm.code"></el-input>
+                      </el-col>
+                      <el-col :span="5">
+                        <el-button type="primary" @click="getCode" class="getCode">获取验证码</el-button>
+                      </el-col>
+                    </el-form-item>
+                    <el-form-item label="密码:" prop="password" class="boxItem" required>
+                      <el-input placeholder="请输入密码" v-model="registerForm.password" show-password></el-input>
+                    </el-form-item>
+                    <el-form-item label="确认密码:" prop="secondPassword" class="boxItem" required>
+                      <el-input placeholder="请再次输入密码" v-model="registerForm.secondPassword" show-password></el-input>
+                    </el-form-item>
+                    <el-form-item class="boxItem">
+                      <el-button type="primary" @click="submitForm('registerForm')" class="buttonInRegister"> 注册
+                      </el-button>
+                      <el-link class="loginDirectly" @click="goLogin"><span>已有账号？直接登录</span></el-link>
+                    </el-form-item>
+                  </el-form>
+                </div>
               </div>
             </el-col>
             <el-col :span="4"></el-col>
@@ -153,7 +159,7 @@
         });
       },
       async getCode() {
-          await this.sendCode(this.registerForm.email)
+        await this.sendCode(this.registerForm.email)
       },
       async goLogin() {
         await this.$store.dispatch("logout");
@@ -173,7 +179,7 @@
   }
 
   .el-header {
-    padding: 20px;
+    padding: 0;
   }
 
   .myHome {
@@ -186,16 +192,23 @@
   .centerArea {
     width: 960px;
     margin: 30px auto;
-    padding: 40px 0 50px;
+    padding: 30px 0 30px;
   }
 
   .centerBox {
+    position: center;
     padding-top: 50px;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
     border-bottom: 2px solid #ccc;
     border-radius: 24px;
     box-shadow: 0 0 10px #ccc;
     background: rgba(255, 247, 193, 0.8);
+  }
+
+  .centerForm {
+    width: 600px;
+    margin-left: 160px;
+    position: center;
   }
 
   .centerBox >>> .el-form-item__label {
@@ -208,13 +221,18 @@
   }
 
   .buttonInRegister {
-    margin: 30px 50px 0 200px;
+    margin: 10px 50px 0 40px;
+    padding: 10px 30px 10px 30px;
     font-size: 20px;
   }
 
   .loginDirectly {
-    margin-left: 200px;
+    margin-left: 20px;
     color: blue;
+  }
+
+  .getCode {
+    margin-left: 30px;
   }
 </style>
 
