@@ -336,6 +336,7 @@
     margin-left: 20px;
     margin-right: 10px;
     margin-top: 10px;
+    margin-bottom: 10px;
     border: none;
     outline: none;
     padding-left: 1.125rem;
