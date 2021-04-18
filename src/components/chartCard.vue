@@ -28,7 +28,8 @@
       },
 
       mounted() {
-        this.name=this.chart.name;
+        console.log(this.chart);
+        this.name=this.chart.imgName;
         this.imgUrl=this.chart.imgURL;
         this.jsonUrl=this.chart.jsonURL;
       },
