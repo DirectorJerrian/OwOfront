@@ -25,6 +25,7 @@
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
             <el-menu-item index="2-2" @click="searchLinkClick()">关系信息搜索</el-menu-item>
             <el-menu-item index="2-3" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
+            <el-menu-item index="2-4" @click="cancelLabelShow()">不显示关系标签</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3" >
@@ -114,7 +115,7 @@
           </el-form-item>
         </el-form>
         <div class="demo-drawer__footer">
-          <el-button @click="cancelForm">取 消</el-button>
+          <el-button style="margin-left: 100px" @click="cancelForm">取 消</el-button>
           <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
           <el-button type="danger" v-if="this.isNodeEdit" @click="deleteNode(nodeForm.name)">删 除</el-button>
           <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm.name)">删 除</el-button>
@@ -671,6 +672,8 @@
           isChartFixed:false,
           //当前是否为力导图模式
           isForceChart:true,
+          //是否显示关系标签
+          isLinksLabelVisible:true
         }
       },
       computed:{
@@ -697,6 +700,28 @@
         processChartData(){
           this.nodes=this.chartData.nodes;
           this.links=this.chartData.links;
+          //获取categories
+          var myCategories=[];
+          var maxCategory=0;
+          for(var i=0;i<this.chartData.nodes.length;i++){
+            if(myCategories.indexOf(this.chartData.nodes[i].category)>-1)
+              continue;
+            else{
+              myCategories.push(this.chartData.nodes[i].category);
+              if(this.chartData.nodes[i].category>maxCategory)
+                maxCategory=this.chartData.nodes[i].category;
+            }
+          }
+          this.categories=[];
+          for(var i=0;i<maxCategory+1;i++){
+            this.categories.push({ name: "" });
+          }
+          console.log(this.categories);
+          for(var i=0;i<this.chartData.nodes.length;i++){
+            this.categories[this.chartData.nodes[i].category].name=this.chartData.nodes[i].category+" class";
+          }
+          console.log(this.categories);
+
           this.option.title.text=this.chartData.title;
           this.isChartFixed=this.chartData.isChartFixed;
           if(this.isChartFixed){
@@ -722,7 +747,9 @@
                 isFinish=this.changeLink(this.linkForm);
               }
               else if(this.isNodeCreate){
+                console.log("start create");
                 isFinish=this.createNode(this.nodeForm);
+                console.log(isFinish);
               }
               else{
                 isFinish=this.createLink(this.linkForm);
@@ -793,6 +820,18 @@
           this.chart.clear();
           this.showChart();
         },
+        cancelLabelShow(){
+          this.option = this.chart.getOption();
+          if(this.isLinksLabelVisible){
+            this.isLinksLabelVisible = false;
+            this.option.series[0].edgeLabel.show = false;
+          }
+          else{
+            this.isLinksLabelVisible = true;
+            this.option.series[0].edgeLabel.show = true;
+          }
+          this.chart.setOption(this.option);
+        },
         createNode(nodeForm){
           var name=nodeForm.name;
           var des=nodeForm.des;
@@ -801,7 +840,6 @@
           var symbol=nodeForm.symbol;
           var color=nodeForm.color;
           var fontSize=parseInt(nodeForm.fontSize);
-
           if(this.isNodeExist(name)){
             this.warningNotice("实体名称重复，请重新命名！");
             return false;
@@ -819,8 +857,7 @@
             },
             category:category,
           };
-          nodes.push(node);
-          console.log(nodes);
+          this.nodes.push(node);
           this.showChart();
           this.successNotice("创建成功");
           return true;
@@ -852,23 +889,23 @@
             source:source,
             target:target
           };
-          links.push(link);
+          this.links.push(link);
           this.showChart();
           this.successNotice("创建成功");
           return true;
         },
         //寻找是否存该名字的实体
         isNodeExist(name) {
-          for(var i=0;i<nodes.length;i++){
-            if(nodes[i].name===name){
+          for(var i=0;i<this.nodes.length;i++){
+            if(this.nodes[i].name===name){
               return true;
             }
           }
           return false;
         },
         isLinkExist(source,target) {
-          for(var i=0;i<links.length;i++){
-            if(links[i].source===source && links[i].target===target){
+          for(var i=0;i<this.links.length;i++){
+            if(this.links[i].source===source && this.links[i].target===target){
               return true;
             }
           }
@@ -895,7 +932,10 @@
         deleteLink(name){
           //删除关系
           var linkIndex=this.findLinkIndex(name);
-          links.splice(linkIndex,1);
+          console.log(linkIndex);
+          this.links.splice(linkIndex,1);
+          this.isChartInfoEditVisible = false;
+          this.isNodeEdit = false;
           this.showChart();
           this.successNotice("删除成功");
           return true;

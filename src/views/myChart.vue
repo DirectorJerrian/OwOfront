@@ -1,18 +1,49 @@
 <template>
   <div class="myChart">
-    <el-header style="padding: 0px">
+    <el-header style="padding: 0">
       <Header></Header>
     </el-header>
-    <div id="operation">
-      <el-upload
-        action=""
-        :on-change="uploadFile"
-        :auto-upload="false"
-        :show-file-list="false">
-        <el-button slot="trigger" size="max" type="primary">读入图谱</el-button>
-        <el-button style="margin-left: 10px;" size="max" type="success" @click="analyzeChart">解析图谱并编辑</el-button>
-      </el-upload>
+    <el-container>
+      <el-aside>
+        <el-row style="margin-bottom:20px;margin-top: 10px">
+          <el-upload
+            action=""
+            :on-change="uploadFile"
+            :auto-upload="false"
+            :show-file-list="false">
+            <el-button slot="trigger" size="max" type="primary" v-if="isFileUploaded">重新读入图谱</el-button>
+            <el-button slot="trigger" size="max" type="primary" v-else>读入图谱</el-button>
+          </el-upload>
+        </el-row>
+        <el-row>
+          <el-button size="max" type="success" @click="analyzeChart">解析图谱并编辑</el-button>
+        </el-row>
+      </el-aside>
+      <el-main>
+        <div style="color: #409eff">
+          <span v-if="isFileUploaded" style="color: #53ff40">文件名:{{fileInfo.file.raw.name}}</span>
+          <span v-else style="color: #ff4040">未上传文件</span>
+          <el-divider></el-divider>
+          <span v-if="isFileUploaded">文件类型:{{fileInfo.file.raw.type}}</span>
+          <span v-else>文件类型:无</span>
+          <el-divider direction="vertical"></el-divider>
+          <span v-if="isFileUploaded">文件大小:{{(fileInfo.file.raw.size/1024).toFixed(2)}}</span>
+          <span v-else>文件大小:0KB</span>
+
+        </div>
+      </el-main>
+    </el-container>
+
+    <div class="text-area">
+      <textarea v-model="textData" placeholder="请输入解析文本...">
+      </textarea>
+      <el-row>
+        <el-button size="max" type="success" @click="analyzeText">解析文本</el-button>
+      </el-row>
     </div>
+
+
+
     <div id="chartList">
 
         <div class="card-wrapper">
@@ -41,6 +72,7 @@
       },
       data(){
         return{
+          textData:'',
           chartList:[{
             name:'chart01',
             imgUrl:'12345678',
@@ -75,7 +107,9 @@
             fileInfo:{
               file:'',
               type:'',
+              size:0,
             },
+          isFileUploaded:false,
 
           }
       },
@@ -89,7 +123,7 @@
       },
       methods:{
         ...mapActions([
-
+          'getKg',
         ]),
         ...mapMutations([
           'setChartData',
@@ -131,6 +165,8 @@
           if(this.beforeFileUpload(file)){
             this.fileInfo.file=file;
           }
+          this.isFileUploaded=true;
+          // this.fileInfo.size=
           this.$message.success(this.fileInfo.file.name+'上传成功!');
         },
         getSimpleDataByNode(node){
@@ -262,6 +298,15 @@
             });
           }
         },
+        analyzeText(){
+          this.getKg(this.textData).then((jsonStr)=>{
+            console.log(jsonStr);
+            var jsonObj=JSON.parse(jsonStr);
+            console.log(jsonObj);
+            this.setChartData(jsonObj);
+            router.push('/ChartEdit');
+          });
+        }
       }
 
     }
@@ -273,6 +318,28 @@
     float: left;
     width: 20%;
     margin: 2%;
+  }
+  .el-row{
+    margin-left: 20px;
+  }
+  .text-area{
+    width: 100%;
+    border-top:1px solid gainsboro;
+    border-bottom:1px solid gainsboro;
+
+  }
+  .text-area textarea {
+    width: 80%;
+    margin: 0.75rem  0;
+    border: none;
+    outline: none;
+    padding-left: 1.125rem;
+    height: 6.5rem ;
+  }
+
+  .text-area textarea::-webkit-input-placeholder {
+    color: #9E9E9E;
+
   }
 
 </style>
