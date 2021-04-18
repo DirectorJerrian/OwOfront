@@ -20,18 +20,21 @@
             </el-col>
             <el-col :span="16">
               <div class="centerArea">
-                <el-form label-position="right" class="centerBox" :model="loginForm" :rules="rules" ref="loginForm">
-                  <el-form-item label="账号" prop="email" class="boxItem" required>
-                    <el-input placeholder="请输入邮箱" v-model="loginForm.email"></el-input>
-                  </el-form-item>
-                  <el-form-item label="密码" prop="password" class="boxItem" required>
-                    <el-input placeholder="请输入密码" v-model="loginForm.password" show-password></el-input>
-                  </el-form-item>
-                  <el-form-item class="boxItem">
-                    <el-button type="primary" @click="submitForm('loginForm')" class="buttonInLogin">登录</el-button>
-                    <el-button @click="goRegister" class="buttonInLogin">注册</el-button>
-                  </el-form-item>
-                </el-form>
+                <div class="centerBox">
+                  <el-form label-position="right" class="centerForm" :model="loginForm" :rules="rules" ref="loginForm"
+                           label-width="100px">
+                    <el-form-item label="账号:" prop="email" class="boxItem" required>
+                      <el-input placeholder="请输入邮箱" v-model="loginForm.email"></el-input>
+                    </el-form-item>
+                    <el-form-item label="密码:" prop="password" class="boxItem" required>
+                      <el-input placeholder="请输入密码" v-model="loginForm.password" show-password></el-input>
+                    </el-form-item>
+                    <el-form-item class="boxItem">
+                      <el-button type="primary" @click="submitForm('loginForm')" class="buttonInLogin">登录</el-button>
+                      <el-button @click="goRegister" class="buttonInLogin">注册</el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
               </div>
             </el-col>
             <el-col :span="4"></el-col>
@@ -93,7 +96,7 @@
     },
     watch: {
       $route: {
-        handler: function(route) {
+        handler: function (route) {
           this.redirect = route.query && route.query.redirect
         },
         immediate: true
@@ -129,7 +132,7 @@
   }
 
   .el-header {
-    padding: 0px;
+    padding: 0;
   }
 
   .myHome {
@@ -142,16 +145,23 @@
   .centerArea {
     width: 960px;
     margin: 30px auto;
-    padding: 40px 0 50px;
+    padding: 30px 0 30px;
   }
 
   .centerBox {
+    position: center;
     padding-top: 50px;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
     border-bottom: 2px solid #ccc;
     border-radius: 24px;
     box-shadow: 0 0 10px #ccc;
     background: rgba(255, 247, 193, 0.8);
+  }
+
+  .centerForm {
+    width: 520px;
+    margin-left: 180px;
+    position: center;
   }
 
   .centerBox >>> .el-form-item__label {
@@ -160,11 +170,12 @@
   }
 
   .boxItem {
-    padding: 0 50px 0 50px;
+    padding: 10px 50px 0 50px;
   }
 
-  .buttonInLogin{
-    margin: 30px 50px 0 200px;
+  .buttonInLogin {
+    margin: 10px 30px 0 25px;
+    padding: 10px 30px 10px 30px;
     font-size: 20px;
   }
 </style>

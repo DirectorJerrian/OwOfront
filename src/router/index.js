@@ -7,7 +7,7 @@ const routes = [
     path: '/ChartEdit',
     name: '图谱编辑',
     meta: { title: 'OwO图谱编辑' },
-    component: () => import('@/views/ChartEdit')
+    component: resolve => require(['@/views/ChartEdit'],resolve)
   },
   {
     path: '/',
@@ -17,25 +17,25 @@ const routes = [
     path: '/home',
     name: 'homePage',
     meta: { title: '首页' },
-    component: () => import('@/views/home')
+    component: resolve => require(['@/views/home'],resolve)
   },
   {
     path: '/register',
     name: 'Register',
     meta: { title: 'OwO注册' },
-    component: () => import('@/views/register')
+    component: resolve => require(['@/views/register'],resolve)
   },
   {
     path: '/login',
     name: 'Login',
     meta: { title: 'OwO登录' },
-    component: () => import('@/views/login')
+    component: resolve => require(['@/views/login'],resolve)
   },
   {
     path: '/myChart',
     name: '我的知识图谱',
     meta: { title: '我的知识图谱' },
-    component: () => import('@/views/myChart')
+    component: resolve => require(['@/views/myChart'],resolve)
   }
 ];
 

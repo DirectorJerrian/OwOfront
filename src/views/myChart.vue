@@ -184,6 +184,7 @@
           for(var i=0;i<data.nodes.length;i++){
             data.nodes[i].symbolSize=parseInt(data.nodes[i].symbolSize);
             data.nodes[i].label.fontSize=parseInt(data.nodes[i].label.fontSize);
+            data.nodes[i].category=parseInt(data.nodes[i].category);
           }
           if(data.isChartFixed){
             for(var i=0;i<data.positions.length;i++){

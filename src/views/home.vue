@@ -5,18 +5,6 @@
         <Header></Header>
       </el-header>
       <Banner></Banner>
-      <div id="components-grid-demo-playground">
-        <div
-          class="projects"
-          style="
-            margin: 2px auto;
-            width: 80%;
-            background: white;
-            padding-top: 30px;
-          "
-        >
-        </div>
-      </div>
     </el-container>
 
     <el-container>
@@ -38,7 +26,7 @@
                 </el-row>
                 <el-row type="flex" justify="center" style="margin: 5px 0">
                   <el-col :span="6" style="text-align: center">
-                    <el-rate value="5" disabled text-color="#ff9900"> </el-rate>
+                    <el-rate :value="5" disabled text-color="#ff9900"> </el-rate>
                   </el-col>
                 </el-row>
                 <el-row type="flex" justify="center">
@@ -61,7 +49,7 @@
       <!-- 页脚 -->
       <el-footer style="height: 180px">
         <el-row :gutter="10" class="footer-row">
-          <el-col :span="4" offset="6">
+          <el-col :span="4" :offset="6">
             <span style="font-size: 24px">帮助中心</span>
             <br />
 
@@ -70,7 +58,7 @@
               <a href="http://212.129.149.40/users/sign_in"> 联系我们</a>
             </span>
           </el-col>
-          <el-col :span="4" offset="6" class="footer-pic">
+          <el-col :span="4" :offset="6" class="footer-pic">
             <el-image class="logo" :src="logo_url"></el-image>
           </el-col>
         </el-row>
@@ -204,6 +192,7 @@ export default {
   color: rgb(255, 255, 255);
   text-align: right;
   /* line-height: 60px; */
+  margin-bottom: 100px;
 }
 
 .el-footer {
