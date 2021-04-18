@@ -1453,9 +1453,11 @@
           // e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
           // a.dispatchEvent(e);
           //TODO 数据库保存
+          const tempName = this.option.title.text;
           const data = {
             jsonFile: jsonFile,
-            imgFile: imgFile
+            imgFile: imgFile,
+            name:tempName
           };
           if ( await this.addChart(data)) {
             if (this.isChartFixed) {
