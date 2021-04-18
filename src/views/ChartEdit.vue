@@ -695,7 +695,6 @@
         ]),
         //页面打开处理图谱信息
         processChartData(){
-          console.log(this.chartData);
           this.nodes=this.chartData.nodes;
           this.links=this.chartData.links;
           this.option.title.text=this.chartData.title;
