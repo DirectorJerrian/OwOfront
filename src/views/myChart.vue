@@ -34,6 +34,13 @@
       </el-main>
     </el-container>
 
+    <div class="text-area">
+      <textarea v-model="textData" placeholder="请输入解析文本...">
+      </textarea>
+      <el-row>
+        <el-button size="max" type="success" @click="analyzeText">解析文本</el-button>
+      </el-row>
+    </div>
 
 
 
@@ -65,6 +72,7 @@
       },
       data(){
         return{
+          textData:'',
           chartList:[{
             name:'chart01',
             imgUrl:'12345678',
@@ -115,7 +123,7 @@
       },
       methods:{
         ...mapActions([
-
+          'getKg',
         ]),
         ...mapMutations([
           'setChartData',
@@ -291,6 +299,15 @@
             });
           }
         },
+        analyzeText(){
+          this.getKg(this.textData).then((jsonStr)=>{
+            // console.log(jsonStr);
+            var jsonObj=JSON.parse(jsonStr);
+            // console.log(jsonObj);
+            this.setChartData(jsonObj);
+            router.push('/ChartEdit');
+          });
+        }
       }
 
     }
@@ -305,6 +322,28 @@
   }
   .el-row{
     margin-left: 20px;
+  }
+  .text-area{
+    width: 100%;
+    border-top:1px solid gainsboro;
+    border-bottom:1px solid gainsboro;
+
+  }
+  .text-area textarea {
+    background-color:rgba(241,241,241,.98);
+    width: 90%;
+    margin-left: 20px;
+    margin-right: 10px;
+    margin-top: 10px;
+    border: none;
+    outline: none;
+    padding-left: 1.125rem;
+    height: 6.5rem ;
+  }
+
+  .text-area textarea::-webkit-input-placeholder {
+    color: #9E9E9E;
+
   }
 
 </style>

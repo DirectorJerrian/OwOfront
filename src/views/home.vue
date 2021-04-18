@@ -5,18 +5,6 @@
         <Header></Header>
       </el-header>
       <Banner></Banner>
-      <div id="components-grid-demo-playground">
-        <div
-          class="projects"
-          style="
-            margin: 2px auto;
-            width: 80%;
-            background: white;
-            padding-top: 30px;
-          "
-        >
-        </div>
-      </div>
     </el-container>
 
     <el-container>
@@ -38,7 +26,7 @@
                 </el-row>
                 <el-row type="flex" justify="center" style="margin: 5px 0">
                   <el-col :span="6" style="text-align: center">
-                    <el-rate value="5" disabled text-color="#ff9900"> </el-rate>
+                    <el-rate :value="5" disabled text-color="#ff9900"> </el-rate>
                   </el-col>
                 </el-row>
                 <el-row type="flex" justify="center">
@@ -61,7 +49,7 @@
       <!-- 页脚 -->
       <el-footer style="height: 180px">
         <el-row :gutter="10" class="footer-row">
-          <el-col :span="4" offset="6">
+          <el-col :span="4" :offset="6">
             <span style="font-size: 24px">帮助中心</span>
             <br />
 
@@ -70,7 +58,7 @@
               <a href="http://212.129.149.40/users/sign_in"> 联系我们</a>
             </span>
           </el-col>
-          <el-col :span="4" offset="6" class="footer-pic">
+          <el-col :span="4" :offset="6" class="footer-pic">
             <el-image class="logo" :src="logo_url"></el-image>
           </el-col>
         </el-row>
@@ -96,18 +84,18 @@ export default {
       projects: [],
       shuffleTime : 0,
       carousel_content:[
-        "FinClaw8的产品非常好用！是一款全新的，前所未有的智能风控平台，帮助我解决了客户标签不足，画像不全面的问题，还帮我解决了优化贷款策略的问题！非常赞！",
+        "OwO COIN的产品非常好用！是一款全新的，前所未有的智能风控平台，帮助我解决了客户标签不足，画像不全面的问题，还帮我解决了优化贷款策略的问题！非常赞！",
         "不得不说，很多道听途说的信用贷款信息其实并不准确，眼睛看到的也不一定为实，那么到底如何才能主动掌握精准信息呢？\n其实不需要多复杂，你也不用请私家侦探，使用FinClaw8就能让你拥有火眼金睛，有了它一定能给你带来很大的帮助！",
         "说句掏心窝子的话，在这个互联网信息杂乱的时代，我们很有必要拥有主动掌握准确信息的能力，否则一个错误的贷款决定可能会让企业陷入周转困境，银行陷入财务危机，也许在你做决定之前使用一下这个平台就能避免很多事情的发生！",
-        "FinClaw8的产品非常好用！是一款全新的，前所未有的智能风控平台，帮助我解决了客户标签不足，画像不全面的问题，还帮我解决了优化贷款策略的问题！非常赞！",
+        "OWO COIN的产品非常好用！是一款全新的，前所未有的智能风控平台，帮助我解决了客户标签不足，画像不全面的问题，还帮我解决了优化贷款策略的问题！非常赞！",
         "不得不说，很多道听途说的信用贷款信息其实并不准确，眼睛看到的也不一定为实，那么到底如何才能主动掌握精准信息呢？\n其实不需要多复杂，你也不用请私家侦探，使用FinClaw8就能让你拥有火眼金睛，有了它一定能给你带来很大的帮助！",
         "说句掏心窝子的话，在这个互联网信息杂乱的时代，我们很有必要拥有主动掌握准确信息的能力，否则一个错误的贷款决定可能会让企业陷入周转困境，银行陷入财务危机，也许在你做决定之前使用一下这个平台就能避免很多事情的发生！",
       ]
     };
   },
   mounted() {
-    this.shuffleProjects()
-    console.log("projects:",this.projects)
+    this.shuffleProjects();
+    console.log("projects:",this.projects);
   },
   methods: {
     goToLogin() {
@@ -118,11 +106,11 @@ export default {
     },
 
     shuffleProjects() {
-      const orgNames = ["花旗银行","工商银行","农业银行","建设银行","上海银行"]
-      const colors = ['pink','orange','red','cyan','blue']
-      let orgs = []
+      const orgNames = ["花旗银行","工商银行","农业银行","建设银行","上海银行"];
+      const colors = ['pink','orange','red','cyan','blue'];
+      let orgs = [];
       for(let i=0;i<orgNames.length;i++) orgs.push({name:orgNames[i],color:colors[i]})
-      const industries = ["餐饮","自动化","印刷业","新能源","互联网","服装","自媒体"]
+      const industries = ["餐饮","自动化","印刷业","新能源","互联网","服装","自媒体"];
       const imageUrls = [
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
         "https://image.tianyancha.com/462d55f16d254aba84e9e759e699b087.jpg@!hotNews_f_273x171",
@@ -151,14 +139,14 @@ export default {
         tmpProject.image = imageUrls[(i+8*this.shuffleTime)%imageUrls.length]
         tmpProjects.push(tmpProject)
       }
-      this.shuffleTime++
+      this.shuffleTime++;
       this.projects = tmpProjects
       // may need force to update
     },
     getRandomDate() {
-      let minDate = new Date(2020,9,20,8).getTime()
-      let maxDate = new Date().getTime()
-      let randomDate = this.getRandom(minDate,maxDate)
+      let minDate = new Date(2020,9,20,8).getTime();
+      let maxDate = new Date().getTime();
+      let randomDate = this.getRandom(minDate,maxDate);
       return this.$moment(randomDate).format("YYYY-MM-DD")
     },
     getRandom(min,max) {
@@ -204,6 +192,7 @@ export default {
   color: rgb(255, 255, 255);
   text-align: right;
   /* line-height: 60px; */
+  margin-bottom: 100px;
 }
 
 .el-footer {

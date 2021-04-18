@@ -25,6 +25,7 @@
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
             <el-menu-item index="2-2" @click="searchLinkClick()">关系信息搜索</el-menu-item>
             <el-menu-item index="2-3" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
+            <el-menu-item index="2-4" @click="cancelLabelShow()">不显示关系标签</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3" >
@@ -114,7 +115,7 @@
           </el-form-item>
         </el-form>
         <div class="demo-drawer__footer">
-          <el-button @click="cancelForm">取 消</el-button>
+          <el-button style="margin-left: 100px" @click="cancelForm">取 消</el-button>
           <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
           <el-button type="danger" v-if="this.isNodeEdit" @click="deleteNode(nodeForm.name)">删 除</el-button>
           <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm.name)">删 除</el-button>
@@ -671,6 +672,8 @@
           isChartFixed:false,
           //当前是否为力导图模式
           isForceChart:true,
+          //是否显示关系标签
+          isLinksLabelVisible:true
         }
       },
       computed:{
@@ -697,6 +700,28 @@
         processChartData(){
           this.nodes=this.chartData.nodes;
           this.links=this.chartData.links;
+          //获取categories
+          var myCategories=[];
+          var maxCategory=0;
+          for(var i=0;i<this.chartData.nodes.length;i++){
+            if(myCategories.indexOf(this.chartData.nodes[i].category)>-1)
+              continue;
+            else{
+              myCategories.push(this.chartData.nodes[i].category);
+              if(this.chartData.nodes[i].category>maxCategory)
+                maxCategory=this.chartData.nodes[i].category;
+            }
+          }
+          this.categories=[];
+          for(var i=0;i<maxCategory+1;i++){
+            this.categories.push({ name: "" });
+          }
+          console.log(this.categories);
+          for(var i=0;i<this.chartData.nodes.length;i++){
+            this.categories[this.chartData.nodes[i].category].name=this.chartData.nodes[i].category+" class";
+          }
+          console.log(this.categories);
+
           this.option.title.text=this.chartData.title;
           this.isChartFixed=this.chartData.isChartFixed;
           if(this.isChartFixed){
@@ -795,6 +820,18 @@
           this.chart.clear();
           this.showChart();
         },
+        cancelLabelShow(){
+          this.option = this.chart.getOption();
+          if(this.isLinksLabelVisible){
+            this.isLinksLabelVisible = false;
+            this.option.series[0].edgeLabel.show = false;
+          }
+          else{
+            this.isLinksLabelVisible = true;
+            this.option.series[0].edgeLabel.show = true;
+          }
+          this.chart.setOption(this.option);
+        },
         createNode(nodeForm){
           var name=nodeForm.name;
           var des=nodeForm.des;
@@ -821,7 +858,6 @@
             category:category,
           };
           this.nodes.push(node);
-          console.log(this.nodes);
           this.showChart();
           this.successNotice("创建成功");
           return true;
@@ -896,7 +932,10 @@
         deleteLink(name){
           //删除关系
           var linkIndex=this.findLinkIndex(name);
-          links.splice(linkIndex,1);
+          console.log(linkIndex);
+          this.links.splice(linkIndex,1);
+          this.isChartInfoEditVisible = false;
+          this.isNodeEdit = false;
           this.showChart();
           this.successNotice("删除成功");
           return true;
@@ -1400,12 +1439,12 @@
           }
           return chartToBeSaved;
         },
-        saveChartClick(){
-          var chartToBeSaved=this.getChartData();
+        async saveChartClick() {
+          var chartToBeSaved = this.getChartData();
           //测试json文件生成
-          var jsonData=JSON.stringify(chartToBeSaved,undefined,4);
-          const jsonFile=new Blob([jsonData],{type:'text/json'});
-          const imgFile=this.getChartImgFile();
+          var jsonData = JSON.stringify(chartToBeSaved, undefined, 4);
+          const jsonFile = new Blob([jsonData], {type: 'text/json'});
+          const imgFile = this.getChartImgFile();
           // var e = document.createEvent('MouseEvents');
           // var a = document.createElement('a')
           // a.download = "chart.json";
@@ -1414,12 +1453,19 @@
           // e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
           // a.dispatchEvent(e);
           //TODO 数据库保存
-          if(this.isChartFixed){
-            this.successNotice("保存成功!（已经保存布局）")
+          const data = {
+            jsonFile: jsonFile,
+            imgFile: imgFile
+          };
+          if ( await this.addChart(data)) {
+            if (this.isChartFixed) {
+              this.successNotice("保存成功!（已经保存布局）")
+            } else {
+              this.successNotice("保存成功!（未保存布局）")
+            }
           }else{
-            this.successNotice("保存成功!（未保存布局）")
+            this.warningNotice("保存失败！")
           }
-
         },
         //点击事件
         chartClick(param){
