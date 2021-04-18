@@ -325,6 +325,7 @@
   }
   .text-area{
     width: 100%;
+    padding-bottom: 10px;
     border-top:1px solid gainsboro;
     border-bottom:1px solid gainsboro;
 
