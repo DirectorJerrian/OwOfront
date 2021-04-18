@@ -661,6 +661,8 @@
           },
           searchLinkResult:[],
           searchLinkResultChosen:[],
+          highlightNodeList:[],
+          highlightLinkList:[],
           isChartSearchVisible:false,
           isChartInfoEditVisible:false,
           isNodeEdit:false,
@@ -717,12 +719,9 @@
           for(var i=0;i<maxCategory+1;i++){
             this.categories.push({ name: "" });
           }
-          console.log(this.categories);
           for(var i=0;i<this.chartData.nodes.length;i++){
             this.categories[this.chartData.nodes[i].category].name=this.chartData.nodes[i].category+" class";
           }
-          console.log(this.categories);
-
           this.option.title.text=this.chartData.title;
           this.isChartFixed=this.chartData.isChartFixed;
           if(this.isChartFixed){
@@ -1240,6 +1239,7 @@
             option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color=highlightNodeColor;
             option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.borderColor=highlightBorderColor;
           }
+          this.highlightNodeList=this.searchNodeResult.concat(this.searchNodeResultChosen);
           this.chart.setOption(option);
           this.isSearchNodeVisible=false;
         },
@@ -1359,24 +1359,27 @@
             option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle={};
             option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle.color=highlightColor;
           }
+          this.highlightLinkList=this.highlightLinkList.concat(this.searchLinkResultChosen);
           this.chart.setOption(option);
           this.isSearchLinkVisible=false;
         },
         cancelNodeHighlight(){
           var option=this.chart.getOption();
-          for(var i=0;i<this.searchNodeResultChosen.length;i++){
-            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle={color:this.nodes[i].itemStyle.color};
+          for(var i=0;i<this.highlightNodeList.length;i++){
+            option.series[0].nodes[this.highlightNodeList[i].index].itemStyle={color:this.nodes[i].itemStyle.color};
 
           }
+          this.highlightNodeList=[];
           this.chart.setOption(option);
         },
         cancelLinkHighlight(){
           var option=this.chart.getOption();
-          const defaultColor='#4b565b'
+          const defaultColor='#4b565b';
           for(var i=0;i<this.searchLinkResultChosen.length;i++){
             option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle={};
             option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle.color=defaultColor;
           }
+          this.highlightLinkList=[];
           this.chart.setOption(option);
         },
         ///////////////////////////////////////////////////////////
