@@ -738,18 +738,16 @@
           this.$confirm('确定要提交表单吗？')
             .then(_ => {
               var isFinish = false;
-              console.log(this.isNodeCreate);
-
               if(this.isNodeEdit){
                 isFinish=this.changeNode(this.nodeForm);
+                this.isNodeEdit = false;
               }
               else if(this.isLinkEdit){
                 isFinish=this.changeLink(this.linkForm);
+                this.isLinkEdit = false;
               }
               else if(this.isNodeCreate){
-                console.log("start create");
                 isFinish=this.createNode(this.nodeForm);
-                console.log(isFinish);
               }
               else{
                 isFinish=this.createLink(this.linkForm);
@@ -860,6 +858,7 @@
           this.nodes.push(node);
           this.showChart();
           this.successNotice("创建成功");
+          this.isNodeCreate = false;
           return true;
         },
         createLink(linkForm){
@@ -892,6 +891,7 @@
           this.links.push(link);
           this.showChart();
           this.successNotice("创建成功");
+          this.isLinkCreate = false;
           return true;
         },
         //寻找是否存该名字的实体
@@ -935,7 +935,7 @@
           console.log(linkIndex);
           this.links.splice(linkIndex,1);
           this.isChartInfoEditVisible = false;
-          this.isNodeEdit = false;
+          this.isLinkEdit = false;
           this.showChart();
           this.successNotice("删除成功");
           return true;
