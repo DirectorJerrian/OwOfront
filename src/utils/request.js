@@ -7,7 +7,7 @@ import {getToken} from './auth'
 import router from '../router'
 
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? 'http://localhost:8082' : 'http://localhost:8082',
+  baseURL: process.env.NODE_ENV === 'production' ? 'http://47.118.57.5:8082' : 'http://localhost:8082',
   withCredentials: true
 });
 console.log(process.env.NODE_ENV);
