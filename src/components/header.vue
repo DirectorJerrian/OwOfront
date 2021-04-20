@@ -8,7 +8,7 @@
       active-text-color="#ffd04b"
     >
       <el-menu-item index="0" id="label">
-        <img :src="logo_url" class="logo" alt="logo" @click="jumpToHome" />
+        <img :src="logo_url" class="logo" alt="logo" @click="jumpToHome"/>
       </el-menu-item>
       <el-menu-item index="1" @click="jumpToHome">首页</el-menu-item>
       <el-menu-item index="2" @click="jumpToCenter">知识图谱处理</el-menu-item>
@@ -58,10 +58,12 @@
 
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="jumpToUserInfo()"
-                >我的信息</el-dropdown-item
+              >我的信息
+              </el-dropdown-item
               >
               <el-dropdown-item style="color: red" @click.native="quit()"
-                >退出登录</el-dropdown-item
+              >退出登录
+              </el-dropdown-item
               >
             </el-dropdown-menu>
           </el-dropdown>
@@ -71,135 +73,140 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions, mapMutations } from "vuex";
-import {getToken} from "../utils/auth";
-export default {
-  name: "Header",
-  inject: ["reload"],
-  data() {
-    return {
-      logo_url:
-        "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/logo.png",
-      isAuthorized: true,
-      isRejected: false,
-    };
-  },
-  components: {},
-  computed: {
-    ...mapGetters(["userId", "userInfo"]),
-  },
-  async mounted() {
-    if (getToken()) {
-      await this.getUserInfo();
-      console.log(this.userInfo);
-    }
-  },
-  methods: {
-    ...mapActions(["logout", "getUserInfo"]),
-    selectMenu(v) {},
-    async quit() {
-      await this.$store.dispatch("logout");
-      await this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+  import {mapGetters, mapActions, mapMutations} from "vuex";
+  import {getToken} from "../utils/auth";
+
+  export default {
+    name: "Header",
+    inject: ["reload"],
+    data() {
+      return {
+        logo_url:
+          "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/logo.png",
+        isAuthorized: true,
+        isRejected: false,
+      };
+    },
+    components: {},
+    computed: {
+      ...mapGetters(["userId", "userInfo"]),
     },
     async mounted() {
-      await this.getUserInfo();
-      const r = this.userInfo.role;
-      if (
-        r == "UnauthorizedCompany" ||
-        r == "UnauthorizedBank" ||
-        r == "UnauthorizedDataProvider"
-      ) {
-        this.isAuthorized = false;
-        alert("未授权")
+      if (getToken()) {
+        await this.getUserInfo();
+        console.log(this.userInfo);
       }
-      if (r == "rejected") {
-        this.isRejected = true
-      }
-      console.log(this.userInfo);
     },
-    tagClick() {
-      alert("click");
-    },
-    jumpToUserInfo() {
-      this.$router.push({
-        name: "userInfo",
-        params: {
-          userId: Number(this.userId),
-        },
-      });
-    },
-    jumpToHome() {
-      this.$router.push("/home");
-    },
-    jumpToLogin() {
-      this.$router.push("/login");
-    },
-    jumpToRegister() {
-      this.$router.push("/register");
-    },
-    jumpToMyChart(){
-      this.$router.push("/myChart");
-    },
-    jumpToCenter() {
-      const r = this.userInfo.role;
-      if (r == "Bank") {
-        this.$router.push("/bank");
-      } else if (r == "DataProvider") {
-        this.$router.push("/cooperator");
-      } else if (r == "Company") {
-        this.$router.push("/loaner");
-      } else if (r == "Admin") {
-        this.$router.push("/manager");
-      } else if (
-        r == "UnauthorizedCompany" ||
-        r == "UnauthorizedBank" ||
-        r == "UnauthorizedDataProvider"
-      ) {
-        alert("审核未通过，请等待审核通过");
-      } else if (r == "rejected") {
-        alert("审核已被拒绝，请重新上传申请资料");
-      } else {
+    methods: {
+      ...mapActions(["logout", "getUserInfo"]),
+      selectMenu(v) {
+      },
+      async quit() {
+        await this.$store.dispatch("logout");
+        await this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+      },
+      async mounted() {
+        await this.getUserInfo();
+        const r = this.userInfo.role;
+        if (
+          r == "UnauthorizedCompany" ||
+          r == "UnauthorizedBank" ||
+          r == "UnauthorizedDataProvider"
+        ) {
+          this.isAuthorized = false;
+          alert("未授权")
+        }
+        if (r == "rejected") {
+          this.isRejected = true
+        }
+        console.log(this.userInfo);
+      },
+      tagClick() {
+        alert("click");
+      },
+      jumpToUserInfo() {
+        this.$router.push({
+          name: "userInfo",
+          params: {
+            userId: Number(this.userId),
+          },
+        });
+      },
+      jumpToHome() {
+        this.$router.push("/home");
+      },
+      jumpToLogin() {
         this.$router.push("/login");
-      }
+      },
+      jumpToRegister() {
+        this.$router.push("/register");
+      },
+      jumpToMyChart() {
+        this.$router.push("/myChart");
+      },
+      jumpToCenter() {
+        const r = this.userInfo.role;
+        if (r == "Bank") {
+          this.$router.push("/bank");
+        } else if (r == "DataProvider") {
+          this.$router.push("/cooperator");
+        } else if (r == "Company") {
+          this.$router.push("/loaner");
+        } else if (r == "Admin") {
+          this.$router.push("/manager");
+        } else if (
+          r == "UnauthorizedCompany" ||
+          r == "UnauthorizedBank" ||
+          r == "UnauthorizedDataProvider"
+        ) {
+          alert("审核未通过，请等待审核通过");
+        } else if (r == "rejected") {
+          alert("审核已被拒绝，请重新上传申请资料");
+        } else {
+          this.$router.push("/login");
+        }
+      },
     },
-  },
-};
+  };
 </script>
 <style scoped lang="less">
-  .el-menu{
+  .el-menu {
     padding: 0;
     margin: 0;
     border: 0;
   }
-.support {
-  display: flex;
-  align-items: baseline;
 
-  h2 {
-    color: white;
-    margin-right: 5px;
-  }
-  h5 {
-    color: rgba(255, 255, 255, 0.808);
-  }
-}
+  .support {
+    display: flex;
+    align-items: baseline;
 
-#label {
-  vertical-align: middle;
-  min-width: 400px;
-  text-align: center;
-  .logo {
-    height: 50px;
-    margin-right: 16px;
-    border-style: none;
-    cursor: pointer;
+    h2 {
+      color: white;
+      margin-right: 5px;
+    }
+
+    h5 {
+      color: rgba(255, 255, 255, 0.808);
+    }
   }
 
-  .title {
-    font-size: 33px;
-    color: rgba(255, 255, 255, 0.884);
-    font-family: Avenir, "Helvetica Neue", Arial, Helvetica, sans-serif;
-    font-weight: 600;
+  #label {
+    vertical-align: middle;
+    min-width: 400px;
+    text-align: center;
+
+    .logo {
+      height: 50px;
+      margin-right: 16px;
+      border-style: none;
+      cursor: pointer;
+    }
+
+    .title {
+      font-size: 33px;
+      color: rgba(255, 255, 255, 0.884);
+      font-family: Avenir, "Helvetica Neue", Arial, Helvetica, sans-serif;
+      font-weight: 600;
+    }
   }
-}
 </style>

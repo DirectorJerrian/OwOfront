@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import user from './modules/user'
 import chart from './modules/chart'
 import getters from './getters'
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -10,11 +11,8 @@ export default new Vuex.Store({
     user,
     chart,
   },
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+  state: {},
+  mutations: {},
+  actions: {},
   getters
 })

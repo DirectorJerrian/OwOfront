@@ -29,7 +29,7 @@ Vue.directive('title', {
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  components: {App},
   store,
   render: h => h(App),
   template: '<App/>'

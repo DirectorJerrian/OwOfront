@@ -58,13 +58,13 @@ const user = {
       }
     },
     addAccount: async ({dispatch, state, commit}, data) => {
-      if (data.code!==state.emailCode) {
+      if (data.code !== state.emailCode) {
         Message.error('验证码不正确！(注意区分大小写！)')
-      }else {
-        const temp={
-          username:data.username,
-          password:data.password,
-          email:data.email
+      } else {
+        const temp = {
+          username: data.username,
+          password: data.password,
+          email: data.email
         };
         const res = await addAccountAPI(temp);
         // console.log(res);
@@ -76,7 +76,7 @@ const user = {
           dispatch('getUserInfo');
           setTimeout(() => {
             router.push('/ChartEdit')
-          },2000)
+          }, 2000)
         } else if (res.msg === "Account exist") {
           Message.error('该邮箱已被使用！')
         } else {
