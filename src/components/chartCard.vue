@@ -43,7 +43,7 @@
         return this.jsonUrl.substring(preStr.length);
       },
       editChart() {
-        this.$axios.get("/aliyun/" + this.getUrl()).then((res) => {
+        this.$axios.get("http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/" + this.getUrl()).then((res) => {
           this.setChartData(res.data);
           console.log(res);
           console.log("/aliyun/" + this.getUrl());
