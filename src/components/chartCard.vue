@@ -43,10 +43,10 @@
         return this.jsonUrl.substring(preStr.length);
       },
       editChart() {
+        console.log("/aliyun/" + this.getUrl());
         this.$axios.get("/aliyun/" + this.getUrl()).then((res) => {
           this.setChartData(res.data);
           console.log(res);
-          console.log("/aliyun/" + this.getUrl());
           router.push('/ChartEdit');
         })
       }
