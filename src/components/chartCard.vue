@@ -46,7 +46,7 @@
         this.$axios.get("http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/" + this.getUrl()).then((res) => {
           this.setChartData(res.data);
           console.log(res);
-          console.log("/aliyun/" + this.getUrl());
+          console.log("http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/" + this.getUrl());
           router.push('/ChartEdit');
         })
       }
