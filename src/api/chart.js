@@ -22,6 +22,13 @@ export function saveChartAPI(data) {//data里要包含两个文件以及用户id
   })
 }
 
+export function deleteChartAPI(id) {
+  return axios({
+    url:`${api.chartPre}/${id}/deleteChart`,
+    method:'get',
+  })
+}
+
 export function getKgAPI(data) {
   return axios({
     url: `${api.chartPre}/getKg`,

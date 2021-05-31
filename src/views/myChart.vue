@@ -157,9 +157,11 @@
         const isFileSizeCorrect = file.size / 1024 / 1024 < 2;
         if (!isFileTypeCorrect) {
           this.$message.error('上传文件只能是XML或JSON格式!');
+          return false;
         }
         if (!isFileSizeCorrect) {
           this.$message.error('上传文件大小不能超过 2MB!');
+          return false;
         }
         return isFileTypeCorrect && isFileSizeCorrect;
 
@@ -167,10 +169,11 @@
       uploadFile(file) {
         if (this.beforeFileUpload(file)) {
           this.fileInfo.file = file;
+          this.isFileUploaded = true;
+          // this.fileInfo.size=
+          this.$message.success(this.fileInfo.file.name + '上传成功!');
         }
-        this.isFileUploaded = true;
-        // this.fileInfo.size=
-        this.$message.success(this.fileInfo.file.name + '上传成功!');
+
       },
       getSimpleDataByNode(node) {
         var result = {};

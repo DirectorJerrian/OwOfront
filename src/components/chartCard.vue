@@ -5,6 +5,7 @@
       <span>{{name}}</span>
       <div class="bottom clearfix">
         <el-button type="text" class="button" @click="editChart()">编辑</el-button>
+        <el-button type="text"  style="color: red" class="button" @click="deleteChartClick()">删除</el-button>
       </div>
     </div>
   </el-card>
@@ -25,6 +26,7 @@
         name: "",
         imgUrl: "",
         jsonUrl: "",
+        id:"",
       }
     },
 
@@ -33,10 +35,15 @@
       this.name = this.chart.imgName;
       this.imgUrl = this.chart.imgURL;
       this.jsonUrl = this.chart.jsonURL;
+      this.id=this.chart.id;
     },
     methods: {
+      ...mapActions([
+        'deleteChart'
+      ]),
       ...mapMutations([
         'setChartData',
+
       ]),
       getUrl() {
         const preStr = "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/"
@@ -49,6 +56,19 @@
           console.log(res);
           router.push('/ChartEdit');
         })
+      },
+      deleteChartClick(){
+        this.$confirm('此操作将永久删除该图谱, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteChart(this.id);
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        });
       }
     }
 

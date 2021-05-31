@@ -4,7 +4,7 @@ import {Message} from 'element-ui'
 import {getToken, setToken, removeToken} from '../../utils/auth'
 import {
   saveChartAPI,
-  getKgAPI, getUserChartsAPI
+  getKgAPI, getUserChartsAPI, deleteChartAPI
 } from "../../api/chart";
 import da from "element-ui/src/locale/lang/da";
 
@@ -37,6 +37,12 @@ const chart = {
       if (res) {
         return true
 
+      }
+    },
+    deleteChart:async ({dispatch},id)=>{
+      const res=await deleteChartAPI(id);
+      if(res){
+        dispatch(`getChartList`)
       }
     },
     getKg: async ({dispatch, commit}, data) => {
