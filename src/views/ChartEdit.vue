@@ -35,6 +35,7 @@
             <span slot="title">图谱</span>
           </template>
           <el-menu-item-group>
+            <el-menu-item index="3-7" @click="changeChartNameClick()">名称修改</el-menu-item>
             <el-menu-item index="3-6" @click="showChart()">重置图谱</el-menu-item>
             <el-menu-item index="3-1" @click="statisticsClick()">信息统计</el-menu-item>
             <el-menu-item index="3-2" @click="showArrangementChart()">排版模式</el-menu-item>
@@ -49,9 +50,10 @@
             <span slot="title">保存</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="4-1" @click="saveChartClick()">保存到我的图谱</el-menu-item>
-            <el-menu-item index="4-2" @click="chartXMLDownloadClick()">图谱XML导出</el-menu-item>
-            <el-menu-item index="4-3" @click="chartImgDownloadClick()">图谱图片导出</el-menu-item>
+            <el-menu-item index="4-1" @click="saveChartClick(false)">保存到我的图谱</el-menu-item>
+            <el-menu-item index="4-2" @click="saveChartClick(true)" v-if="isChartAlreadySaved">保存为新的图谱</el-menu-item>
+            <el-menu-item index="4-3" @click="chartXMLDownloadClick()">图谱XML导出</el-menu-item>
+            <el-menu-item index="4-4" @click="chartImgDownloadClick()">图谱图片导出</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-menu-item index="5" disabled>
@@ -310,6 +312,26 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="isStatisticVisible= false">取消</el-button>
+        </span>
+      </el-dialog>
+    </div>
+    <!--图谱名称修改-->
+    <div id="chartNameChange">
+      <el-dialog
+        title="图谱名称修改"
+        :visible.sync="isChartNameChangeVisible"
+        width="50%"
+      >
+        <el-form ref="form" :model="searchNodeForm" label-width="80px">
+          <el-form-item label="图谱名称">
+            <template slot-scope="{item}">
+                <div class="name">{{item.name}}</div>
+            </template>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="confirmChangeChartName()">确认修改</el-button>
+          <el-button @click="isChartNameChangeVisible= false">取消</el-button>
         </span>
       </el-dialog>
     </div>
@@ -589,95 +611,98 @@
               categories: [],
             }]
           },
-          chart:{},
-          statisticChart:{},
-          //click event
-          chosenType:'',
-          nodeName:'',
-          nodeDes:'',
-          nodeSymbol:'',
-          nodeSymbolSize:'',
-          nodeCategory:'',
-          nodeFontSize:'',
-          linkName:'',
-          linkDes:'',
-          linkSource:'',
-          linkTarget:'',
-          //chart edit
-          loading: false,
-          timer: null,
-          nodeForm:{
-            name:'',
-            des:'',
-            color:'',
-            symbol:'',
-            symbolSize:'',
-            category:'',
-            fontSize:'',
-          },
-          linkForm:{
-            name:'',
-            des:'',
-            source:'',
-            target:'',
-          },
-          shapes: [{
-            value: 'circle',
-            label: '圆形'
-          }, {
-            value: 'roundRect',
-            label: '矩形'
-          }, {
-            value: 'triangle',
-            label: '三角形'
-          }, {
-            value: 'diamond',
-            label: '菱形'
-          }],
-          nodeColor: '#409EFF',
-          //search
-          searchNodeForm:{
-            name:'',
-            des:'',
-            category:'',
-          },
-          searchNodeHistory:{
-            name:[],
-            des:[],
-            category:[],
-          },
-          searchNodeResult:[],
-          searchNodeResultChosen:[],
-          searchLinkForm:{
-            name:'',
-            source:'',
-            target:'',
-            des:'',
-          },
-          searchLinkHistory:{
-            name:[],
-            source:[],
-            target:[],
-            des:[],
-          },
-          searchLinkResult:[],
-          searchLinkResultChosen:[],
-          highlightNodeList:[],
-          highlightLinkList:[],
-          isChartSearchVisible:false,
-          isChartInfoEditVisible:false,
-          isNodeEdit:false,
-          isLinkEdit:false,
-          isNodeCreate:false,
-          isLinkCreate:false,
-          isSearchNodeVisible:false,
-          isSearchLinkVisible:false,
-          isStatisticVisible:false,
-          isChartFixed:false,
-          //当前是否为力导图模式
-          isForceChart:true,
-          //是否显示关系标签
-          isLinksLabelVisible:true
+        isChartAlreadySaved:false,
+        chartId:'',
+        chart:{},
+        statisticChart:{},
+        //click event
+        chosenType:'',
+        nodeName:'',
+        nodeDes:'',
+        nodeSymbol:'',
+        nodeSymbolSize:'',
+        nodeCategory:'',
+        nodeFontSize:'',
+        linkName:'',
+        linkDes:'',
+        linkSource:'',
+        linkTarget:'',
+        //chart edit
+        loading: false,
+        timer: null,
+        nodeForm:{
+          name:'',
+          des:'',
+          color:'',
+          symbol:'',
+          symbolSize:'',
+          category:'',
+          fontSize:'',
+        },
+        linkForm:{
+          name:'',
+          des:'',
+          source:'',
+          target:'',
+        },
+        shapes: [{
+          value: 'circle',
+          label: '圆形'
+        }, {
+          value: 'roundRect',
+          label: '矩形'
+        }, {
+          value: 'triangle',
+          label: '三角形'
+        }, {
+          value: 'diamond',
+          label: '菱形'
+        }],
+        nodeColor: '#409EFF',
+        //search
+        searchNodeForm:{
+          name:'',
+          des:'',
+          category:'',
+        },
+        searchNodeHistory:{
+          name:[],
+          des:[],
+          category:[],
+        },
+        searchNodeResult:[],
+        searchNodeResultChosen:[],
+        searchLinkForm:{
+          name:'',
+          source:'',
+          target:'',
+          des:'',
+        },
+        searchLinkHistory:{
+          name:[],
+          source:[],
+          target:[],
+          des:[],
+        },
+        searchLinkResult:[],
+        searchLinkResultChosen:[],
+        highlightNodeList:[],
+        highlightLinkList:[],
+        isChartSearchVisible:false,
+        isChartInfoEditVisible:false,
+        isNodeEdit:false,
+        isLinkEdit:false,
+        isNodeCreate:false,
+        isLinkCreate:false,
+        isSearchNodeVisible:false,
+        isSearchLinkVisible:false,
+        isStatisticVisible:false,
+        isChartNameChangeVisible:false,
+        isChartFixed:false,
+        //当前是否为力导图模式
+        isForceChart:true,
+        //是否显示关系标签
+        isLinksLabelVisible:true
         }
       },
       computed:{
@@ -702,6 +727,11 @@
         ]),
         //页面打开处理图谱信息
         processChartData(){
+          console.log(this.chartData);
+          if(this.chartData.isChartAlreadySaved!=undefined){
+            this.isChartAlreadySaved=this.chartData.isChartAlreadySaved;
+          }
+          if(this.isChartAlreadySaved)this.chartId=this.chartData.chartId;
           this.nodes=this.chartData.nodes;
           this.links=this.chartData.links;
           //获取categories
@@ -781,6 +811,12 @@
         //////////////////////////////////////////////
         /////////////图谱展示///////////////////////////
         //////////////////////////////////////////////
+        changeChartNameClick(){
+          this.isChartNameChangeVisible=true;
+        },
+        confirmChangeChartName(){
+
+        },
         drawChart(){
           this.chart = this.$echarts.init(document.getElementById('chart'));
           this.showChart();
@@ -1444,7 +1480,7 @@
         }
         return chartToBeSaved;
       },
-      async saveChartClick() {
+      async saveChartClick(isCreateNewFile) {
         var chartToBeSaved = this.getChartData();
         //测试json文件生成
         var jsonData = JSON.stringify(chartToBeSaved, undefined, 4);
@@ -1462,8 +1498,14 @@
         const data = {
           jsonFile: jsonFile,
           imgFile: imgFile,
-          name: tempName
+          name: tempName,
+          isChartAlreadySaved:this.isChartAlreadySaved,
+          chartId:this.chartId,
         };
+        if(isCreateNewFile){
+          data.isChartAlreadySaved=false;
+        }
+        console.log(data);
         if (await this.addChart(data)) {
           if (this.isChartFixed) {
             this.successNotice("保存成功!（已经保存布局）")

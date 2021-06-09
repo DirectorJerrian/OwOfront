@@ -31,11 +31,11 @@
     },
 
     mounted() {
-      console.log(this.chart);
+      //console.log(this.chart);
       this.name = this.chart.imgName;
       this.imgUrl = this.chart.imgURL;
       this.jsonUrl = this.chart.jsonURL;
-      this.id=this.chart.id;
+      this.chartId=this.chart.chartId;
     },
     methods: {
       ...mapActions([
@@ -52,8 +52,12 @@
       editChart() {
         console.log("/aliyun" + this.getUrl());
         this.$axios.get("/aliyun" + this.getUrl()).then((res) => {
+          res.data.isChartAlreadySaved=true;
+          if(res.data.isChartAlreadySaved){
+            res.data.chartId=this.chartId;
+          }
           this.setChartData(res.data);
-          console.log(res);
+          //console.log(res);
           router.push('/ChartEdit');
         })
       },
@@ -63,7 +67,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.deleteChart(this.id);
+          this.deleteChart(this.chartId);
           this.$message({
             type: 'success',
             message: '删除成功!'

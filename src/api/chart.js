@@ -8,7 +8,9 @@ export function saveChartAPI(data) {//data里要包含两个文件以及用户id
   let fd = new FormData();
   fd.append("files", data.jsonFile, data.name);
   fd.append("files", data.imgFile, data.name);
-  console.log(fd.get("files"));
+  fd.append("isChartAlreadySaved",data.isChartAlreadySaved);
+  fd.append("chartId",parseInt(data.chartId));
+  console.log(fd.get("chartId"));
   return axios({
     withCredentials: true,
     // headers: {

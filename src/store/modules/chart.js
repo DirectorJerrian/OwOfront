@@ -28,6 +28,8 @@ const chart = {
   actions: {
     addChart: async ({dispatch, state, commit}, data) => {
       const fileData = {
+        chartId:data.chartId,
+        isChartAlreadySaved:data.isChartAlreadySaved,
         id: getToken(),
         jsonFile: data.jsonFile,
         imgFile: data.imgFile,
