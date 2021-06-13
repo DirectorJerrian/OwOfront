@@ -39,6 +39,14 @@ export function getKgAPI(data) {
   })
 }
 
+export function getFusionAPI(data) {
+  return axios({
+    url: `${api.chartPre}/getFusion`,
+    method: 'POST',
+    data
+  })
+}
+
 export function getUserChartsAPI(id) {
   return axios({
     url: `${api.chartPre}/${id}/getUserCharts`,

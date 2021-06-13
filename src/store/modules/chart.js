@@ -49,9 +49,21 @@ const chart = {
     },
     getKg: async ({dispatch, commit}, data) => {
       var dataVO = {
-        dataString: data
+        dataString: data,
+        nextDate:""
       };
       const res = await getKgAPI(dataVO);
+      if (res) {
+        return res.msg;
+        // resolve(res.msg);
+      }
+    },
+    getFusion: async ({dispatch, commit}, data) => {
+      var dataVO = {
+        dataString: data.dataString,
+        nextDate: data.nextDate
+      };
+      const res = await getFusionAPI(dataVO);
       if (res) {
         return res.msg;
         // resolve(res.msg);
