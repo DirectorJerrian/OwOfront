@@ -6,6 +6,7 @@
       <div class="bottom clearfix">
         <el-button type="text" class="button" @click="editChart()">编辑</el-button>
         <el-button type="text"  style="color: red" class="button" @click="deleteChartClick()">删除</el-button>
+        <el-checkbox v-model="isChosen" style="left: 20px" size="medium" border v-if="$parent.isChartMergeVisible">融合子图谱</el-checkbox>
       </div>
     </div>
   </el-card>
@@ -23,10 +24,11 @@
     },
     data() {
       return {
+        isChosen:false,
         name: "",
         imgUrl: "",
         jsonUrl: "",
-        id:"",
+        chartId:"",
       }
     },
 

@@ -5,7 +5,7 @@
     </el-header>
     <el-container>
       <el-aside>
-        <el-row style="margin-bottom:20px;margin-top: 10px">
+        <el-row >
           <el-upload
             action=""
             :on-change="uploadFile"
@@ -15,8 +15,14 @@
             <el-button slot="trigger" size="max" type="primary" v-else>读入图谱</el-button>
           </el-upload>
         </el-row>
-        <el-row>
+        <el-row >
           <el-button size="max" type="success" @click="analyzeChart">解析图谱并编辑</el-button>
+        </el-row>
+        <el-row >
+          <el-button size="max" type="success" @click="analyzeText">解析文本</el-button>
+        </el-row>
+        <el-row >
+          <el-button size="max" type="success" @click="mergeChartClick">融合图谱</el-button>
         </el-row>
       </el-aside>
       <el-main>
@@ -29,22 +35,14 @@
           <el-divider direction="vertical"></el-divider>
           <span v-if="isFileUploaded">文件大小:{{(fileInfo.file.raw.size/1024).toFixed(2)}}</span>
           <span v-else>文件大小:0KB</span>
-
+        </div>
+        <div class="text-area">
+          <textarea v-model="textData" placeholder="请输入解析文本..."></textarea>
         </div>
       </el-main>
     </el-container>
 
-    <div class="text-area">
-      <textarea v-model="textData" placeholder="请输入解析文本...">
-      </textarea>
-      <el-row>
-        <el-button size="max" type="success" @click="analyzeText">解析文本</el-button>
-      </el-row>
-    </div>
-
-
     <div id="chartList">
-
       <div class="card-wrapper">
         <chartCard :chart="item" v-for="(item,index) in chartList" :key="index" @click.native="" class="chartCard">
 
@@ -52,6 +50,10 @@
       </div>
 
 
+    </div>
+    <div id="confirmMergeChart">
+      <el-button type="success" icon="el-icon-check" circle style="width: 100px;height: 50px;" v-if="isChartMergeVisible" @click="confirmChartMerge()">确认融合</el-button>
+      <el-button type="danger" icon="el-icon-close" circle style="width: 100px;height: 50px;left: 10px" v-if="isChartMergeVisible" @click="cancelChartMerge()">取消融合</el-button>
     </div>
 
   </div>
@@ -110,7 +112,7 @@
           size: 0,
         },
         isFileUploaded: false,
-
+        isChartMergeVisible:false,
       }
     },
     computed: {
@@ -289,7 +291,6 @@
             resolve(jsonObj);
           })
         })
-
       },
       analyzeChart() {
         if (this.fileInfo.type == 'xml') {
@@ -313,7 +314,50 @@
           this.setChartData(jsonObj);
           router.push('/ChartEdit');
         });
+      },
+      mergeChartClick(){
+        this.isChartMergeVisible=true;
+      },
+      confirmChartMerge(){
+        var components=this.$children;
+        console.log(components);
+        var chosenNum=0;
+        var urlList=[];
+        for(var i=0;i<components.length;i++){
+          if(components[i].chartId!=undefined){
+            if(components[i].isChosen){
+              chosenNum++;
+              urlList.push(components[i].jsonUrl);
+            }
+          }
+        }
+        console.log(chosenNum);
+        if(chosenNum!=2){
+          this.$message({
+            message: '当前只支持两个图谱进行融合！',
+            type: 'warning'
+          });
+          this.clearChartChosen();
+          return;
+        }
+        if(chosenNum==2){
+          console.log(urlList);
+        }
+      },
+      cancelChartMerge(){
+        this.clearChartChosen();
+        this.isChartMergeVisible=false;
+
+      },
+      clearChartChosen(){
+        var components=this.$children;
+        for(var i=0;i<components.length;i++){
+          if(components[i].chartId!=undefined){
+            components[i].isChosen=false;
+          }
+        }
       }
+
     }
 
   }
@@ -329,6 +373,7 @@
 
   .el-row {
     margin-left: 20px;
+    margin-bottom:20px;margin-top: 15px
   }
 
   .text-area {
@@ -336,25 +381,29 @@
     padding-bottom: 10px;
     border-top: 1px solid gainsboro;
     border-bottom: 1px solid gainsboro;
+    margin-bottom:20px;margin-top: 10px
 
   }
 
   .text-area textarea {
     background-color: rgba(241, 241, 241, .98);
     width: 90%;
-    margin-left: 20px;
-    margin-right: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
     border: none;
     outline: none;
-    padding-left: 1.125rem;
     height: 6.5rem;
   }
 
   .text-area textarea::-webkit-input-placeholder {
     color: #9E9E9E;
 
+  }
+
+  #confirmMergeChart{
+    position: fixed;
+    right: 0;
+    top: 45%;
   }
 
 </style>

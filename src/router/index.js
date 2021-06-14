@@ -11,6 +11,11 @@ const routes = [
     component: resolve => require(['@/views/ChartEdit'], resolve)
   },
   {
+    path: '/userInfo',
+    name: '用户信息',
+    component: resolve => require(['@/views/userInfo'], resolve)
+  },
+  {
     path: '/',
     redirect: '/home',
   },

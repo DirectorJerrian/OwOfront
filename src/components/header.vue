@@ -125,12 +125,7 @@
         alert("click");
       },
       jumpToUserInfo() {
-        this.$router.push({
-          name: "userInfo",
-          params: {
-            userId: Number(this.userId),
-          },
-        });
+        this.$router.push("/userInfo");
       },
       jumpToHome() {
         this.$router.push("/home");

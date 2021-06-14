@@ -13,7 +13,7 @@
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="createNodeClick()">增加实体</el-menu-item>
             <el-menu-item index="1-2" @click="searchNodeClick()">实体信息搜索</el-menu-item>
-            <el-menu-item index="1-3" @click="cancelNodeHighlight()">取消实体高亮</el-menu-item>
+            <el-menu-item index="1-3" @click="cancelNodeHighlight()" v-if="isNodeHighlight">取消实体高亮</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="2">
@@ -24,7 +24,7 @@
           <el-menu-item-group>
             <el-menu-item index="2-1" @click="createLinkClick()">增加关系</el-menu-item>
             <el-menu-item index="2-2" @click="searchLinkClick()">关系信息搜索</el-menu-item>
-            <el-menu-item index="2-3" @click="cancelLinkHighlight()">取消关系高亮</el-menu-item>
+            <el-menu-item index="2-3" @click="cancelLinkHighlight()" v-if="isLinkHighlight">取消关系高亮</el-menu-item>
             <el-menu-item index="2-4" @click="cancelLabelShow()" v-if="isLinksLabelVisible">不显示关系标签</el-menu-item>
             <el-menu-item index="2-4" @click="cancelLabelShow()" v-else>显示关系标签</el-menu-item>
           </el-menu-item-group>
@@ -56,10 +56,15 @@
             <el-menu-item index="4-4" @click="chartImgDownloadClick()">图谱图片导出</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="5" disabled>
-          <i class="el-icon-setting"></i>
-          <span slot="title">拓展功能</span>
-        </el-menu-item>
+        <el-submenu index="5">
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span slot="title">拓展功能</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="5-1">问答机器人</el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>
       </el-menu>
     </div>
     <div id="chart"></div>
@@ -320,18 +325,12 @@
       <el-dialog
         title="图谱名称修改"
         :visible.sync="isChartNameChangeVisible"
-        width="50%"
+        width="25%"
       >
-        <el-form ref="form" :model="searchNodeForm" label-width="80px">
-          <el-form-item label="图谱名称">
-            <template slot-scope="{item}">
-                <div class="name">{{item.name}}</div>
-            </template>
-          </el-form-item>
-        </el-form>
+        <el-input v-model="chartName" :placeholder="option.title.text" clearable></el-input>
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="confirmChangeChartName()">确认修改</el-button>
-          <el-button @click="isChartNameChangeVisible= false">取消</el-button>
+          <el-button @click="cancelChangeChartName()">取消</el-button>
         </span>
       </el-dialog>
     </div>
@@ -352,6 +351,7 @@
     data() {
       return {
         headActiveIndex: '1',
+        chartName:'',
         nodes: [],
         links: [],
         // nodes:[{
@@ -696,6 +696,8 @@
         isLinkCreate:false,
         isSearchNodeVisible:false,
         isSearchLinkVisible:false,
+        isNodeHighlight:false,
+        isLinkHighlight:false,
         isStatisticVisible:false,
         isChartNameChangeVisible:false,
         isChartFixed:false,
@@ -754,6 +756,7 @@
             this.categories[this.chartData.nodes[i].category].name=this.chartData.nodes[i].category+" class";
           }
           this.option.title.text=this.chartData.title;
+          this.chartName=this.option.title.text;
           this.isChartFixed=this.chartData.isChartFixed;
           if(this.isChartFixed){
             this.positions=this.chartData.positions;
@@ -815,12 +818,17 @@
           this.isChartNameChangeVisible=true;
         },
         confirmChangeChartName(){
-
+          this.option.title.text=this.chartName;
+          this.showChart();
+          this.isChartNameChangeVisible=false;
+        },
+        cancelChangeChartName(){
+          this.chartName=this.option.title.text;
+          this.isChartNameChangeVisible= false;
         },
         drawChart(){
           this.chart = this.$echarts.init(document.getElementById('chart'));
           this.showChart();
-
         },
         setChart(){
           this.option.series[0].nodes=this.nodes;
@@ -1279,6 +1287,7 @@
         this.highlightNodeList = this.searchNodeResult.concat(this.searchNodeResultChosen);
         this.chart.setOption(option);
         this.isSearchNodeVisible = false;
+        this.isNodeHighlight=true;
       },
       searchLinkClick() {
         this.isSearchLinkVisible = true;
@@ -1399,6 +1408,7 @@
         this.highlightLinkList = this.highlightLinkList.concat(this.searchLinkResultChosen);
         this.chart.setOption(option);
         this.isSearchLinkVisible = false;
+        this.isLinkHighlight=true;
       },
       cancelNodeHighlight() {
         var option = this.chart.getOption();
@@ -1408,6 +1418,7 @@
         }
         this.highlightNodeList = [];
         this.chart.setOption(option);
+        this.isNodeHighlight=false;
       },
       cancelLinkHighlight() {
         var option = this.chart.getOption();
@@ -1418,6 +1429,7 @@
         }
         this.highlightLinkList = [];
         this.chart.setOption(option);
+        this.isLinkHighlight=false;
       },
       ///////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////
