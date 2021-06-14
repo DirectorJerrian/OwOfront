@@ -4,7 +4,7 @@ import {Message} from 'element-ui'
 import {getToken, setToken, removeToken} from '../../utils/auth'
 import {
   saveChartAPI,
-  getKgAPI, getUserChartsAPI, deleteChartAPI
+  getKgAPI, getUserChartsAPI, deleteChartAPI, getAnswerAPI
 } from "../../api/chart";
 import da from "element-ui/src/locale/lang/da";
 
@@ -74,7 +74,7 @@ const chart = {
         dataString: data.dataString,  //知识图谱
         nextDate: data.nextDate       //问题
       };
-      const res = await getFusionAPI(dataVO);
+      const res = await getAnswerAPI(dataVO);
       if (res) {
         return res.msg;
         // resolve(res.msg);
