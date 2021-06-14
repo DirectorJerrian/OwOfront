@@ -47,6 +47,14 @@ export function getFusionAPI(data) {
   })
 }
 
+export function getAnswerAPI(data) {
+  return axios({
+    url: `${api.chartPre}/getAnswer`,
+    method: 'POST',
+    data
+  })
+}
+
 export function getUserChartsAPI(id) {
   return axios({
     url: `${api.chartPre}/${id}/getUserCharts`,

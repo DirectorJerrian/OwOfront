@@ -69,6 +69,17 @@ const chart = {
         // resolve(res.msg);
       }
     },
+    getAnswer: async ({dispatch, commit}, data) => {
+      var dataVO = {
+        dataString: data.dataString,  //知识图谱
+        nextDate: data.nextDate       //问题
+      };
+      const res = await getFusionAPI(dataVO);
+      if (res) {
+        return res.msg;
+        // resolve(res.msg);
+      }
+    },
     getChartList: async ({dispatch, commit}) => {
       var id = getToken();
       const res = await getUserChartsAPI(id);
