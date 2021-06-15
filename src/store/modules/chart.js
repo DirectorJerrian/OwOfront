@@ -72,12 +72,11 @@ const chart = {
     getAnswer: async ({dispatch, commit}, data) => {
       var dataVO = {
         dataString: data.dataString,  //知识图谱
-        nextDate: data.nextDate       //问题
+        nextData: data.nextData       //问题
       };
       const res = await getAnswerAPI(dataVO);
       if (res) {
         return res.msg;
-        // resolve(res.msg);
       }
     },
     getChartList: async ({dispatch, commit}) => {

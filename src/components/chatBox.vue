@@ -97,12 +97,6 @@
         ...mapActions([
           'getAnswer'
         ]),
-        sendMessage (text) {
-          if (text.length > 0) {
-            this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
-            this.onMessageWasSent({ author: 'me', type: 'text', data: { text } })
-          }
-        },
         onMessageWasSent (message) {
           // 当用户发送消息时调用
           this.messageList = [ ...this.messageList, message ]
@@ -115,7 +109,6 @@
             nextData: msg,
           }
           console.log(data);
-          return;
           const res = await this.getAnswer(data);
           this.messageList.push({author: 'user1', type: 'text', data: {text: res}})
         },

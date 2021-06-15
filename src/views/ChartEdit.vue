@@ -62,7 +62,7 @@
             <span slot="title">拓展功能</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="5-1">问答机器人</el-menu-item>
+            <el-menu-item index="5-1" @click="openChatBox()">问答机器人</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -335,7 +335,7 @@
       </el-dialog>
     </div>
     <div id="chatBox">
-      <chat-box></chat-box>
+      <chat-box ref="chatBox"></chat-box>
     </div>
   </div>
 </template>
@@ -351,7 +351,7 @@
   export default {
     name: "ChartEdit",
     components: {
-      ChatBox,
+      chatBox,
       Header,
     },
     data() {
@@ -1695,7 +1695,9 @@
           message: info,
         });
       },
-
+      openChatBox(){
+          this.$refs.chatBox.isChatOpen=true;
+      }
 
     }
   }
