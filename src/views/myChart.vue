@@ -345,12 +345,16 @@
           console.log(urlList);
         }
       },
+      getUrl(str) {
+        const preStr = "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/"
+        return str.substring(preStr.length);
+      },
       async mergeChart(urlList) {
-        const chart1 = await this.$axios.get(urlList[0])
-        const chart2 = await this.$axios.get(urlList[1])
+        const chart1 = await this.$axios.get("/aliyun"+this.getUrl(urlList[0]))
+        const chart2 = await this.$axios.get("/aliyun"+this.getUrl(urlList[1]))
         const data={
-          dataString:JSON.stringify(chart1),
-          nextData:JSON.stringify(chart2),
+          dataString:JSON.stringify(chart1.data),
+          nextData:JSON.stringify(chart2.data),
         }
         var chartString= await this.getFusion(data);
         var chartData=JSON.parse(chartString);
@@ -371,7 +375,6 @@
           }
         }
       }
-
     }
 
   }

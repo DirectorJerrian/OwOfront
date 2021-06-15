@@ -825,7 +825,9 @@
         },
         confirmChangeChartName(){
           this.option.title.text=this.chartName;
-          this.showChart();
+          var option=this.chart.getOption();
+          option.title[0].text=this.chartName;
+          this.chart.setOption(option);
           this.isChartNameChangeVisible=false;
         },
         cancelChangeChartName(){
@@ -1062,642 +1064,642 @@
             links[i].source.times++;
         }
       },
-      clearTimes(data) {
-        var nodes = data.nodes;
-        for (var i = 0; i < nodes.length; i++) {
-          nodes[i].times = 0;
-        }
-      },
-      getTopTimesNode(data) {
-        var nodes = data.nodes;
-        var firstNotArrangedIndex = -1;
-        //找到第一个没有被安排位置的节点
-        for (var i = 0; i < nodes.length; i++) {
-          if (!nodes[i].isArranged) {
-            firstNotArrangedIndex = i;
-            break;
+        clearTimes(data) {
+          var nodes = data.nodes;
+          for (var i = 0; i < nodes.length; i++) {
+            nodes[i].times = 0;
           }
-        }
-        //若所有节点都被安排位置，则返回null
-        if (firstNotArrangedIndex === -1) return null;
-        //寻找出度最大的没有被安排位置的节点
-        var resIndex = firstNotArrangedIndex;
-        for (var i = resIndex + 1; i < nodes.length; i++) {
-          if (!nodes[i].isArranged && nodes[i].times > nodes[resIndex].times) {
-            resIndex = i;
-          }
-        }
-        return nodes[resIndex];
-      },
-      setNode(node, level_x, level_y, data) {
-        node.level_x = level_x;
-        node.level_y = level_y;
-        node.isArranged = true;
-        var links = data.links;
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].source === node && !links[i].target.isArranged) {
-            this.setNode(links[i].target, level_x + 1, level_y, data);
-          }
-        }
-
-      },
-      ////////////////////////////////////////////////
-      ////////////////////////////////////////////////
-      ////////////////////////////////////////////////
-      ////////////////////////////////////////////////
-      //更改关系信息
-      changeLink(linkForm) {
-        var linkIndex = this.findLinkIndex(linkForm.name);
-        if (this.links[linkIndex].name === linkForm.name && this.links[linkIndex].des === linkForm.des) {
-          this.messageNotice("未作任何修改");
-          return false;
-        }
-        this.links[linkIndex].name = linkForm.name;
-        this.links[linkIndex].des = linkForm.des;
-        this.showChart();
-        this.successNotice("修改成功");
-        return true;
-      },
-      //更改实体信息
-      changeNode(nodeForm) {
-        var nodeIndex = this.findNodeIndex(this.nodeName);
-        console.log(nodeForm);
-        console.log(this.nodes[nodeIndex]);
-        if (this.nodes[nodeIndex].name === nodeForm.name &&
-          this.nodes[nodeIndex].category === this.getCategoryIndex(nodeForm.category) &&
-          this.nodes[nodeIndex].des === nodeForm.des &&
-          this.nodes[nodeIndex].symbol === nodeForm.symbol &&
-          this.nodes[nodeIndex].symbolSize === nodeForm.symbolSize &&
-          this.nodes[nodeIndex].itemStyle.color === nodeForm.color &&
-          this.nodes[nodeIndex].label.fontSize === nodeForm.fontSize) {
-          this.messageNotice("未作任何修改");
-          return false;
-        }
-        //实体名字重复，但可以和自己一样
-        var isOverlap = false;
-        for (var i = 0; i < this.nodes.length; i++) {
-          if (i === nodeIndex) continue;
-          else if (this.nodes[i].name === nodeForm.name) {
-            isOverlap = true;
-            break;
-          }
-        }
-        if (isOverlap) {
-          this.warningNotice("实体名称重复，请重新修改！");
-          return false;
-        }
-        this.nodes[nodeIndex].name = nodeForm.name;
-        this.nodes[nodeIndex].des = nodeForm.des;
-        this.nodes[nodeIndex].symbol = nodeForm.symbol;
-        this.nodes[nodeIndex].symbolSize = parseInt(nodeForm.symbolSize);
-        this.nodes[nodeIndex].itemStyle.color = nodeForm.color;
-        this.nodes[nodeIndex].label.fontSize = parseInt(nodeForm.fontSize);
-        //这边要做额外修改，先不动
-        this.nodes[nodeIndex].category = this.getCategoryIndex(nodeForm.category);
-        //将关系中的实体同样做修改
-        for (var i = 0; i < this.links.length; i++) {
-          if (this.links[i].source === name) this.links[i].source = nodeForm.name;
-          if (this.links[i].target === name) this.links[i].target = nodeForm.name;
-        }
-        this.showChart();
-        this.successNotice("修改成功");
-        return true;
-      },
-      //寻找该node名字的下标
-      findNodeIndex(name) {
-        for (var i = 0; i < this.nodes.length; i++) {
-          if (this.nodes[i].name === name) {
-            return i;
-          }
-        }
-      },
-      //寻找该link名字的下标
-      findLinkIndex(name) {
-        for (var i = 0; i < this.links.length; i++) {
-          if (this.links[i].name === name) {
-            return i;
-          }
-        }
-      },
-      getCategoryIndex(name) {
-        for (var i = 0; i < this.categories.length; i++) {
-          if (name == this.categories[i].name) {
-            return i;
-          }
-        }
-        return -1;
-      },
-      createNodeClick() {
-        if (this.isChartInfoEditVisible) {
-          console.log("close");
-          this.isNodeCreate = false;
-          this.isChartInfoEditVisible = false;
-        }
-        console.log("open");
-        this.isNodeCreate = true;
-        this.isChartInfoEditVisible = true;
-      },
-      createLinkClick() {
-        if (this.isChartInfoEditVisible) {
-          console.log("close");
-          this.isLinkCreate = false;
-          this.isChartInfoEditVisible = false;
-        }
-        console.log("open");
-        this.isLinkCreate = true;
-        this.isChartInfoEditVisible = true;
-      },
-      ///////////////////////////////////////////////////////////
-      //搜索//////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////
-      searchNodeClick() {
-        this.isSearchNodeVisible = true;
-      },
-      searchNode() {
-        //存访搜索历史
-        if (this.searchNodeForm.name === '' && this.searchNodeForm.category === '' && this.searchNodeForm.des === '') {
-          this.warningNotice("搜索内容为空，请至少输入一个选项！");
-          return;
-        }
-        if ($.inArray(this.searchNodeForm.name, this.searchNodeHistory.name) === -1) {
-          this.searchNodeHistory.name.push(this.searchNodeForm.name);
-        }
-        if ($.inArray(this.searchNodeForm.des, this.searchNodeHistory.des) === -1) {
-          this.searchNodeHistory.des.push(this.searchNodeForm.des);
-        }
-        if ($.inArray(this.searchNodeForm.category, this.searchNodeHistory.category) === -1) {
-          this.searchNodeHistory.category.push(this.searchNodeForm.category);
-        }
-        //搜索节点,存放到数组中
-        this.searchNodeResult = [];
-        for (var i = 0; i < this.nodes.length; i++) {
-          if (this.searchNodeForm.name !== '' && !this.isMatch(this.searchNodeForm.name, this.nodes[i].name)) continue;
-          if (this.searchNodeForm.des !== '' && !this.isMatch(this.searchNodeForm.des, this.nodes[i].des)) continue;
-          if (this.searchNodeForm.category !== '' && !this.isMatch(this.searchNodeForm.category.toString(), this.nodes[i].category.toString())) continue;
-          let res = {
-            name: this.nodes[i].name,
-            des: this.nodes[i].des,
-            category: this.nodes[i].category,
-            index: i,
-          };
-          this.searchNodeResult.push(res);
-        }
-      },
-      selectSearchNodeName(obj) {
-        this.searchNodeForm.name = obj.name;
-      },
-      selectSearchNodeDes(obj) {
-        this.searchNodeForm.des = obj.des;
-      },
-      selectSearchNodeCategory(obj) {
-        this.searchNodeForm.category = obj.category;
-      },
-      getSearchNodeNameHistory(str, cb) {
-        var res = [];
-        for (var i = 0; i < this.searchNodeHistory.name.length; i++) {
-          res.push({name: this.searchNodeHistory.name[i]});
-        }
-        cb(res);
-      },
-      getSearchNodeDesHistory(str, cb) {
-        var res = [];
-        for (var i = 0; i < this.searchNodeHistory.des.length; i++) {
-          res.push({des: this.searchNodeHistory.des[i]});
-        }
-        cb(res);
-      },
-      getSearchNodeCategoryHistory(str, cb) {
-        var res = [];
-        for (var i = 0; i < this.searchNodeHistory.category.length; i++) {
-          res.push({category: this.searchNodeHistory.category[i]});
-        }
-        cb(res);
-      },
-      setSearchNodeResultChosen(val) {
-        this.searchNodeResultChosen = val;
-      },
-      confirmSearchNode() {
-        if (this.searchNodeResultChosen.length == 0) {
-          this.warningNotice("未选中任何实体");
-          return;
-        }
-        const highlightNodeColor = '#f4ff73';
-        const highlightBorderColor = "#74ffeb";
-        //标红
-        var option = this.chart.getOption();
-        for (var i = 0; i < this.searchNodeResultChosen.length; i++) {
-          option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color = highlightNodeColor;
-          option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.borderColor = highlightBorderColor;
-        }
-        this.highlightNodeList = this.searchNodeResult.concat(this.searchNodeResultChosen);
-        this.chart.setOption(option);
-        this.isSearchNodeVisible = false;
-        this.isNodeHighlight=true;
-      },
-      searchLinkClick() {
-        this.isSearchLinkVisible = true;
-      },
-      searchLink() {
-        if (this.searchLinkForm.name == '' && this.searchLinkForm.des == ''
-          && this.searchLinkForm.source == '' && this.searchLinkForm.target == '') {
-          this.warningNotice("搜索内容为空，请至少输入一个选项！");
-          return;
-        }
-        if ($.inArray(this.searchLinkForm.name, this.searchLinkHistory.name) === -1) {
-          this.searchLinkHistory.name.push(this.searchLinkForm.name);
-        }
-        if ($.inArray(this.searchLinkForm.des, this.searchLinkHistory.des) === -1) {
-          this.searchLinkHistory.des.push(this.searchLinkForm.des);
-        }
-        if ($.inArray(this.searchLinkForm.source, this.searchLinkHistory.source) === -1) {
-          this.searchLinkHistory.source.push(this.searchLinkForm.source);
-        }
-        if ($.inArray(this.searchLinkForm.target, this.searchLinkHistory.target) === -1) {
-          this.searchLinkHistory.target.push(this.searchLinkForm.target);
-        }
-        this.searchLinkResult = [];
-        for (var i = 0; i < this.links.length; i++) {
-          if (this.searchLinkForm.name !== '' && !this.isMatch(this.searchLinkForm.name, this.links[i].name)) continue;
-          if (this.searchLinkForm.des !== '' && !this.isMatch(this.searchLinkForm.des, this.links[i].des)) continue;
-          if (this.searchLinkForm.source !== '' && !this.isMatch(this.searchLinkForm.source, this.links[i].source)) continue;
-          if (this.searchLinkForm.target !== '' && !this.isMatch(this.searchLinkForm.target, this.links[i].target)) continue;
-          let res = {
-            name: this.links[i].name,
-            des: this.links[i].des,
-            source: this.links[i].source,
-            target: this.links[i].target,
-            index: i,
-          };
-          this.searchLinkResult.push(res);
-        }
-      },
-      selectSearchLinkName(obj) {
-        this.searchLinkForm.name = obj.name;
-      },
-      selectSearchLinkDes(obj) {
-        this.searchLinkForm.des = obj.des;
-      },
-      selectSearchLinkSource(obj) {
-        this.searchLinkForm.source = obj.source;
-      },
-      selectSearchLinkTarget(obj) {
-        this.searchLinkForm.target = obj.target;
-      },
-      getSearchLinkNameHistory(str, cb) {
-        var res = [];
-        for (var i = 0; i < this.searchLinkHistory.name.length; i++) {
-          res.push({name: this.searchLinkHistory.name[i]});
-        }
-        cb(res);
-      },
-      getSearchLinkDesHistory(str, cb) {
-        var res = [];
-        for (var i = 0; i < this.searchLinkHistory.des.length; i++) {
-          res.push({des: this.searchLinkHistory.des[i]});
-        }
-        cb(res);
-      },
-      getSearchLinkSourceHistory(str, cb) {
-        var res = [];
-        for (var i = 0; i < this.searchLinkHistory.source.length; i++) {
-          res.push({source: this.searchLinkHistory.source[i]});
-        }
-        cb(res);
-      },
-      getSearchLinkTargetHistory(str, cb) {
-        var res = [];
-        for (var i = 0; i < this.searchLinkHistory.target.length; i++) {
-          res.push({target: this.searchLinkHistory.target[i]});
-        }
-        cb(res);
-      },
-      setSearchLinkResultChosen(val) {
-        this.searchLinkResultChosen = val;
-      },
-      isMatch(searchStr, str) {
-        let index = -1, flag = false;
-        for (var i = 0, arr = searchStr.split(""); i < arr.length; i++) {
-          //有一个关键字都没匹配到，则没有匹配到数据
-          if (str.indexOf(arr[i]) < 0) {
-            break;
-          } else {
-            let match = str.matchAll(arr[i]);
-            let next = match.next();
-            while (!next.done) {
-              if (next.value.index > index) {
-                index = next.value.index;
-                if (i === arr.length - 1) {
-                  flag = true
-                }
-                break;
-              }
-              next = match.next();
+        },
+        getTopTimesNode(data) {
+          var nodes = data.nodes;
+          var firstNotArrangedIndex = -1;
+          //找到第一个没有被安排位置的节点
+          for (var i = 0; i < nodes.length; i++) {
+            if (!nodes[i].isArranged) {
+              firstNotArrangedIndex = i;
+              break;
             }
-
           }
-        }
-        return flag;
-      },
-      confirmSearchLink() {
-        if (this.searchLinkResultChosen.length == 0) {
-          this.warningNotice("未选中任何关系");
-          return;
-        }
-        const highlightColor = '#FF0000'
-        //标红
-        var option = this.chart.getOption();
-        for (var i = 0; i < this.searchLinkResultChosen.length; i++) {
-          option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle = {};
-          option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle.color = highlightColor;
-        }
-        this.highlightLinkList = this.highlightLinkList.concat(this.searchLinkResultChosen);
-        this.chart.setOption(option);
-        this.isSearchLinkVisible = false;
-        this.isLinkHighlight=true;
-      },
-      cancelNodeHighlight() {
-        var option = this.chart.getOption();
-        for (var i = 0; i < this.highlightNodeList.length; i++) {
-          option.series[0].nodes[this.highlightNodeList[i].index].itemStyle = {color: this.nodes[i].itemStyle.color};
-
-        }
-        this.highlightNodeList = [];
-        this.chart.setOption(option);
-        this.isNodeHighlight=false;
-      },
-      cancelLinkHighlight() {
-        var option = this.chart.getOption();
-        const defaultColor = '#4b565b';
-        for (var i = 0; i < this.searchLinkResultChosen.length; i++) {
-          option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle = {};
-          option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle.color = defaultColor;
-        }
-        this.highlightLinkList = [];
-        this.chart.setOption(option);
-        this.isLinkHighlight=false;
-      },
-      ///////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////
-      /////图表变换////////////////////////////////////////////////
-      fixChartClick() {
-        this.fixChart();
-      },
-      flexibleChartClick() {
-        this.flexibleChart();
-      },
-      fixChart() {
-        var option = this.chart.getOption();
-        for (var i = 0; i < this.nodes.length; i++) {
-          option.series[0].nodes[i].fixed = true;
-        }
-        this.chart.setOption(option);
-        this.isChartFixed = true;
-      },
-      flexibleChart() {
-        var option = this.chart.getOption();
-        for (var i = 0; i < this.nodes.length; i++) {
-          option.series[0].nodes[i].fixed = false;
-        }
-        this.chart.setOption(option);
-        this.isChartFixed = false;
-      },
-      ///////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////
-      //数据库保存
-      getNodePosition() {
-        var positionArray = this.chart._chartsViews[0]._symbolDraw._data._itemLayouts;
-        return positionArray;
-      },
-      getChartPosition() {
-        var option = this.chart.getOption();
-        var position = [];
-        for (var i = 0; i < option.series[0].nodes.length; i++) {
-          var pos = {x: 0, y: 0};
-          pos.x = this.getNodePosition()[i][0];
-          pos.y = this.getNodePosition()[i][1];
-          position.push(pos);
-        }
-        return position;
-      },
-      getChartData() {
-        var chartToBeSaved = {
-          title: this.option.title.text,
-          nodes: [],
-          links: [],
-          isChartFixed: false,
-          positions: [],
-        };
-        chartToBeSaved.isChartFixed = this.isChartFixed;
-        chartToBeSaved.nodes = this.nodes;
-        chartToBeSaved.links = this.links;
-        if (this.isChartFixed) {
-          chartToBeSaved.positions = this.getChartPosition();
-        }
-        return chartToBeSaved;
-      },
-      async saveChartClick(isCreateNewFile) {
-        var chartToBeSaved = this.getChartData();
-        //测试json文件生成
-        var jsonData = JSON.stringify(chartToBeSaved, undefined, 4);
-        const jsonFile = new Blob([jsonData], {type: 'text/json'});
-        const imgFile = this.getChartImgFile();
-        // var e = document.createEvent('MouseEvents');
-        // var a = document.createElement('a')
-        // a.download = "chart.json";
-        // a.href = window.URL.createObjectURL(blob)
-        // a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
-        // e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-        // a.dispatchEvent(e);
-        //TODO 数据库保存
-        const tempName = this.option.title.text;
-        const data = {
-          jsonFile: jsonFile,
-          imgFile: imgFile,
-          name: tempName,
-          isChartAlreadySaved:this.isChartAlreadySaved,
-          chartId:this.chartId,
-        };
-        if(isCreateNewFile){
-          data.isChartAlreadySaved=false;
-        }
-        console.log(data);
-        if (await this.addChart(data)) {
-          if (this.isChartFixed) {
-            this.successNotice("保存成功!（已经保存布局）")
-          } else {
-            this.successNotice("保存成功!（未保存布局）")
+          //若所有节点都被安排位置，则返回null
+          if (firstNotArrangedIndex === -1) return null;
+          //寻找出度最大的没有被安排位置的节点
+          var resIndex = firstNotArrangedIndex;
+          for (var i = resIndex + 1; i < nodes.length; i++) {
+            if (!nodes[i].isArranged && nodes[i].times > nodes[resIndex].times) {
+              resIndex = i;
+            }
           }
-        } else {
-          this.warningNotice("保存失败！")
-        }
-      },
-      //点击事件
-      chartClick(param) {
-        if (param.dataType == 'edge') {
-          this.chosenType = 'link';
-          this.isLinkEdit = true;
-          this.linkForm.name = param.data.name;
-          this.linkForm.des = param.data.des;
-          this.linkForm.source = param.data.source;
-          this.linkForm.target = param.data.target;
-          this.linkName = param.data.name;
-          this.linkDes = param.data.des;
-          this.linkSource = param.data.source;
-          this.linkTarget = param.data.target;
-        } else if (param.dataType == 'node') {
-          this.chosenType = 'node';
-          this.isNodeEdit = true;
-          this.nodeForm.name = param.data.name;
-          this.nodeForm.des = param.data.des;
-          this.nodeForm.symbol = param.data.symbol;
-          this.nodeForm.symbolSize = param.data.symbolSize;
-          this.nodeForm.fontSize = param.data.label.fontSize;
-          this.nodeForm.color = param.color;
-          this.nodeForm.category = this.categories[param.data.category].name;
-          this.nodeName = param.data.name;
-          this.nodeDes = param.data.des;
-          this.nodeSymbol = param.data.symbol;
-          this.nodeSymbolSize = param.data.symbolSize;
-          this.nodeColor = param.color;
-          this.nodeFontSize = param.data.label.fontSize;
-          this.nodeCategory = this.categories[param.data.category].name;
-        }
-        this.isChartInfoEditVisible = true;
-      },
-      //拖拽事件
-      chartDrag(params) {
-        if (this.isChartFixed) {
+          return nodes[resIndex];
+        },
+        setNode(node, level_x, level_y, data) {
+          node.level_x = level_x;
+          node.level_y = level_y;
+          node.isArranged = true;
+          var links = data.links;
+          for (var i = 0; i < links.length; i++) {
+            if (links[i].source === node && !links[i].target.isArranged) {
+              this.setNode(links[i].target, level_x + 1, level_y, data);
+            }
+          }
+
+        },
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        //更改关系信息
+        changeLink(linkForm) {
+          var linkIndex = this.findLinkIndex(linkForm.name);
+          if (this.links[linkIndex].name === linkForm.name && this.links[linkIndex].des === linkForm.des) {
+            this.messageNotice("未作任何修改");
+            return false;
+          }
+          this.links[linkIndex].name = linkForm.name;
+          this.links[linkIndex].des = linkForm.des;
+          this.showChart();
+          this.successNotice("修改成功");
+          return true;
+        },
+        //更改实体信息
+        changeNode(nodeForm) {
+          var nodeIndex = this.findNodeIndex(this.nodeName);
+          console.log(nodeForm);
+          console.log(this.nodes[nodeIndex]);
+          if (this.nodes[nodeIndex].name === nodeForm.name &&
+            this.nodes[nodeIndex].category === this.getCategoryIndex(nodeForm.category) &&
+            this.nodes[nodeIndex].des === nodeForm.des &&
+            this.nodes[nodeIndex].symbol === nodeForm.symbol &&
+            this.nodes[nodeIndex].symbolSize === nodeForm.symbolSize &&
+            this.nodes[nodeIndex].itemStyle.color === nodeForm.color &&
+            this.nodes[nodeIndex].label.fontSize === nodeForm.fontSize) {
+            this.messageNotice("未作任何修改");
+            return false;
+          }
+          //实体名字重复，但可以和自己一样
+          var isOverlap = false;
+          for (var i = 0; i < this.nodes.length; i++) {
+            if (i === nodeIndex) continue;
+            else if (this.nodes[i].name === nodeForm.name) {
+              isOverlap = true;
+              break;
+            }
+          }
+          if (isOverlap) {
+            this.warningNotice("实体名称重复，请重新修改！");
+            return false;
+          }
+          this.nodes[nodeIndex].name = nodeForm.name;
+          this.nodes[nodeIndex].des = nodeForm.des;
+          this.nodes[nodeIndex].symbol = nodeForm.symbol;
+          this.nodes[nodeIndex].symbolSize = parseInt(nodeForm.symbolSize);
+          this.nodes[nodeIndex].itemStyle.color = nodeForm.color;
+          this.nodes[nodeIndex].label.fontSize = parseInt(nodeForm.fontSize);
+          //这边要做额外修改，先不动
+          this.nodes[nodeIndex].category = this.getCategoryIndex(nodeForm.category);
+          //将关系中的实体同样做修改
+          for (var i = 0; i < this.links.length; i++) {
+            if (this.links[i].source === name) this.links[i].source = nodeForm.name;
+            if (this.links[i].target === name) this.links[i].target = nodeForm.name;
+          }
+          this.showChart();
+          this.successNotice("修改成功");
+          return true;
+        },
+        //寻找该node名字的下标
+        findNodeIndex(name) {
+          for (var i = 0; i < this.nodes.length; i++) {
+            if (this.nodes[i].name === name) {
+              return i;
+            }
+          }
+        },
+        //寻找该link名字的下标
+        findLinkIndex(name) {
+          for (var i = 0; i < this.links.length; i++) {
+            if (this.links[i].name === name) {
+              return i;
+            }
+          }
+        },
+        getCategoryIndex(name) {
+          for (var i = 0; i < this.categories.length; i++) {
+            if (name == this.categories[i].name) {
+              return i;
+            }
+          }
+          return -1;
+        },
+        createNodeClick() {
+          if (this.isChartInfoEditVisible) {
+            console.log("close");
+            this.isNodeCreate = false;
+            this.isChartInfoEditVisible = false;
+          }
+          console.log("open");
+          this.isNodeCreate = true;
+          this.isChartInfoEditVisible = true;
+        },
+        createLinkClick() {
+          if (this.isChartInfoEditVisible) {
+            console.log("close");
+            this.isLinkCreate = false;
+            this.isChartInfoEditVisible = false;
+          }
+          console.log("open");
+          this.isLinkCreate = true;
+          this.isChartInfoEditVisible = true;
+        },
+        ///////////////////////////////////////////////////////////
+        //搜索//////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        searchNodeClick() {
+          this.isSearchNodeVisible = true;
+        },
+        searchNode() {
+          //存访搜索历史
+          if (this.searchNodeForm.name === '' && this.searchNodeForm.category === '' && this.searchNodeForm.des === '') {
+            this.warningNotice("搜索内容为空，请至少输入一个选项！");
+            return;
+          }
+          if ($.inArray(this.searchNodeForm.name, this.searchNodeHistory.name) === -1) {
+            this.searchNodeHistory.name.push(this.searchNodeForm.name);
+          }
+          if ($.inArray(this.searchNodeForm.des, this.searchNodeHistory.des) === -1) {
+            this.searchNodeHistory.des.push(this.searchNodeForm.des);
+          }
+          if ($.inArray(this.searchNodeForm.category, this.searchNodeHistory.category) === -1) {
+            this.searchNodeHistory.category.push(this.searchNodeForm.category);
+          }
+          //搜索节点,存放到数组中
+          this.searchNodeResult = [];
+          for (var i = 0; i < this.nodes.length; i++) {
+            if (this.searchNodeForm.name !== '' && !this.isMatch(this.searchNodeForm.name, this.nodes[i].name)) continue;
+            if (this.searchNodeForm.des !== '' && !this.isMatch(this.searchNodeForm.des, this.nodes[i].des)) continue;
+            if (this.searchNodeForm.category !== '' && !this.isMatch(this.searchNodeForm.category.toString(), this.nodes[i].category.toString())) continue;
+            let res = {
+              name: this.nodes[i].name,
+              des: this.nodes[i].des,
+              category: this.nodes[i].category,
+              index: i,
+            };
+            this.searchNodeResult.push(res);
+          }
+        },
+        selectSearchNodeName(obj) {
+          this.searchNodeForm.name = obj.name;
+        },
+        selectSearchNodeDes(obj) {
+          this.searchNodeForm.des = obj.des;
+        },
+        selectSearchNodeCategory(obj) {
+          this.searchNodeForm.category = obj.category;
+        },
+        getSearchNodeNameHistory(str, cb) {
+          var res = [];
+          for (var i = 0; i < this.searchNodeHistory.name.length; i++) {
+            res.push({name: this.searchNodeHistory.name[i]});
+          }
+          cb(res);
+        },
+        getSearchNodeDesHistory(str, cb) {
+          var res = [];
+          for (var i = 0; i < this.searchNodeHistory.des.length; i++) {
+            res.push({des: this.searchNodeHistory.des[i]});
+          }
+          cb(res);
+        },
+        getSearchNodeCategoryHistory(str, cb) {
+          var res = [];
+          for (var i = 0; i < this.searchNodeHistory.category.length; i++) {
+            res.push({category: this.searchNodeHistory.category[i]});
+          }
+          cb(res);
+        },
+        setSearchNodeResultChosen(val) {
+          this.searchNodeResultChosen = val;
+        },
+        confirmSearchNode() {
+          if (this.searchNodeResultChosen.length == 0) {
+            this.warningNotice("未选中任何实体");
+            return;
+          }
+          const highlightNodeColor = '#f4ff73';
+          const highlightBorderColor = "#74ffeb";
+          //标红
           var option = this.chart.getOption();
-          option.series[0].nodes[params.dataIndex].x = params.event.offsetX;
-          option.series[0].nodes[params.dataIndex].y = params.event.offsetY;
-          option.series[0].nodes[params.dataIndex].fixed = true;
+          for (var i = 0; i < this.searchNodeResultChosen.length; i++) {
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.color = highlightNodeColor;
+            option.series[0].nodes[this.searchNodeResultChosen[i].index].itemStyle.borderColor = highlightBorderColor;
+          }
+          this.highlightNodeList = this.searchNodeResult.concat(this.searchNodeResultChosen);
           this.chart.setOption(option);
-        }
+          this.isSearchNodeVisible = false;
+          this.isNodeHighlight=true;
+        },
+        searchLinkClick() {
+          this.isSearchLinkVisible = true;
+        },
+        searchLink() {
+          if (this.searchLinkForm.name == '' && this.searchLinkForm.des == ''
+            && this.searchLinkForm.source == '' && this.searchLinkForm.target == '') {
+            this.warningNotice("搜索内容为空，请至少输入一个选项！");
+            return;
+          }
+          if ($.inArray(this.searchLinkForm.name, this.searchLinkHistory.name) === -1) {
+            this.searchLinkHistory.name.push(this.searchLinkForm.name);
+          }
+          if ($.inArray(this.searchLinkForm.des, this.searchLinkHistory.des) === -1) {
+            this.searchLinkHistory.des.push(this.searchLinkForm.des);
+          }
+          if ($.inArray(this.searchLinkForm.source, this.searchLinkHistory.source) === -1) {
+            this.searchLinkHistory.source.push(this.searchLinkForm.source);
+          }
+          if ($.inArray(this.searchLinkForm.target, this.searchLinkHistory.target) === -1) {
+            this.searchLinkHistory.target.push(this.searchLinkForm.target);
+          }
+          this.searchLinkResult = [];
+          for (var i = 0; i < this.links.length; i++) {
+            if (this.searchLinkForm.name !== '' && !this.isMatch(this.searchLinkForm.name, this.links[i].name)) continue;
+            if (this.searchLinkForm.des !== '' && !this.isMatch(this.searchLinkForm.des, this.links[i].des)) continue;
+            if (this.searchLinkForm.source !== '' && !this.isMatch(this.searchLinkForm.source, this.links[i].source)) continue;
+            if (this.searchLinkForm.target !== '' && !this.isMatch(this.searchLinkForm.target, this.links[i].target)) continue;
+            let res = {
+              name: this.links[i].name,
+              des: this.links[i].des,
+              source: this.links[i].source,
+              target: this.links[i].target,
+              index: i,
+            };
+            this.searchLinkResult.push(res);
+          }
+        },
+        selectSearchLinkName(obj) {
+          this.searchLinkForm.name = obj.name;
+        },
+        selectSearchLinkDes(obj) {
+          this.searchLinkForm.des = obj.des;
+        },
+        selectSearchLinkSource(obj) {
+          this.searchLinkForm.source = obj.source;
+        },
+        selectSearchLinkTarget(obj) {
+          this.searchLinkForm.target = obj.target;
+        },
+        getSearchLinkNameHistory(str, cb) {
+          var res = [];
+          for (var i = 0; i < this.searchLinkHistory.name.length; i++) {
+            res.push({name: this.searchLinkHistory.name[i]});
+          }
+          cb(res);
+        },
+        getSearchLinkDesHistory(str, cb) {
+          var res = [];
+          for (var i = 0; i < this.searchLinkHistory.des.length; i++) {
+            res.push({des: this.searchLinkHistory.des[i]});
+          }
+          cb(res);
+        },
+        getSearchLinkSourceHistory(str, cb) {
+          var res = [];
+          for (var i = 0; i < this.searchLinkHistory.source.length; i++) {
+            res.push({source: this.searchLinkHistory.source[i]});
+          }
+          cb(res);
+        },
+        getSearchLinkTargetHistory(str, cb) {
+          var res = [];
+          for (var i = 0; i < this.searchLinkHistory.target.length; i++) {
+            res.push({target: this.searchLinkHistory.target[i]});
+          }
+          cb(res);
+        },
+        setSearchLinkResultChosen(val) {
+          this.searchLinkResultChosen = val;
+        },
+        isMatch(searchStr, str) {
+          let index = -1, flag = false;
+          for (var i = 0, arr = searchStr.split(""); i < arr.length; i++) {
+            //有一个关键字都没匹配到，则没有匹配到数据
+            if (str.indexOf(arr[i]) < 0) {
+              break;
+            } else {
+              let match = str.matchAll(arr[i]);
+              let next = match.next();
+              while (!next.done) {
+                if (next.value.index > index) {
+                  index = next.value.index;
+                  if (i === arr.length - 1) {
+                    flag = true
+                  }
+                  break;
+                }
+                next = match.next();
+              }
 
-      },
-      //文件导出函数
-      canvasDataURLtoFile(dataurl, filename = 'file') {
-        let arr = dataurl.split(',')
-        let mime = arr[0].match(/:(.*?);/)[1]
-        let bstr = atob(arr[1])
-        let n = bstr.length
-        let u8arr = new Uint8Array(n)
-        while (n--) {
-          u8arr[n] = bstr.charCodeAt(n)
-        }
-        var file = new File([u8arr], filename, {type: mime});
-        console.log(file);
-        return file;
-      },
-      getCanvasDataUrl() {
-        var canvas = $("#" + "chart").find("canvas").first()[0];
-        return canvas.toDataURL();
-      },
-      chartXMLDownloadClick() {
-        const XMLText = '<?xml version="1.0" encoding="UTF-8"?>' + '<chart>' + this.objectToXMLStr(this.getChartData()) + '</chart>';
-        const ele = document.createElement('a');// 创建下载链接
-        ele.download = "MyChart.xml"
-        ele.style.display = 'none';// 隐藏的可下载链接
-        const blob = new Blob([XMLText]);
-        ele.href = URL.createObjectURL(blob);
-        document.body.appendChild(ele);
-        ele.click();
-        document.body.removeChild(ele);
-      },
-      objectToXMLStr(data, sig) {
-        var xmldata = '';
-        var str = '';
-        for (var i in data) {
-          if (data.constructor == Array) {
-            if (sig.length <= 0) {
-              str = 'data';
+            }
+          }
+          return flag;
+        },
+        confirmSearchLink() {
+          if (this.searchLinkResultChosen.length == 0) {
+            this.warningNotice("未选中任何关系");
+            return;
+          }
+          const highlightColor = '#FF0000'
+          //标红
+          var option = this.chart.getOption();
+          for (var i = 0; i < this.searchLinkResultChosen.length; i++) {
+            option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle = {};
+            option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle.color = highlightColor;
+          }
+          this.highlightLinkList = this.highlightLinkList.concat(this.searchLinkResultChosen);
+          this.chart.setOption(option);
+          this.isSearchLinkVisible = false;
+          this.isLinkHighlight=true;
+        },
+        cancelNodeHighlight() {
+          var option = this.chart.getOption();
+          for (var i = 0; i < this.highlightNodeList.length; i++) {
+            option.series[0].nodes[this.highlightNodeList[i].index].itemStyle = {color: this.nodes[i].itemStyle.color};
+
+          }
+          this.highlightNodeList = [];
+          this.chart.setOption(option);
+          this.isNodeHighlight=false;
+        },
+        cancelLinkHighlight() {
+          var option = this.chart.getOption();
+          const defaultColor = '#4b565b';
+          for (var i = 0; i < this.searchLinkResultChosen.length; i++) {
+            option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle = {};
+            option.series[0].links[this.searchLinkResultChosen[i].index].lineStyle.color = defaultColor;
+          }
+          this.highlightLinkList = [];
+          this.chart.setOption(option);
+          this.isLinkHighlight=false;
+        },
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        /////图表变换////////////////////////////////////////////////
+        fixChartClick() {
+          this.fixChart();
+        },
+        flexibleChartClick() {
+          this.flexibleChart();
+        },
+        fixChart() {
+          var option = this.chart.getOption();
+          for (var i = 0; i < this.nodes.length; i++) {
+            option.series[0].nodes[i].fixed = true;
+          }
+          this.chart.setOption(option);
+          this.isChartFixed = true;
+        },
+        flexibleChart() {
+          var option = this.chart.getOption();
+          for (var i = 0; i < this.nodes.length; i++) {
+            option.series[0].nodes[i].fixed = false;
+          }
+          this.chart.setOption(option);
+          this.isChartFixed = false;
+        },
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        //数据库保存
+        getNodePosition() {
+          var positionArray = this.chart._chartsViews[0]._symbolDraw._data._itemLayouts;
+          return positionArray;
+        },
+        getChartPosition() {
+          var option = this.chart.getOption();
+          var position = [];
+          for (var i = 0; i < option.series[0].nodes.length; i++) {
+            var pos = {x: 0, y: 0};
+            pos.x = this.getNodePosition()[i][0];
+            pos.y = this.getNodePosition()[i][1];
+            position.push(pos);
+          }
+          return position;
+        },
+        getChartData() {
+          var chartToBeSaved = {
+            title: this.option.title.text,
+            nodes: [],
+            links: [],
+            isChartFixed: false,
+            positions: [],
+          };
+          chartToBeSaved.isChartFixed = this.isChartFixed;
+          chartToBeSaved.nodes = this.nodes;
+          chartToBeSaved.links = this.links;
+          if (this.isChartFixed) {
+            chartToBeSaved.positions = this.getChartPosition();
+          }
+          return chartToBeSaved;
+        },
+        async saveChartClick(isCreateNewFile) {
+          var chartToBeSaved = this.getChartData();
+          //测试json文件生成
+          var jsonData = JSON.stringify(chartToBeSaved, undefined, 4);
+          const jsonFile = new Blob([jsonData], {type: 'text/json'});
+          const imgFile = this.getChartImgFile();
+          // var e = document.createEvent('MouseEvents');
+          // var a = document.createElement('a')
+          // a.download = "chart.json";
+          // a.href = window.URL.createObjectURL(blob)
+          // a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
+          // e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+          // a.dispatchEvent(e);
+          //TODO 数据库保存
+          const tempName = this.option.title.text;
+          const data = {
+            jsonFile: jsonFile,
+            imgFile: imgFile,
+            name: tempName,
+            isChartAlreadySaved:this.isChartAlreadySaved,
+            chartId:this.chartId,
+          };
+          if(isCreateNewFile){
+            data.isChartAlreadySaved=false;
+          }
+          console.log(data);
+          if (await this.addChart(data)) {
+            if (this.isChartFixed) {
+              this.successNotice("保存成功!（已经保存布局）")
             } else {
-              str = sig;
-              str = str.substring(0, str.length - 1);
+              this.successNotice("保存成功!（未保存布局）")
             }
           } else {
-            str = i.toString();
+            this.warningNotice("保存失败！")
           }
-          xmldata += '<' + str + '>';
-          if (typeof data[i] == 'object') {
-            if (data[i].constructor == Array) {
-              xmldata += this.objectToXMLStr(data[i], i.toString());
+        },
+        //点击事件
+        chartClick(param) {
+          if (param.dataType == 'edge') {
+            this.chosenType = 'link';
+            this.isLinkEdit = true;
+            this.linkForm.name = param.data.name;
+            this.linkForm.des = param.data.des;
+            this.linkForm.source = param.data.source;
+            this.linkForm.target = param.data.target;
+            this.linkName = param.data.name;
+            this.linkDes = param.data.des;
+            this.linkSource = param.data.source;
+            this.linkTarget = param.data.target;
+          } else if (param.dataType == 'node') {
+            this.chosenType = 'node';
+            this.isNodeEdit = true;
+            this.nodeForm.name = param.data.name;
+            this.nodeForm.des = param.data.des;
+            this.nodeForm.symbol = param.data.symbol;
+            this.nodeForm.symbolSize = param.data.symbolSize;
+            this.nodeForm.fontSize = param.data.label.fontSize;
+            this.nodeForm.color = param.color;
+            this.nodeForm.category = this.categories[param.data.category].name;
+            this.nodeName = param.data.name;
+            this.nodeDes = param.data.des;
+            this.nodeSymbol = param.data.symbol;
+            this.nodeSymbolSize = param.data.symbolSize;
+            this.nodeColor = param.color;
+            this.nodeFontSize = param.data.label.fontSize;
+            this.nodeCategory = this.categories[param.data.category].name;
+          }
+          this.isChartInfoEditVisible = true;
+        },
+        //拖拽事件
+        chartDrag(params) {
+          if (this.isChartFixed) {
+            var option = this.chart.getOption();
+            option.series[0].nodes[params.dataIndex].x = params.event.offsetX;
+            option.series[0].nodes[params.dataIndex].y = params.event.offsetY;
+            option.series[0].nodes[params.dataIndex].fixed = true;
+            this.chart.setOption(option);
+          }
+
+        },
+        //文件导出函数
+        canvasDataURLtoFile(dataurl, filename = 'file') {
+          let arr = dataurl.split(',')
+          let mime = arr[0].match(/:(.*?);/)[1]
+          let bstr = atob(arr[1])
+          let n = bstr.length
+          let u8arr = new Uint8Array(n)
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n)
+          }
+          var file = new File([u8arr], filename, {type: mime});
+          console.log(file);
+          return file;
+        },
+        getCanvasDataUrl() {
+          var canvas = $("#" + "chart").find("canvas").first()[0];
+          return canvas.toDataURL();
+        },
+        chartXMLDownloadClick() {
+          const XMLText = '<?xml version="1.0" encoding="UTF-8"?>' + '<chart>' + this.objectToXMLStr(this.getChartData()) + '</chart>';
+          const ele = document.createElement('a');// 创建下载链接
+          ele.download = "MyChart.xml"
+          ele.style.display = 'none';// 隐藏的可下载链接
+          const blob = new Blob([XMLText]);
+          ele.href = URL.createObjectURL(blob);
+          document.body.appendChild(ele);
+          ele.click();
+          document.body.removeChild(ele);
+        },
+        objectToXMLStr(data, sig) {
+          var xmldata = '';
+          var str = '';
+          for (var i in data) {
+            if (data.constructor == Array) {
+              if (sig.length <= 0) {
+                str = 'data';
+              } else {
+                str = sig;
+                str = str.substring(0, str.length - 1);
+              }
             } else {
-              xmldata += this.objectToXMLStr(data[i], '');
+              str = i.toString();
             }
-          } else {
-            xmldata += data[i];
+            xmldata += '<' + str + '>';
+            if (typeof data[i] == 'object') {
+              if (data[i].constructor == Array) {
+                xmldata += this.objectToXMLStr(data[i], i.toString());
+              } else {
+                xmldata += this.objectToXMLStr(data[i], '');
+              }
+            } else {
+              xmldata += data[i];
+            }
+            xmldata += '</' + str + '>';
           }
-          xmldata += '</' + str + '>';
+          return xmldata;
+        },
+        chartImgDownloadClick() {
+          var url = this.getCanvasDataUrl();
+          var link = document.createElement('a');
+          link.href = url;
+          link.download = this.option.title.text + ".png";
+          link.click();
+        },
+        getChartImgFile() {
+          var url = this.getCanvasDataUrl();
+          return this.canvasDataURLtoFile(url);
+        },
+        //信息统计
+        statisticsClick() {
+          this.statisticChart = this.$echarts.init(document.getElementById('statistic'));
+          var numOfNodes = this.option.series[0].nodes.length;
+          var numOfLinks = this.option.series[0].links.length
+          var numOfCategory = this.option.series[0].categories.length;
+          var statisticOption = {
+            title: {
+              text: ''
+            },
+            tooltip: {
+              trigger: 'axis'
+            },
+            legend: {
+              data: ['数目']
+            },
+            xAxis: {
+              data: ['实体数目', '关系数目', '种类数目']
+            },
+            yAxis: {},
+            series: [{
+              name: '数目',
+              type: 'bar',
+              data: [numOfNodes, numOfLinks, numOfCategory]
+            }]
+          }
+          this.statisticChart.setOption(statisticOption)
+          this.isStatisticVisible = true;
+        },
+        warningNotice(info) {
+          this.$notify({
+            title: '警告',
+            message: info,
+            type: 'warning'
+          });
+        },
+        successNotice(info) {
+          this.$notify({
+            title: '成功',
+            message: info,
+            type: 'success'
+          });
+        },
+        messageNotice(info) {
+          this.$notify.info({
+            title: '消息',
+            message: info,
+          });
+        },
+        openChatBox(){
+            this.$refs.chatBox.isChatOpen=true;
         }
-        return xmldata;
-      },
-      chartImgDownloadClick() {
-        var url = this.getCanvasDataUrl();
-        var link = document.createElement('a');
-        link.href = url;
-        link.download = this.option.title.text + ".png";
-        link.click();
-      },
-      getChartImgFile() {
-        var url = this.getCanvasDataUrl();
-        return this.canvasDataURLtoFile(url);
-      },
-      //信息统计
-      statisticsClick() {
-        this.statisticChart = this.$echarts.init(document.getElementById('statistic'));
-        var numOfNodes = this.option.series[0].nodes.length;
-        var numOfLinks = this.option.series[0].links.length
-        var numOfCategory = this.option.series[0].categories.length;
-        var statisticOption = {
-          title: {
-            text: ''
-          },
-          tooltip: {
-            trigger: 'axis'
-          },
-          legend: {
-            data: ['数目']
-          },
-          xAxis: {
-            data: ['实体数目', '关系数目', '种类数目']
-          },
-          yAxis: {},
-          series: [{
-            name: '数目',
-            type: 'bar',
-            data: [numOfNodes, numOfLinks, numOfCategory]
-          }]
-        }
-        this.statisticChart.setOption(statisticOption)
-        this.isStatisticVisible = true;
-      },
-      warningNotice(info) {
-        this.$notify({
-          title: '警告',
-          message: info,
-          type: 'warning'
-        });
-      },
-      successNotice(info) {
-        this.$notify({
-          title: '成功',
-          message: info,
-          type: 'success'
-        });
-      },
-      messageNotice(info) {
-        this.$notify.info({
-          title: '消息',
-          message: info,
-        });
-      },
-      openChatBox(){
-          this.$refs.chatBox.isChatOpen=true;
-      }
 
     }
   }
