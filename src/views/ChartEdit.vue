@@ -334,18 +334,24 @@
         </span>
       </el-dialog>
     </div>
+    <div id="chatBox">
+      <chat-box></chat-box>
+    </div>
   </div>
 </template>
 
 <script>
   import Header from "@/components/header";
+  import chatBox from "@/components/chatBox";
   import $ from 'jquery'
   import router from '@/router'
   import {mapActions, mapGetters} from "vuex";
+  import ChatBox from "../components/chatBox";
 
   export default {
     name: "ChartEdit",
     components: {
+      ChatBox,
       Header,
     },
     data() {

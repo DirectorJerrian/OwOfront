@@ -8,6 +8,7 @@ import moment from 'moment'
 import store from './store'
 import '@/permission'
 import Axios from 'axios'
+import Chat from 'vue-beautiful-chat'
 
 Vue.config.productionTip = false;
 Vue.prototype.$moment = moment;
@@ -21,6 +22,7 @@ const options = {
 };
 
 Vue.use(ElementUI);
+Vue.use(Chat);
 Vue.directive('title', {
   inserted: function (el, binding) {
     document.title = el.dataset.title
