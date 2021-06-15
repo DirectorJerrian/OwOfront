@@ -4,7 +4,7 @@ import {Message} from 'element-ui'
 import {getToken, setToken, removeToken} from '../../utils/auth'
 import {
   saveChartAPI,
-  getKgAPI, getUserChartsAPI, deleteChartAPI, getAnswerAPI
+  getKgAPI, getUserChartsAPI, deleteChartAPI, getAnswerAPI, getFusionAPI
 } from "../../api/chart";
 import da from "element-ui/src/locale/lang/da";
 
@@ -50,7 +50,7 @@ const chart = {
     getKg: async ({dispatch, commit}, data) => {
       var dataVO = {
         dataString: data,
-        nextDate:""
+        nextData:""
       };
       const res = await getKgAPI(dataVO);
       if (res) {
@@ -61,7 +61,7 @@ const chart = {
     getFusion: async ({dispatch, commit}, data) => {
       var dataVO = {
         dataString: data.dataString,
-        nextDate: data.nextDate
+        nextData: data.nextData
       };
       const res = await getFusionAPI(dataVO);
       if (res) {
@@ -72,7 +72,7 @@ const chart = {
     getAnswer: async ({dispatch, commit}, data) => {
       var dataVO = {
         dataString: data.dataString,  //知识图谱
-        nextDate: data.nextDate       //问题
+        nextData: data.nextData       //问题
       };
       const res = await getAnswerAPI(dataVO);
       if (res) {
