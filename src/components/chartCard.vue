@@ -14,7 +14,7 @@
 
 <script>
   import $ from 'jquery'
-  import {mapActions, mapGetters, mapMutations} from "vuex";
+  import {mapActions,  mapMutations} from "vuex";
   import router from '@/router'
 
   export default {

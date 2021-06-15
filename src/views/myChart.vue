@@ -120,7 +120,6 @@
         'chartData',
         'chartList'
       ]),
-
     },
     mounted() {
       this.getChartList();
@@ -128,7 +127,8 @@
     methods: {
       ...mapActions([
         'getKg',
-        'getChartList'
+        'getChartList',
+        'getFusion',
       ]),
       ...mapMutations([
         'setChartData',
@@ -341,8 +341,22 @@
           return;
         }
         if(chosenNum==2){
+          this.mergeChart(urlList);
           console.log(urlList);
         }
+      },
+      async mergeChart(urlList) {
+        const chart1 = await this.$axios.get(urlList[0])
+        const chart2 = await this.$axios.get(urlList[1])
+        const data={
+          dataString:JSON.stringify(chart1),
+          nextData:JSON.stringify(chart2),
+        }
+        var chartString= await this.getFusion(data);
+        var chartData=JSON.parse(chartString);
+        chartData.isChartAlreadySaved=false;
+        this.setChartData(chartData);
+        router.push('/ChartEdit');
       },
       cancelChartMerge(){
         this.clearChartChosen();
