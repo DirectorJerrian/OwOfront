@@ -866,6 +866,7 @@
           for(var i=0;i<this.nodes.length;i++){
             nodes[i].x=positionData[i].x;
             nodes[i].y=positionData[i].y;
+            nodes[i].symbolSize=10;
             nodes[i].fixed=true;
           }
           this.chart.clear();
@@ -1037,10 +1038,10 @@
             level_y++;
           }
           //根据层级信息，设置具体的位置
-          const start_x=100;
-          const start_y=100;
-          const pace_x=200;
-          const pace_y=150;
+          const start_x=0;
+          const start_y=0;
+          const pace_x=1000;
+          const pace_y=30;
           const levelData=this.getLevelData(data);
           const x_count=levelData.x_count;
           const y_count=levelData.y_count;

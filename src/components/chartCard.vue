@@ -33,7 +33,7 @@
     },
 
     mounted() {
-      //console.log(this.chart);
+      console.log(this.chart);
       this.name = this.chart.imgName;
       this.imgUrl = this.chart.imgURL;
       this.jsonUrl = this.chart.jsonURL;
@@ -41,7 +41,7 @@
     },
     methods: {
       ...mapActions([
-        'deleteChart'
+        'deleteChart',
       ]),
       ...mapMutations([
         'setChartData',
@@ -63,17 +63,13 @@
           router.push('/ChartEdit');
         })
       },
-      deleteChartClick(){
+      async deleteChartClick(){
         this.$confirm('此操作将永久删除该图谱, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          this.deleteChart(this.chartId);
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+        }).then(async () => {
+          await this.deleteChart(this.chartId);
         });
       }
     }

@@ -26,6 +26,12 @@ const routes = [
     component: resolve => require(['@/views/home'], resolve)
   },
   {
+    path: '/QAndAInstruction',
+    name: '智能问答说明',
+    meta: {title: '智能问答说明'},
+    component: resolve => require(['@/views/QAndAInstruction'], resolve)
+  },
+  {
     path: '/register',
     name: 'Register',
     meta: {title: 'OwO注册'},

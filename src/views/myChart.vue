@@ -44,7 +44,7 @@
 
     <div id="chartList">
       <div class="card-wrapper">
-        <chartCard :chart="item" v-for="(item,index) in chartList" :key="index" @click.native="" class="chartCard">
+        <chartCard :chart="item" v-for="item in chartList" :key="item.chartId"  @click.native="" class="chartCard">
 
         </chartCard>
       </div>

@@ -19,6 +19,7 @@ const chart = {
   state: getDefaultState(),
   mutations: {
     setChartList: function (state, data) {
+      state.chartList=[]
       state.chartList = data;
     },
     setChartData: function (state, data) {
@@ -42,9 +43,12 @@ const chart = {
       }
     },
     deleteChart:async ({dispatch},id)=>{
+      console.log(id);
       const res=await deleteChartAPI(id);
       if(res){
-        dispatch(`getChartList`)
+        console.log(res);
+        await dispatch(`getChartList`);
+        Message.success("删除成功！");
       }
     },
     getKg: async ({dispatch, commit}, data) => {
@@ -83,6 +87,7 @@ const chart = {
       var id = getToken();
       const res = await getUserChartsAPI(id);
       if (res) {
+        console.log(res);
         commit('setChartList', res.obj);
       }
     }
