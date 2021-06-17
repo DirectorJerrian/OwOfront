@@ -1,7 +1,7 @@
 <template>
-  <el-card>
-    <img :src="imgUrl" class="image" style="width: 400px;height: 200px"/>
-    <div style="padding: 14px;">
+  <el-card class="card">
+    <img :src="imgUrl" class="image" style="width: 100%;height:200px"/>
+    <div style="padding: 5px;">
       <span>{{name}}</span>
       <div class="bottom clearfix">
         <el-button type="text" class="button" @click="editChart()">编辑</el-button>
@@ -82,5 +82,8 @@
 </script>
 
 <style scoped>
-
+.card{
+  display: flex;
+  float: left;
+}
 </style>

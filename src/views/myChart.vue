@@ -48,8 +48,6 @@
 
         </chartCard>
       </div>
-
-
     </div>
     <div id="confirmMergeChart">
       <el-button type="success" icon="el-icon-check" circle style="width: 100px;height: 50px;" v-if="isChartMergeVisible" @click="confirmChartMerge()">确认融合</el-button>
@@ -381,11 +379,13 @@
 </script>
 
 <style scoped>
+  .card-wrapper{
+    width: 100%;
+  }
   .chartCard {
     display: flex;
-    float: left;
-    width: 25%;
-    margin: 2%;
+    width: 24%;
+    margin: 2px;
   }
 
   .el-row {

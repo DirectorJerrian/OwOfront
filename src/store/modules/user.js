@@ -52,7 +52,7 @@ const user = {
         setToken(res.obj.id);
         commit('setToken', res.obj.id);
         dispatch('getUserInfo');
-        router.push('/ChartEdit')
+        router.push('/myChart')
       } else {
         Message.error('登录失败，请检查账号密码或重新登录！')
       }
