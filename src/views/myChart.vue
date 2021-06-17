@@ -307,13 +307,18 @@
         }
       },
       analyzeText() {
-        this.getKg(this.textData).then((jsonStr) => {
-          // console.log(jsonStr);
-          var jsonObj = JSON.parse(jsonStr);
-          // console.log(jsonObj);
-          this.setChartData(jsonObj);
-          router.push('/ChartEdit');
-        });
+        if (this.textData==''){
+          this.$message.error('解析的文本不能为空！');
+        }
+        else{
+          this.getKg(this.textData).then((jsonStr) => {
+            // console.log(jsonStr);
+            var jsonObj = JSON.parse(jsonStr);
+            // console.log(jsonObj);
+            this.setChartData(jsonObj);
+            router.push('/ChartEdit');
+          });
+        }
       },
       mergeChartClick(){
         this.isChartMergeVisible=true;
