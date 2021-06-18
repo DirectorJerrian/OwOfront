@@ -164,6 +164,7 @@
     computed: {},
     components: {
       Header,
+      Banner
     },
   };
 </script>
