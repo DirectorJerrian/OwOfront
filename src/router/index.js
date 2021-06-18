@@ -32,6 +32,13 @@ const routes = [
     component: resolve => require(['@/views/QAndAInstruction'], resolve)
   },
   {
+    path: '/platformInstruction',
+    name: '平台使用说明',
+    meta: {title: '平台使用说明'},
+    component: resolve => require(['@/views/platformInstruction'], resolve)
+  },
+
+  {
     path: '/register',
     name: 'Register',
     meta: {title: 'OwO注册'},

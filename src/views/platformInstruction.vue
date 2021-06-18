@@ -1,5 +1,5 @@
 <template>
-  <div id="QAndAInstruction">
+  <div id="platformInstruction">
     <el-container>
       <el-header style="padding: 0">
         <Header></Header>
@@ -9,7 +9,7 @@
     <el-container>
       <el-main style="height: 100%; margin-bottom: 3%">
         <div class='typora-export-content'>
-          <div id='write'  class=''><div align="center"><font color="#0099ff" size="7"><b>OwO智能问答说明书</b></font></div><p>&nbsp;</p><p>&nbsp;</p><div class='md-toc' mdtype='toc'><p class="md-toc-content" role="list"><span role="listitem" class="md-toc-item md-toc-h1" data-ref="n57"><a class="md-toc-inner" href="#一-正常问答">一、 正常问答</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n58"><a class="md-toc-inner" href="#11-询问用药">1.1 询问用药</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n65"><a class="md-toc-inner" href="#12-询问发病部位">1.2 询问发病部位</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n72"><a class="md-toc-inner" href="#13-询问发病人群">1.3 询问发病人群</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n79"><a class="md-toc-inner" href="#14-询问传染性">1.4 询问传染性</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n86"><a class="md-toc-inner" href="#15-询问治疗时间">1.5 询问治疗时间</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n93"><a class="md-toc-inner" href="#16-询问所属科">1.6 询问所属科</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n100"><a class="md-toc-inner" href="#17-询问检查项目">1.7 询问检查项目</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n107"><a class="md-toc-inner" href="#18-询问症状">1.8 询问症状</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n114"><a class="md-toc-inner" href="#19-询问并发症">1.9 询问并发症</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n121"><a class="md-toc-inner" href="#110-询问治疗方法">1.10 询问治疗方法</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n128"><a class="md-toc-inner" href="#111-询问治愈率">1.11 询问治愈率</a></span><span role="listitem" class="md-toc-item md-toc-h1" data-ref="n136"><a class="md-toc-inner" href="#二-异常问答">二、 异常问答</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n137"><a class="md-toc-inner" href="#21-知识图谱中找不到相关内容">2.1 知识图谱中找不到相关内容</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n142"><a class="md-toc-inner" href="#22-多种问题混合">2.2 多种问题混合</a></span><span role="listitem" class="md-toc-item md-toc-h2" data-ref="n147"><a class="md-toc-inner" href="#23-问题无法识别">2.3 问题无法识别</a></span></p></div><p>&nbsp;</p><h1 id='一-正常问答'><span>一、 正常问答</span></h1><h2 id='11-询问用药'><span>1.1 询问用药</span></h2><p><strong><span>规范：</span></strong></p><p><span>患了/得了XXX吃什么药/用什么药/买什么药？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：患了乙肝吃什么药？</span></p><p><span>答：乙肝，治疗需要使用以下药物：恩替卡韦分散片、碧云砂乙肝颗粒、注射用盐酸精氨。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%981.png" referrerpolicy="no-referrer"></p><h2 id='12-询问发病部位'><span>1.2 询问发病部位</span></h2><p><strong><span>规范：</span></strong></p><p><span>患了/得了XXX发病部位在哪里/哪里有问题/哪里不舒服？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：得了乙肝哪里不舒服？</span></p><p><span>答：乙肝，发病部位有肝。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%982.png" referrerpolicy="no-referrer"></p><h2 id='13-询问发病人群'><span>1.3 询问发病人群</span></h2><p><strong><span>规范：</span></strong></p><p><span>XXX什么时候发病/什么人发病/什么时候患病？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：哪些人会患乙肝？</span></p><p><span>答：乙肝，发病人群有所有人群、青少年。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%983.png" referrerpolicy="no-referrer"></p><h2 id='14-询问传染性'><span>1.4 询问传染性</span></h2><p><strong><span>规范：</span></strong></p><p><span>XXX传染性怎么样/会传染吗？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：乙肝传染性怎么样？</span></p><p><span>答：乙肝，有传染性。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%984.png" referrerpolicy="no-referrer"></p><h2 id='15-询问治疗时间'><span>1.5 询问治疗时间</span></h2><p><strong><span>规范：</span></strong></p><p><span>XXX需要治疗多久/多长时间/什么时候能够治好？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：乙肝需要治疗多久？</span></p><p><span>答：乙肝，治疗时间为3-6月。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%985.png" referrerpolicy="no-referrer"></p><h2 id='16-询问所属科'><span>1.6 询问所属科</span></h2><p><strong><span>规范：</span></strong></p><p><span>XXX属于什么科？得了XXX挂什么？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：乙肝属于哪个科？</span></p><p><span>答：乙肝，所属科为传染科。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%986.png" referrerpolicy="no-referrer"></p><h2 id='17-询问检查项目'><span>1.7 询问检查项目</span></h2><p><strong><span>规范：</span></strong></p><p><span>得了XXX需要检查什么/有什么检查项目/怎么检查？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：得了乙肝需要检查什么？</span></p><p><span>答：乙肝，需要检查以下项目：乙肝病毒学指标、凝血酶原时间、乙肝两对半、血清白蛋白与球蛋白比值、血清HBsAg免疫复合物、血清前S1蛋白、血清前S2蛋白、血清抗前S2蛋白、血清免疫球蛋白M、血清乙肝表面抗体。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%987.png" referrerpolicy="no-referrer"></p><h2 id='18-询问症状'><span>1.8 询问症状</span></h2><p><strong><span>规范：</span></strong></p><p><span>得了XXX有什么症状/症状有哪些/有什么表征？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：患了乙肝有什么症状？</span></p><p><span>答：乙肝，有以下症状：转氨酶增高、肝肿大、乙肝表面抗原（HBsAg）阳性、乙肝e抗原（HBeAg）阳性、肝功能异常。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%988.png" referrerpolicy="no-referrer"></p><h2 id='19-询问并发症'><span>1.9 询问并发症</span></h2><p><strong><span>规范：</span></strong></p><p><span>XXX有什么并发症/得了XXX还会得什么/XXX与什么一起发作？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：得了乙肝还会得什么？</span></p><p><span>答：乙肝，有以下并发症：肝性脑病、肝硬化、腹膜炎、消化道出血、肺炎。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%989.png" referrerpolicy="no-referrer"></p><h2 id='110-询问治疗方法'><span>1.10 询问治疗方法</span></h2><p><strong><span>规范：</span></strong></p><p><span>得了XXX怎么办/如何医治/怎么治？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：乙肝怎么治疗？</span></p><p><span>答：乙肝，治疗方法为药物治疗、饮食疗法。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%9810.png" referrerpolicy="no-referrer"></p><h2 id='111-询问治愈率'><span>1.11 询问治愈率</span></h2><p><strong><span>规范：</span></strong></p><p><span>XXX多大概率能治好/可以治好吗/会好吗？</span></p><p><strong><span>示例：</span></strong></p><p><span>问：乙肝治愈率怎么样？</span></p><p><span>答：乙肝，治愈率为0.00%。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%9811.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><h1 id='二-异常问答'><span>二、 异常问答</span></h1><h2 id='21-知识图谱中找不到相关内容'><span>2.1 知识图谱中找不到相关内容</span></h2><p><strong><span>示例：</span></strong></p><p><span>问：得了乙肝吃什么药？</span></p><p><span>答：知识图谱中未查找到以下内容：乙肝的用药。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%9812.png" referrerpolicy="no-referrer"></p><h2 id='22-多种问题混合'><span>2.2 多种问题混合</span></h2><p><strong><span>示例：</span></strong></p><p><span>问：什么人会患乙肝？要去检查什么？</span></p><p><span>答：乙肝，发病人群有所有人群、青少年。乙肝需要检查以下项目：乙肝病毒学指标、凝血酶原时间、乙肝两对半、血清白蛋白与球蛋白比值、血清HBsAg免疫复合物、血清前S1蛋白、血清前S2蛋白、血清抗前S2蛋白、血清免疫球蛋白M、血清乙肝表面抗体。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%9813.png" referrerpolicy="no-referrer"></p><h2 id='23-问题无法识别'><span>2.3 问题无法识别</span></h2><p><strong><span>示例：</span></strong></p><p><span>问：你在干嘛？</span></p><p><span>答：我不是太听得懂。。。</span></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E9%97%AE%E9%A2%9814.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p></div></div>
+          <div id='write'  class=''><div align="center"><font color="#0099ff" size="7"><b>OwO平台使用说明书</b></font></div><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p><strong><span>首先是主界面</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E4%B8%BB%E7%95%8C%E9%9D%A2.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>点击右上角的登录按钮登录</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E7%99%BB%E5%BD%95%E7%95%8C%E9%9D%A2.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>点击右上角的注册按钮注册</span></strong></p><p><img src="E:/大三下/软件工程与计算Ⅲ/code/developdocs/Iteration_3/pic/注册界面.png" referrerpolicy="no-referrer" alt="注册界面"></p><p>&nbsp;</p><p><strong><span>我的知识图谱界面，可以读取、解析图片，解析文本，融合图谱、编辑图谱</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E6%88%91%E7%9A%84%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%95%8C%E9%9D%A2.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>图谱编辑界面，可以编辑图谱</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E5%9B%BE%E8%B0%B1%E7%BC%96%E8%BE%91%E7%95%8C%E9%9D%A2.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>增加实体</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E5%A2%9E%E5%8A%A0%E5%AE%9E%E4%BD%93.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>增加关系</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E5%A2%9E%E5%8A%A0%E5%85%B3%E7%B3%BB.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>编辑实体</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E7%BC%96%E8%BE%91%E5%AE%9E%E4%BD%93.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>编辑关系</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E7%BC%96%E8%BE%91%E5%85%B3%E7%B3%BB.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>搜索、标记实体</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E6%90%9C%E7%B4%A2%E3%80%81%E6%A0%87%E8%AE%B0%E5%AE%9E%E4%BD%93.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>搜索、标记关系</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E6%90%9C%E7%B4%A2%E3%80%81%E6%A0%87%E8%AE%B0%E5%85%B3%E7%B3%BB.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>不显示关系标签</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E4%B8%8D%E6%98%BE%E7%A4%BA%E6%A0%87%E7%AD%BE.png" referrerpolicy="no-referrer"></p><p><span> </span></p><p><strong><span>保存知识图谱</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E4%BF%9D%E5%AD%98%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>图谱XML导出</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E5%9B%BE%E8%B0%B1xml%E5%AF%BC%E5%87%BA.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>图谱图片导出</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E5%9B%BE%E8%B0%B1%E5%9B%BE%E7%89%87%E5%AF%BC%E5%87%BA.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>修改图谱名称</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E5%9B%BE%E8%B0%B1%E5%90%8D%E7%A7%B0%E4%BF%AE%E6%94%B9.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>点击信息统计按钮</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E4%BF%A1%E6%81%AF%E7%BB%9F%E8%AE%A1.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>进入排版模式</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E6%8E%92%E7%89%88%E6%A8%A1%E5%BC%8F.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p><p><strong><span>进入聊天窗口，询问问题</span></strong></p><p><img src="https://ruangong2020.oss-cn-beijing.aliyuncs.com/pic/%E6%99%BA%E8%83%BD%E9%97%AE%E7%AD%94.png" referrerpolicy="no-referrer"></p><p>&nbsp;</p></div></div>
       </el-main>
       <el-footer style="height: 180px">
         <el-row :gutter="10" class="footer-row">
@@ -37,17 +37,17 @@
 
 <script>
   import Header from "@/components/header";
-    export default {
-      name: "QAndAInstruction",
-      data() {
-        return {
-          logo_url: "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/logo.png",
-        };
-      },
-      components: {
-        Header,
-      },
-    }
+  export default {
+    name: "platformInstruction",
+    data() {
+      return {
+        logo_url: "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/logo.png",
+      };
+    },
+    components: {
+      Header,
+    },
+  }
 </script>
 
 <style scoped>
@@ -101,12 +101,12 @@
     margin-top: 20px;
     line-height: 30px;
   }
-  </style>
+</style>
 
-    <style scoped>
-    .threeCard {
-      height: 250px;
-    }
+<style scoped>
+  .threeCard {
+    height: 250px;
+  }
 
   .threeCard div {
     text-align: left;
@@ -132,16 +132,16 @@
   .clearfix:after {
     clear: both;
   }
-  </style>
+</style>
 
-    <style>
-    .el-carousel__item h3 {
-      color: #475669;
-      font-size: 14px;
-      opacity: 0.75;
-      line-height: 200px;
-      margin: 0;
-    }
+<style>
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 200px;
+    margin: 0;
+  }
 
   .el-carousel__item:nth-child(2n) {
     background-color: #99a9bf;
@@ -150,14 +150,14 @@
   .el-carousel__item:nth-child(2n + 1) {
     background-color: #d3dce6;
   }
-  </style>
-    <style lang="less" scoped>
-                       .section1 {
-                         /* background-image: url(https://finclaw.oss-cn-shenzhen.aliyuncs.com/img/section02.png); */
-                         /* background-repeat: no-repeat;*/
-                         /* background-position: center center; */
-                         /*background-size: 100% auto;*/
-                       }
+</style>
+<style lang="less" scoped>
+  .section1 {
+    /* background-image: url(https://finclaw.oss-cn-shenzhen.aliyuncs.com/img/section02.png); */
+    /* background-repeat: no-repeat;*/
+    /* background-position: center center; */
+    /*background-size: 100% auto;*/
+  }
 
   .header-button {
     margin-left: 3%;
@@ -216,9 +216,9 @@
     line-height: 40px;
     font-weight: bold;
 
-  em {
-    color: #409eff;
-  }
+    em {
+      color: #409eff;
+    }
   }
 
   .meta-info {
@@ -232,8 +232,7 @@
     padding: 8px 16px;
   }
 </style>
-<style type='text/css'>
-  html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
+<style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
 .mac-os-11 { --title-bar-height:28px; }
 html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 body { margin: 0px; padding: 0px; height: auto; bottom: 0px; top: 0px; left: 0px; right: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; tab-size: 4; }
@@ -393,7 +392,7 @@ mark .md-meta { color: rgb(0, 0, 0); }
   .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
 }
 .md-diagram-panel .messageText { stroke: none !important; }
-.md-diagram-panel .start-state {}
+.md-diagram-panel .start-state {  }
 .md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
 .md-require-zoom-fix foreignobject { font-size: var(--mermaid-font-zoom); }
 .md-fences.md-fences-math { font-size: 1em; }
