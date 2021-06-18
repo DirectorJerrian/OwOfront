@@ -102,8 +102,7 @@
     line-height: 30px;
   }
   </style>
-
-    <style scoped>
+<style scoped>
     .threeCard {
       height: 250px;
     }
@@ -133,8 +132,7 @@
     clear: both;
   }
   </style>
-
-    <style>
+<style>
     .el-carousel__item h3 {
       color: #475669;
       font-size: 14px;
@@ -151,7 +149,7 @@
     background-color: #d3dce6;
   }
   </style>
-    <style lang="less" scoped>
+<style lang="less" scoped>
                        .section1 {
                          /* background-image: url(https://finclaw.oss-cn-shenzhen.aliyuncs.com/img/section02.png); */
                          /* background-repeat: no-repeat;*/

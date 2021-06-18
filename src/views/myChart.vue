@@ -42,13 +42,38 @@
       </el-main>
     </el-container>
 
-    <div id="chartList">
-      <div class="card-wrapper">
-        <chartCard :chart="item" v-for="item in chartList" :key="item.chartId"  @click.native="" class="chartCard">
 
-        </chartCard>
-      </div>
-    </div>
+    <el-container>
+      <el-main>
+        <div id="chartList">
+          <div class="card-wrapper">
+            <chartCard :chart="item" v-for="item in chartList" :key="item.chartId"  @click.native="" class="chartCard">
+            </chartCard>
+          </div>
+        </div>
+      </el-main>
+      <el-footer style="height: 180px">
+        <el-row :gutter="10" class="footer-row">
+          <el-col :span="4" :offset="6">
+            <span style="font-size: 24px">帮助中心</span>
+            <br/>
+            <span style="font-size: 16px"
+            ><a href="http://212.129.149.40/users/sign_in"> 版本更新 </a><br/>
+                <a href="http://212.129.149.40/users/sign_in"> 联系我们</a>
+              </span>
+          </el-col>
+          <el-col :span="4" :offset="6" class="footer-pic">
+            <el-image class="logo" :src="logo_url"></el-image>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="4" :offset="6">
+            <span style="font-size: 16px">©OwO COIN</span>
+          </el-col>
+        </el-row>
+      </el-footer>
+    </el-container>
+
     <div id="confirmMergeChart">
       <el-button type="success" icon="el-icon-check" circle style="width: 100px;height: 50px;" v-if="isChartMergeVisible" @click="confirmChartMerge()">确认融合</el-button>
       <el-button type="danger" icon="el-icon-close" circle style="width: 100px;height: 50px;left: 10px" v-if="isChartMergeVisible" @click="cancelChartMerge()">取消融合</el-button>
@@ -72,6 +97,7 @@
     },
     data() {
       return {
+        logo_url: "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/logo.png",
         textData: '',
         // chartList:[{
         //   name:'chart01',
@@ -428,4 +454,184 @@
     top: 45%;
   }
 
+</style>
+<style scoped>
+  .logo {
+    height: 50px;
+    margin-right: 16px;
+    border-style: none;
+    cursor: pointer;
+  }
+
+  .mask {
+    width: 75px;
+    height: 30px;
+    line-height: 30px;
+    background-color: rgba(255, 255, 255, 0.54);
+    border-radius: 30px;
+    position: absolute;
+    margin-top: -60px;
+    margin-left: 199px;
+    font-weight: bold;
+  }
+
+  .el-header {
+    /* background-color: #a191fc; */
+    color: rgb(255, 255, 255);
+    text-align: right;
+    /* line-height: 60px; */
+  }
+
+  .el-footer {
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.575);
+    color: rgb(255, 255, 255);
+  }
+
+  .el-container {
+    padding-bottom: 1px;
+  }
+
+  .el-main {
+    /* background-color: #E9EEF3; */
+    color: #606266;
+
+  }
+
+  #header {
+    text-align: right;
+  }
+
+  .footer-row {
+    margin-top: 20px;
+    line-height: 30px;
+  }
+</style>
+<style scoped>
+  .threeCard {
+    height: 250px;
+  }
+
+  .threeCard div {
+    text-align: left;
+  }
+
+  .bottom {
+    line-height: 12px;
+    bottom: 18px;
+    position: absolute;
+  }
+
+  .button {
+    padding: 0;
+    float: left;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+
+  .clearfix:after {
+    clear: both;
+  }
+</style>
+<style>
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 200px;
+    margin: 0;
+  }
+
+  .el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+  }
+
+  .el-carousel__item:nth-child(2n + 1) {
+    background-color: #d3dce6;
+  }
+</style>
+<style lang="less" scoped>
+  .section1 {
+    /* background-image: url(https://finclaw.oss-cn-shenzhen.aliyuncs.com/img/section02.png); */
+    /* background-repeat: no-repeat;*/
+    /* background-position: center center; */
+    /*background-size: 100% auto;*/
+  }
+
+  .header-button {
+    margin-left: 3%;
+    background-color: transparent;
+    color: white;
+    border: 0;
+    font-size: 180%;
+  }
+
+  .header-button:hover {
+    background-color: white;
+    color: #a191fc;
+  }
+
+  .button2 {
+    /* height:40%; */
+    font-size: 222%;
+    background-color: #a191fc;
+    border: 0;
+    color: white;
+  }
+
+  .button2:hover {
+    background-color: white;
+    color: #a191fc;
+  }
+
+  /****** */
+
+  #components-grid-demo-playground .projects {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+  }
+
+  #components-grid-demo-playground [class~="ant-col"] {
+    background: transparent;
+    border: 0;
+  }
+
+  #components-grid-demo-playground [class~="ant-col"] > div {
+    /*background: #00a0e9;*/
+    line-height: 300px;
+    font-size: 13px;
+  }
+
+  h1 {
+    font-size: 52px;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 8px;
+  }
+
+  h2 {
+    font-size: 30px;
+    color: #333333;
+    line-height: 40px;
+    font-weight: bold;
+
+    em {
+      color: #409eff;
+    }
+  }
+
+  .meta-info {
+    margin: 10px auto -10px auto;
+  }
+
+  #components-grid-demo-playground pre {
+    background: #f9f9f9;
+    border-radius: 6px;
+    font-size: 13px;
+    padding: 8px 16px;
+  }
 </style>

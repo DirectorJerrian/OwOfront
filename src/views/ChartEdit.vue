@@ -126,7 +126,7 @@
           <el-button style="margin-left: 100px" @click="cancelForm">取 消</el-button>
           <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
           <el-button type="danger" v-if="this.isNodeEdit" @click="deleteNode(nodeForm.name)">删 除</el-button>
-          <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm.name)">删 除</el-button>
+          <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm)">删 除</el-button>
         </div>
       </div>
     </el-drawer>
@@ -710,7 +710,9 @@
         //当前是否为力导图模式
         isForceChart:true,
         //是否显示关系标签
-        isLinksLabelVisible:true
+        isLinksLabelVisible:true,
+        //当前是否为排版模式
+        isArrangementChart:false,
         }
       },
       computed:{
@@ -848,6 +850,10 @@
         },
         //展示力导图
         showChart(){
+          if(this.isArrangementChart){
+            this.chart.clear();
+          }
+          this.isArrangementChart=false;
           this.setChart();
           this.chart.setOption(this.option);
         },
@@ -857,7 +863,9 @@
         ////////////////////////////////////////////////
         //展示排版图
         showArrangementChart(){
+          this.isArrangementChart=true
           this.setArrangementChartPosition();
+          this.fixChart();
         },
         setArrangementChartPosition(){
           var positionData=this.getArrangementChartPosition();
@@ -866,8 +874,9 @@
           for(var i=0;i<this.nodes.length;i++){
             nodes[i].x=positionData[i].x;
             nodes[i].y=positionData[i].y;
-            nodes[i].symbolSize=10;
+            nodes[i].symbolSize=15;
             nodes[i].fixed=true;
+            nodes[i].label.fontSize=10;
           }
           this.chart.clear();
           this.chart.setOption(option)
@@ -932,10 +941,6 @@
             this.warningNotice(nodeNotExistMessage);
             return false;
           }
-          if(this.isLinkExist(source,target)){
-            this.warningNotice("关系已经存在");
-            return false;
-          }
           var link={
             name:name,
             des:des,
@@ -952,14 +957,6 @@
         isNodeExist(name) {
           for(var i=0;i<this.nodes.length;i++){
             if(this.nodes[i].name===name){
-              return true;
-            }
-          }
-          return false;
-        },
-        isLinkExist(source,target) {
-          for(var i=0;i<this.links.length;i++){
-            if(this.links[i].source===source && this.links[i].target===target){
               return true;
             }
           }
@@ -983,15 +980,18 @@
           this.successNotice("删除成功");
           return true;
         },
-        deleteLink(name){
+        deleteLink(form){
           //删除关系
-          var linkIndex=this.findLinkIndex(name);
-          console.log(linkIndex);
+          var linkIndex=this.findLinkIndex(form);
+          if(linkIndex===-1){
+            this.warningNotice("未找到目标关系！");
+            return;
+          }
           this.links.splice(linkIndex,1);
           this.isChartInfoEditVisible = false;
           this.isLinkEdit = false;
           this.showChart();
-          this.successNotice("删除成功");
+          this.successNotice("删除成功！");
           return true;
         },
         //获取简化的图谱信息
@@ -1041,7 +1041,7 @@
           const start_x=0;
           const start_y=0;
           const pace_x=1000;
-          const pace_y=30;
+          const pace_y=100;
           const levelData=this.getLevelData(data);
           const x_count=levelData.x_count;
           const y_count=levelData.y_count;
@@ -1175,12 +1175,14 @@
           }
         },
         //寻找该link名字的下标
-        findLinkIndex(name) {
+        findLinkIndex(form) {
           for (var i = 0; i < this.links.length; i++) {
-            if (this.links[i].name === name) {
+            if (this.links[i].name === form&& this.links[i].source===form.source
+              &&this.links[i].target===form.target&&this.links[i].des===form.des) {
               return i;
             }
           }
+          return -1;
         },
         getCategoryIndex(name) {
           for (var i = 0; i < this.categories.length; i++) {
@@ -1199,16 +1201,21 @@
           console.log("open");
           this.isNodeCreate = true;
           this.isChartInfoEditVisible = true;
+          this.clearObj(this.nodeForm);
+        },
+        clearObj(obj){
+          for(let key in obj){
+            obj[key]='';
+          }
         },
         createLinkClick() {
           if (this.isChartInfoEditVisible) {
-            console.log("close");
             this.isLinkCreate = false;
             this.isChartInfoEditVisible = false;
           }
-          console.log("open");
           this.isLinkCreate = true;
           this.isChartInfoEditVisible = true;
+          this.clearObj(this.linkForm);
         },
         ///////////////////////////////////////////////////////////
         //搜索//////////////////////////////////////////////////////
@@ -1458,11 +1465,12 @@
           this.isChartFixed = true;
         },
         flexibleChart() {
-          var option = this.chart.getOption();
-          for (var i = 0; i < this.nodes.length; i++) {
-            option.series[0].nodes[i].fixed = false;
-          }
-          this.chart.setOption(option);
+          this.showChart();
+          // var option = this.chart.getOption();
+          // for (var i = 0; i < this.nodes.length; i++) {
+          //   option.series[0].nodes[i].fixed = false;
+          // }
+          // this.chart.setOption(option);
           this.isChartFixed = false;
         },
         ///////////////////////////////////////////////////////////
@@ -1539,6 +1547,10 @@
         },
         //点击事件
         chartClick(param) {
+          if(this.isArrangementChart){
+            this.messageNotice("只有在力导图模式下才能修改信息哦！");
+            return;
+          }
           if (param.dataType == 'edge') {
             this.chosenType = 'link';
             this.isLinkEdit = true;
@@ -1551,6 +1563,7 @@
             this.linkSource = param.data.source;
             this.linkTarget = param.data.target;
           } else if (param.dataType == 'node') {
+            console.log(param.data);
             this.chosenType = 'node';
             this.isNodeEdit = true;
             this.nodeForm.name = param.data.name;
@@ -1577,9 +1590,10 @@
             option.series[0].nodes[params.dataIndex].x = params.event.offsetX;
             option.series[0].nodes[params.dataIndex].y = params.event.offsetY;
             option.series[0].nodes[params.dataIndex].fixed = true;
+            option.series[0].nodes[params.dataIndex].fixX = true;
+            option.series[0].nodes[params.dataIndex].fixY = true;
             this.chart.setOption(option);
           }
-
         },
         //文件导出函数
         canvasDataURLtoFile(dataurl, filename = 'file') {
@@ -1721,7 +1735,7 @@
   #chart {
     float: left;
     display: flex;
-    width: 1300px;
+    width: 1488px;
     height: 650px;
     overflow: hidden;
   }

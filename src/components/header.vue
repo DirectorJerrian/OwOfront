@@ -11,7 +11,7 @@
         <img :src="logo_url" class="logo" alt="logo" @click="jumpToHome"/>
       </el-menu-item>
       <el-menu-item index="1" @click="jumpToHome">首页</el-menu-item>
-      <el-menu-item index="2" @click="jumpToCenter">知识图谱处理</el-menu-item>
+      <el-menu-item index="2" @click="jumpToChartEdit">知识图谱处理</el-menu-item>
       <el-menu-item index="3" @click="jumpToMyChart">我的知识图谱</el-menu-item>
       <el-menu-item index="4" @click="jumpToUserInfo">我的信息</el-menu-item>
       <el-submenu index="1">
@@ -19,7 +19,7 @@
         <el-menu-item index="1-1" @click="jumpToPlatformInstruction">平台使用说明</el-menu-item>
         <el-menu-item index="1-2" @click="jumpToQAndAInstruction">智能问答使用说明</el-menu-item>
       </el-submenu>
-      <el-menu-item index="5">探索更多信息</el-menu-item>
+      <el-menu-item index="5" @click="jumpToMoreVersion">探索更多信息</el-menu-item>
       <el-menu-item
         id="loginBox"
         style="float: right; margin-left: 40px; cursor: pointer"
@@ -145,28 +145,12 @@
       jumpToQAndAInstruction(){
         this.$router.push("/QAndAInstruction");
       },
-      jumpToCenter() {
-        const r = this.userInfo.role;
-        if (r == "Bank") {
-          this.$router.push("/bank");
-        } else if (r == "DataProvider") {
-          this.$router.push("/cooperator");
-        } else if (r == "Company") {
-          this.$router.push("/loaner");
-        } else if (r == "Admin") {
-          this.$router.push("/manager");
-        } else if (
-          r == "UnauthorizedCompany" ||
-          r == "UnauthorizedBank" ||
-          r == "UnauthorizedDataProvider"
-        ) {
-          alert("审核未通过，请等待审核通过");
-        } else if (r == "rejected") {
-          alert("审核已被拒绝，请重新上传申请资料");
-        } else {
-          this.$router.push("/login");
-        }
+      jumpToChartEdit() {
+        this.$router.push("/ChartEdit");
       },
+      jumpToMoreVersion(){
+        window.open("http://212.129.149.40/users/sign_in");
+      }
     },
   };
 </script>
