@@ -185,6 +185,7 @@
             }
             await this.updateUserPassword(userData);
             this.$refs[formName].resetFields();
+            this.modifyPassword=false;
             return true;
           } else {
             console.log('error submit!!');
