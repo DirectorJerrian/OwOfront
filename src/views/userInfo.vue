@@ -166,6 +166,7 @@
             }
             await this.updateUserName(userData);
             this.$refs[formName].resetFields();
+            this.modify=false;
             return true;
           } else {
             console.log('error submit!!');
