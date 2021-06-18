@@ -17,7 +17,7 @@
       <el-submenu index="1">
         <template slot="title">使用文档</template>
         <el-menu-item index="1-1" @click="jumpToPlatformInstruction">平台使用说明</el-menu-item>
-        <el-menu-item index="1-2" @click="jumpToQAndAInstruction">智能问答使用说明</el-menu-item>
+        <el-menu-item index="1-2" @click="jumpToQAndAInstruction">智能问答说明</el-menu-item>
       </el-submenu>
       <el-menu-item index="5" @click="jumpToMoreVersion">探索更多信息</el-menu-item>
       <el-menu-item
