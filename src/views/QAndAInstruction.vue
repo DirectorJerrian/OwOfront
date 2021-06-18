@@ -4,7 +4,6 @@
       <el-header style="padding: 0">
         <Header></Header>
       </el-header>
-      <Banner></Banner>
     </el-container>
     <el-container>
       <el-main style="height: 100%; margin-bottom: 3%">

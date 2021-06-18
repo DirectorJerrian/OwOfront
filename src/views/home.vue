@@ -99,12 +99,6 @@
     mounted() {
     },
     methods: {
-      goToLogin() {
-        this.$router.push("/login");
-      },
-      goToRegister() {
-        this.$router.push("/register");
-      },
     },
     computed: {},
     components: {
