@@ -126,7 +126,7 @@
           <el-button style="margin-left: 100px" @click="cancelForm">取 消</el-button>
           <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
           <el-button type="danger" v-if="this.isNodeEdit" @click="deleteNode(nodeForm.name)">删 除</el-button>
-          <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm.name)">删 除</el-button>
+          <el-button type="danger" v-if="this.isLinkEdit" @click="deleteLink(linkForm)">删 除</el-button>
         </div>
       </div>
     </el-drawer>
@@ -932,10 +932,6 @@
             this.warningNotice(nodeNotExistMessage);
             return false;
           }
-          if(this.isLinkExist(source,target)){
-            this.warningNotice("关系已经存在");
-            return false;
-          }
           var link={
             name:name,
             des:des,
@@ -952,14 +948,6 @@
         isNodeExist(name) {
           for(var i=0;i<this.nodes.length;i++){
             if(this.nodes[i].name===name){
-              return true;
-            }
-          }
-          return false;
-        },
-        isLinkExist(source,target) {
-          for(var i=0;i<this.links.length;i++){
-            if(this.links[i].source===source && this.links[i].target===target){
               return true;
             }
           }
@@ -983,15 +971,18 @@
           this.successNotice("删除成功");
           return true;
         },
-        deleteLink(name){
+        deleteLink(form){
           //删除关系
-          var linkIndex=this.findLinkIndex(name);
-          console.log(linkIndex);
+          var linkIndex=this.findLinkIndex(form);
+          if(linkIndex===-1){
+            this.warningNotice("未找到目标关系！");
+            return;
+          }
           this.links.splice(linkIndex,1);
           this.isChartInfoEditVisible = false;
           this.isLinkEdit = false;
           this.showChart();
-          this.successNotice("删除成功");
+          this.successNotice("删除成功！");
           return true;
         },
         //获取简化的图谱信息
@@ -1175,12 +1166,14 @@
           }
         },
         //寻找该link名字的下标
-        findLinkIndex(name) {
+        findLinkIndex(form) {
           for (var i = 0; i < this.links.length; i++) {
-            if (this.links[i].name === name) {
+            if (this.links[i].name === form&& this.links[i].source===form.source
+              &&this.links[i].target===form.target&&this.links[i].des===form.des) {
               return i;
             }
           }
+          return -1;
         },
         getCategoryIndex(name) {
           for (var i = 0; i < this.categories.length; i++) {
@@ -1199,16 +1192,21 @@
           console.log("open");
           this.isNodeCreate = true;
           this.isChartInfoEditVisible = true;
+          this.clearObj(this.nodeForm);
+        },
+        clearObj(obj){
+          for(let key in obj){
+            obj[key]='';
+          }
         },
         createLinkClick() {
           if (this.isChartInfoEditVisible) {
-            console.log("close");
             this.isLinkCreate = false;
             this.isChartInfoEditVisible = false;
           }
-          console.log("open");
           this.isLinkCreate = true;
           this.isChartInfoEditVisible = true;
+          this.clearObj(this.linkForm);
         },
         ///////////////////////////////////////////////////////////
         //搜索//////////////////////////////////////////////////////
