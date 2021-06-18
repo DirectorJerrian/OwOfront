@@ -153,12 +153,18 @@
         'getUserInfo',
         'verifyAccount',
         'getChartList',
+        'updateUserName',
         'updateUserPassword',
       ]),
       saveModify(formName) {
         this.$refs[formName].validate(async (valid) => {
           if (valid) {
-            await this.verifyAccount(this.infoForm);
+            const userData={
+              username:this.infoForm.username,
+              password:this.userInfo.password,
+              email:this.userInfo.email,
+            }
+            await this.updateUserName(userData);
             this.$refs[formName].resetFields();
             return true;
           } else {
