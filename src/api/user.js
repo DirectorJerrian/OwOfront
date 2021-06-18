@@ -37,7 +37,7 @@ export function getUserInfoAPI(id) {
 
 export function updateUserInfoAPI(data) {
   return axios({
-    url: `${api.userPre}/${data.id}/userInfo/update`,
+    url: `${api.userPre}/modifyName`,
     method: 'POST',
     data
   })
@@ -45,7 +45,7 @@ export function updateUserInfoAPI(data) {
 
 export function updateUserPasswordAPI(data) {
   return axios({
-    url: `${api.userPre}/${data.id}/userInfo/updatePassword`,
+    url: `${api.userPre}/updatePassword`,
     method: 'POST',
     data
   })

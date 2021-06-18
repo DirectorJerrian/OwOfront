@@ -9,9 +9,9 @@
         <el-col :span="16">
           <div class="centerArea">
             <div class="centerBox">
-              <el-form label-position="right" class="centerForm" label-width="100px" ref="highForm" :model="nameForm">
+              <el-form label-position="right" class="centerForm" label-width="100px" ref="highForm" :model="infoForm">
                 <el-form-item label="用户名:" prop="username" class="boxItem" required>
-                  <el-input placeholder="请输入用户名" v-model="nameForm.username" v-if="modify" :span="4"></el-input>
+                  <el-input placeholder="请输入用户名" v-model="infoForm.username" v-if="modify" :span="4"></el-input>
                   <span v-else>{{ userInfo.username }}</span>
                   <el-form-item v-if="modify" >
                     <el-button type="primary" @click="saveModify('highForm')">
@@ -109,10 +109,8 @@
         }, 100)
       };
       return {
-        nameForm: {
-          username: '',
-        },
         infoForm: {
+          username:'',
           oldPassword: '',
           password: '',
           twicePassword: ''
@@ -154,13 +152,21 @@
       ...mapActions([
         'getUserInfo',
         'verifyAccount',
-        'getChartList'
+        'getChartList',
+        'updateUserName',
+        'updateUserPassword',
       ]),
       saveModify(formName) {
         this.$refs[formName].validate(async (valid) => {
           if (valid) {
-            await this.verifyAccount(this.infoForm);
+            const userData={
+              username:this.infoForm.username,
+              password:this.userInfo.password,
+              email:this.userInfo.email,
+            }
+            await this.updateUserName(userData);
             this.$refs[formName].resetFields();
+            this.modify=false;
             return true;
           } else {
             console.log('error submit!!');
@@ -172,8 +178,14 @@
       saveModifyPwd(formName) {
         this.$refs[formName].validate(async (valid) => {
           if (valid) {
-            await this.verifyAccount(this.infoForm);
+            const userData={
+              username:this.userInfo.username,
+              password:this.infoForm.password,
+              email:this.userInfo.email,
+            }
+            await this.updateUserPassword(userData);
             this.$refs[formName].resetFields();
+            this.modifyPassword=false;
             return true;
           } else {
             console.log('error submit!!');

@@ -7,7 +7,9 @@ import {
   verifyAccountAPI,
   addAccountAPI,
   sendCodeAPI,
-  getUserInfoAPI
+  getUserInfoAPI,
+  updateUserInfoAPI,
+  updateUserPasswordAPI,
 } from '@/api/user'
 
 const getDefaultState = () => {
@@ -55,6 +57,32 @@ const user = {
         router.push('/myChart')
       } else {
         Message.error('登录失败，请检查账号密码或重新登录！')
+      }
+    },
+    updateUserName: async ({dispatch, commit}, userData) => {
+      const res = await updateUserInfoAPI(userData);
+      console.log(res);
+      if (res.obj) {
+
+        setToken(res.obj.id);
+        commit('setToken', res.obj.id);
+        dispatch('getUserInfo');
+        Message.success("用户名修改成功！");
+      } else {
+        Message.error('用户名修改失败！')
+      }
+    },
+    updateUserPassword: async ({dispatch, commit}, userData) => {
+      const res = await updateUserPasswordAPI(userData);
+      console.log(res);
+      if (res.obj) {
+
+        setToken(res.obj.id);
+        commit('setToken', res.obj.id);
+        dispatch('getUserInfo');
+        Message.success("密码修改成功！");
+      } else {
+        Message.error('密码修改失败！')
       }
     },
     addAccount: async ({dispatch, state, commit}, data) => {
