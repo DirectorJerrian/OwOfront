@@ -5,54 +5,56 @@
         <Header></Header>
       </el-header>
       <el-main>
-        <el-col :span="4"></el-col>
-        <el-col :span="16">
-          <div class="centerArea">
-            <div class="centerBox">
-              <el-form label-position="right" class="centerForm" label-width="100px" ref="highForm" :model="infoForm">
-                <el-form-item label="用户名:" prop="username" class="boxItem" required>
-                  <el-input placeholder="请输入用户名" v-model="infoForm.username" v-if="modify" :span="4"></el-input>
-                  <span v-else>{{ userInfo.username }}</span>
-                  <el-form-item v-if="modify" >
-                    <el-button type="primary" @click="saveModify('highForm')">
-                      保存
-                    </el-button>
-                    <el-button type="default" style="margin-left: 30px" @click="cancelModify('highForm')">
-                      取消
-                    </el-button>
+        <el-row>
+          <el-col :span="4"></el-col>
+          <el-col :span="16">
+            <div class="centerArea">
+              <div class="centerBox">
+                <el-form label-position="right" class="centerForm" label-width="200px" ref="highForm" :model="infoForm">
+                  <el-form-item label="用户名:" prop="username" class="boxItem" required>
+                    <el-input placeholder="请输入用户名" v-model="infoForm.username" v-if="modify" style="width: 200px"></el-input>
+                    <span v-else>{{ userInfo.username }}</span>
+                    <span v-if="modify" style="margin-top: 20px">
+                      <el-button type="primary" style="margin-left: 60px" @click="saveModify('highForm')">
+                        保存
+                      </el-button>
+                      <el-button type="default" style="margin-left: 30px" @click="cancelModify('highForm')">
+                        取消
+                      </el-button>
+                    </span>
+                    <span v-else style="margin-top: 20px">
+                      <el-button type="default" @click="modifyInfo" style="margin-left: 30px">
+                        修改用户名
+                      </el-button>
+                    </span>
                   </el-form-item>
-                  <el-form-item  v-else>
-                    <el-button type="default" @click="modifyInfo">
-                      修改用户名
-                    </el-button>
+                  <el-form-item label="邮箱:" class="boxItem">
+                    <span>{{ userInfo.email }}</span>
                   </el-form-item>
-                </el-form-item>
-                <el-form-item label="邮箱:" class="boxItem">
-                  <span>{{ userInfo.email }}</span>
-                </el-form-item>
-                <el-form-item label="图谱数量:" class="boxItem">
-                  <span>{{ chartList.length }}</span>
-                </el-form-item>
-                <el-form :model="infoForm" style="margin-top: 30px;" :rules="rules" ref="lowForm">
+                  <el-form-item label="图谱数量:" class="boxItem">
+                    <span>{{ chartList.length }}</span>
+                  </el-form-item>
+                </el-form>
+                <el-form class="centerForm" :model="infoForm" label-position="right" label-width="200px" style="margin-top: 30px;" :rules="rules" ref="lowForm">
                   <el-form-item label="原密码" prop="oldPassword" v-if="modifyPassword">
-                    <el-input
+                    <el-input style="width: 200px"
                       type="password"
                       placeholder="请输入原密码"
                       v-model="infoForm.oldPassword"></el-input>
                   </el-form-item>
                   <el-form-item label="新密码" prop="password" v-if="modifyPassword">
-                    <el-input
+                    <el-input style="width: 200px"
                       type="password"
                       placeholder="请输入新密码"
                       v-model="infoForm.password"></el-input>
                   </el-form-item>
                   <el-form-item label="再次输入密码" prop="twicePassword" v-if="modifyPassword">
-                    <el-input
+                    <el-input style="width: 200px"
                       type="password"
                       placeholder="请再次输入新密码"
                       v-model="infoForm.twicePassword"></el-input>
                   </el-form-item>
-                  <el-form-item :wrapper-col="{ span: 12, offset: 5 }" v-if="modifyPassword">
+                  <el-form-item  v-if="modifyPassword">
                     <el-button type="primary" @click="saveModifyPwd('lowForm')">
                       保存
                     </el-button>
@@ -60,17 +62,17 @@
                       取消
                     </el-button>
                   </el-form-item>
-                  <el-form-item :wrapper-col="{ span: 8, offset: 4 }" v-else>
+                  <el-form-item v-else>
                     <el-button type="default" @click="modifyPwd">
                       修改密码
                     </el-button>
                   </el-form-item>
                 </el-form>
-              </el-form>
+              </div>
             </div>
-          </div>
-        </el-col>
-        <el-col :span="4"></el-col>
+          </el-col>
+          <el-col :span="4"></el-col>
+        </el-row>
       </el-main>
     </el-container>
   </div>
@@ -88,7 +90,7 @@
           return callback(new Error('请再次输入密码'))
         }
         setTimeout(() => {
-          if (value===this.infoForm.password) {
+          if (value === this.infoForm.password) {
             callback()
           } else {
             callback(new Error('两次密码不一致！'))
@@ -101,7 +103,7 @@
         }
         setTimeout(() => {
           console.log(this.userInfo.password);
-          if (value===this.userInfo.password) {
+          if (value === this.userInfo.password) {
             callback()
           } else {
             callback(new Error('密码错误！'))
@@ -110,7 +112,7 @@
       };
       return {
         infoForm: {
-          username:'',
+          username: '',
           oldPassword: '',
           password: '',
           twicePassword: ''
@@ -122,11 +124,11 @@
             {required: true, message: '请输入密码', trigger: "blur"},
             {min: 6, max: 20, message: '长度在6至20之间', trigger: 'blur'}
           ],
-          twicePassword:[
+          twicePassword: [
             {required: true, message: '请再次输入密码', trigger: "blur"},
             {validator: checkPwd, trigger: 'blur'}
           ],
-          oldPassword:[
+          oldPassword: [
             {required: true, message: '请输入原密码', trigger: "blur"},
             {validator: checkOldPwd, trigger: 'blur'}
           ]
@@ -159,14 +161,14 @@
       saveModify(formName) {
         this.$refs[formName].validate(async (valid) => {
           if (valid) {
-            const userData={
-              username:this.infoForm.username,
-              password:this.userInfo.password,
-              email:this.userInfo.email,
+            const userData = {
+              username: this.infoForm.username,
+              password: this.userInfo.password,
+              email: this.userInfo.email,
             }
             await this.updateUserName(userData);
             this.$refs[formName].resetFields();
-            this.modify=false;
+            this.modify = false;
             return true;
           } else {
             console.log('error submit!!');
@@ -178,14 +180,14 @@
       saveModifyPwd(formName) {
         this.$refs[formName].validate(async (valid) => {
           if (valid) {
-            const userData={
-              username:this.userInfo.username,
-              password:this.infoForm.password,
-              email:this.userInfo.email,
+            const userData = {
+              username: this.userInfo.username,
+              password: this.infoForm.password,
+              email: this.userInfo.email,
             }
             await this.updateUserPassword(userData);
             this.$refs[formName].resetFields();
-            this.modifyPassword=false;
+            this.modifyPassword = false;
             return true;
           } else {
             console.log('error submit!!');
@@ -213,5 +215,15 @@
 </script>
 
 <style scoped>
-
+  .centerArea {
+    position: center;
+    width: 960px;
+    margin: 30px 0 0 300px;
+    padding: 30px 0 30px;
+  }
+  .centerBox {
+    position: center;
+    padding-top: 50px;
+    padding-bottom: 30px;
+  }
 </style>
