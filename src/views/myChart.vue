@@ -102,6 +102,7 @@
       return {
         logo_url: "http://software-engineering-iii.oss-cn-hangzhou.aliyuncs.com/all/logo.png",
         textData: '',
+        newJson:{"title":"新建知识图谱","nodes":[],"links":[],"isChartFixed":false,"potions":[]},
         // chartList:[{
         //   name:'chart01',
         //   imgUrl:'12345678',
@@ -161,7 +162,8 @@
         'setChartData',
       ]),
       createNewChart(){
-
+        this.setChartData(this.newJson)
+        router.push('/ChartEdit');
       },
       setFileInfo(file, type) {
         this.fileInfo.file = file;
