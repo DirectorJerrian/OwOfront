@@ -897,7 +897,7 @@
           var name=nodeForm.name;
           var des=nodeForm.des;
           var symbolSize=parseInt(nodeForm.symbolSize);
-          var category=parseInt(nodeForm.category);
+          var category=this.getCategoryIndex(nodeForm.category);
           var symbol=nodeForm.symbol;
           var color=nodeForm.color;
           var fontSize=parseInt(nodeForm.fontSize);
@@ -918,6 +918,12 @@
             },
             category:category,
           };
+          const index=this.categories.length;
+          if(category===-1){
+            this.categories.push({ name: "" });
+            this.categories[index].name=nodeForm.category+" class";
+            node.category=index;
+          }
           this.nodes.push(node);
           this.showChart();
           this.successNotice("创建成功");
@@ -1124,8 +1130,6 @@
         //更改实体信息
         changeNode(nodeForm) {
           var nodeIndex = this.findNodeIndex(this.nodeName);
-          console.log(nodeForm);
-          console.log(this.nodes[nodeIndex]);
           if (this.nodes[nodeIndex].name === nodeForm.name &&
             this.nodes[nodeIndex].category === this.getCategoryIndex(nodeForm.category) &&
             this.nodes[nodeIndex].des === nodeForm.des &&
@@ -1156,7 +1160,16 @@
           this.nodes[nodeIndex].itemStyle.color = nodeForm.color;
           this.nodes[nodeIndex].label.fontSize = parseInt(nodeForm.fontSize);
           //这边要做额外修改，先不动
-          this.nodes[nodeIndex].category = this.getCategoryIndex(nodeForm.category);
+          const categoryIndex=this.getCategoryIndex(nodeForm.category);
+          if(categoryIndex===-1){
+            const index=this.categories.length;
+            this.categories.push({ name: "" });
+            this.categories[index].name=nodeForm.category+"class";
+            this.nodes[nodeIndex].category=index;
+          }else{
+            this.nodes[nodeIndex].category = this.getCategoryIndex(nodeForm.category);
+          }
+
           //将关系中的实体同样做修改
           for (var i = 0; i < this.links.length; i++) {
             if (this.links[i].source === name) this.links[i].source = nodeForm.name;
