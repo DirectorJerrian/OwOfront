@@ -6,23 +6,26 @@
     <el-container>
       <el-aside>
         <el-row >
+          <el-button size="max" type="success" @click="createNewChart">新建图谱</el-button>
+        </el-row>
+        <el-row >
           <el-upload
             action=""
             :on-change="uploadFile"
             :auto-upload="false"
             :show-file-list="false">
-            <el-button slot="trigger" size="max" type="primary" v-if="isFileUploaded">重新读入图谱</el-button>
-            <el-button slot="trigger" size="max" type="primary" v-else>读入图谱</el-button>
+            <el-button slot="trigger" size="max" type="warning" v-if="isFileUploaded">重新读入图谱</el-button>
+            <el-button slot="trigger" size="max" type="warning" v-else>读入图谱</el-button>
           </el-upload>
         </el-row>
         <el-row >
-          <el-button size="max" type="success" @click="analyzeChart">解析图谱并编辑</el-button>
+          <el-button size="max" type="warning" @click="analyzeChart">解析图谱并编辑</el-button>
         </el-row>
         <el-row >
-          <el-button size="max" type="success" @click="analyzeText">解析文本</el-button>
+          <el-button size="max" type="danger" @click="analyzeText">解析文本</el-button>
         </el-row>
         <el-row >
-          <el-button size="max" type="success" @click="mergeChartClick">融合图谱</el-button>
+          <el-button size="max" type="primary" @click="mergeChartClick">融合图谱</el-button>
         </el-row>
       </el-aside>
       <el-main>
@@ -157,6 +160,9 @@
       ...mapMutations([
         'setChartData',
       ]),
+      createNewChart(){
+
+      },
       setFileInfo(file, type) {
         this.fileInfo.file = file;
         this.fileInfo.type = type;
@@ -425,11 +431,14 @@
   }
 
   .text-area {
+
     width: 100%;
     padding-bottom: 10px;
     border-top: 1px solid gainsboro;
     border-bottom: 1px solid gainsboro;
-    margin-bottom:20px;margin-top: 10px
+    margin-bottom:20px;
+    padding-top: 20px;
+    margin-top: 20px
 
   }
 
