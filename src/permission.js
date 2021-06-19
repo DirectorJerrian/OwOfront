@@ -5,7 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import {Message} from 'element-ui'
 
-const whiteList = ['/login', '/home', '/register', '/ChartEdit', '/myChart'];// no redirect whitelist
+const whiteList = ['/login', '/home', '/register','/QAndAInstruction','/platformInstruction'];// no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {
   // start progress bar
