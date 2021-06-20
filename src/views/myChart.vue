@@ -44,38 +44,38 @@
         </div>
       </el-main>
     </el-container>
+    <div id="chartList">
+      <div class="card-wrapper">
+        <chartCard :chart="item" v-for="item in chartList" :key="item.chartId"  @click.native="" class="chartCard">
+        </chartCard>
+      </div>
+    </div>
 
+<!--    <el-container>-->
+<!--      <el-main>-->
 
-    <el-container>
-      <el-main>
-        <div id="chartList">
-          <div class="card-wrapper">
-            <chartCard :chart="item" v-for="item in chartList" :key="item.chartId"  @click.native="" class="chartCard">
-            </chartCard>
-          </div>
-        </div>
-      </el-main>
-      <el-footer style="height: 180px">
-        <el-row :gutter="10" class="footer-row">
-          <el-col :span="4" :offset="6">
-            <span style="font-size: 24px">帮助中心</span>
-            <br/>
-            <span style="font-size: 16px"
-            ><a href="http://212.129.149.40/users/sign_in"> 版本更新 </a><br/>
-                <a href="http://212.129.149.40/users/sign_in"> 联系我们</a>
-              </span>
-          </el-col>
-          <el-col :span="4" :offset="6" class="footer-pic">
-            <el-image class="logo" :src="logo_url"></el-image>
-          </el-col>
-        </el-row>
-        <el-row :gutter="10">
-          <el-col :span="4" :offset="6">
-            <span style="font-size: 16px">©OwO COIN</span>
-          </el-col>
-        </el-row>
-      </el-footer>
-    </el-container>
+<!--      </el-main>-->
+<!--      <el-footer style="height: 180px">-->
+<!--        <el-row :gutter="10" class="footer-row">-->
+<!--          <el-col :span="4" :offset="6">-->
+<!--            <span style="font-size: 24px">帮助中心</span>-->
+<!--            <br/>-->
+<!--            <span style="font-size: 16px"-->
+<!--            ><a href="http://212.129.149.40/users/sign_in"> 版本更新 </a><br/>-->
+<!--                <a href="http://212.129.149.40/users/sign_in"> 联系我们</a>-->
+<!--              </span>-->
+<!--          </el-col>-->
+<!--          <el-col :span="4" :offset="6" class="footer-pic">-->
+<!--            <el-image class="logo" :src="logo_url"></el-image>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row :gutter="10">-->
+<!--          <el-col :span="4" :offset="6">-->
+<!--            <span style="font-size: 16px">©OwO COIN</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--      </el-footer>-->
+<!--    </el-container>-->
 
     <div id="confirmMergeChart">
       <el-button type="success" icon="el-icon-check" circle style="width: 100px;height: 50px;" v-if="isChartMergeVisible" @click="confirmChartMerge()">确认融合</el-button>

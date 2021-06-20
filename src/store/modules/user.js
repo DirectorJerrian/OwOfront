@@ -50,7 +50,7 @@ const user = {
   actions: {
     verifyAccount: async ({dispatch, commit}, userData) => {
       const res = await verifyAccountAPI(userData);
-      if (res.obj) {
+      if (res!==undefined) {
         setToken(res.obj.id);
         commit('setToken', res.obj.id);
         dispatch('getUserInfo');
